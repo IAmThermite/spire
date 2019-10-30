@@ -12,7 +12,8 @@ defmodule SpireWeb.PlayerController do
 
   def new(conn, _params) do
     changeset = Players.change_player(%Player{})
-    render(conn, "new.html", changeset: changeset)
+    league_options = Enum.map(Leagues.list_leagues(), fn(l) -> [value: l.id, key: l.name] end)
+    render(conn, "new.html", league_options: league_options, changeset: changeset)
   end
 
   def create(conn, %{"player" => player_params}) do

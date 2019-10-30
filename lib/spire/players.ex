@@ -19,6 +19,7 @@ defmodule Spire.Players do
   """
   def list_players do
     Repo.all(Player)
+    |> Repo.preload(:league)
   end
 
   @doc """
