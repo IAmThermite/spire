@@ -1,0 +1,28 @@
+<h1>Show Player</h1>
+
+<ul>
+  <li>
+    <strong>Steamid:</strong>
+    <%= @player.steamid %>
+  </li>
+
+  <li>
+    <strong>Steamid3:</strong>
+    <%= @player.steamid3 %>
+  </li>
+
+  <li>
+    <strong>Alias:</strong>
+    <%= @player.alias %>
+  </li>
+
+  <%= if @player.league_id != nil do %>
+    <li>
+      <strong>Primary league:</strong>
+      <a href="<%= Routes.league_path(@conn, :show, @player.league) %>"><%= @player.league.name %></a>
+    </li>
+  <% end %>
+</ul>
+
+<span><%= link "Edit", to: Routes.player_path(@conn, :edit, @player) %></span>
+<span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>

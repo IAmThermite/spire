@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Spire</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="icon" type="image/png" href="<%= Routes.static_path(@conn, "/images/logo.png") %>" />
+  </head>
+  <body>
+    <header>
+      <div class="navbar-fixed">
+        <nav class="brown darken-2">
+          <div class="nav-wrapper container">
+            <a class="brand-logo hide-on-med-and-down" href="/"><img height="64px" src="<%= Routes.static_path(@conn, "/images/banner.png") %>"></a>
+            <ul class="right">
+              <li><a href="/">Home</a></li>
+              <li><a href="/players">Players</a></li>
+              <li><a href="/leagues">Leagues</a></li>
+              <li><a href="/about">About</a></li>
+              <li>|</li>
+              <%= if true do %> <!-- if not logged in -->
+                <li><a href="/auth/login">Login</a></li>
+              <% else %>
+                <li><a href="/">Profile</a></li>
+                <li><a href="/logs/upload">Upload</a></li>
+                <li><a href="/auth/logout">Logout</a></li>
+              <% end %>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main role="main" class="container">
+      <div class="card green lighten-2">
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      </div>
+      <div class="card red">
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      </div>
+      <%= render @view_module, @view_template, assigns %>
+    </main>
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+<h1>New League</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.league_path(@conn, :create)) %>
+
+<span><%= link "Back", to: Routes.league_path(@conn, :index) %></span>

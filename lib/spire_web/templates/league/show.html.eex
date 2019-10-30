@@ -1,0 +1,34 @@
+<h1>Show League</h1>
+
+<ul>
+  <li>
+    <strong>Name:</strong>
+    <a href="<%= @league.website %>"><%= @league.name %></a>
+  </li>
+
+  <li>
+    <strong>Main:</strong>
+    <%= @league.main %>
+  </li>
+</ul>
+
+<span><%= link "Edit", to: Routes.league_path(@conn, :edit, @league) %></span>
+<span><%= link "Back", to: Routes.league_path(@conn, :index) %></span>
+
+<h4>Players</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Alias</th>
+      <th>Steam Id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for player <- @league.players do %>
+    <tr>
+      <td><a href="<%= Routes.player_path(@conn, :show, player) %>"><%= player.alias %></a></td>
+      <td><%= player.steamid %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
