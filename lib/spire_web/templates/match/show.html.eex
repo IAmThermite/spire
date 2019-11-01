@@ -1,0 +1,28 @@
+<h1>Show Match</h1>
+
+<ul>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @match.title %>
+  </li>
+
+  <li>
+    <strong>Date:</strong>
+    <%= @match.date %>
+  </li>
+
+  <li>
+    <strong>League:</strong>
+    <span><%= link @league.name, to: Routes.league_path(@conn, :show, @league) %></span>
+  </li>
+
+  <li>
+    <strong>Link:</strong>
+    <%= @match.link %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.match_path(@conn, :edit, @match) %></span>
+<span><%= link "Back", to: Routes.league_match_path(@conn, :index, @match.league_id) %></span>

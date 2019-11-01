@@ -19,7 +19,7 @@
   <%= if @player.league_id != nil do %>
     <li>
       <strong>Primary league:</strong>
-      <a href="<%= Routes.league_path(@conn, :show, @player.league) %>"><%= @player.league.name %></a>
+      <%= link @player.league.name, to: Routes.league_path(@conn, :show, @player.league) %>
     </li>
   <% end %>
 </ul>

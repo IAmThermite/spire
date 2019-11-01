@@ -3,6 +3,7 @@ defmodule Spire.Leagues.League do
   import Ecto.Changeset
   
   alias Spire.Players.Player
+  alias Spire.Leagues.Matches.Match
   
   schema "leagues" do
     field :main, :boolean, default: false
@@ -12,6 +13,7 @@ defmodule Spire.Leagues.League do
     timestamps()
 
     has_many :players, Player
+    has_many :matches, Match
   end
 
   @doc false

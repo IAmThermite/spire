@@ -10,6 +10,9 @@
     <strong>Main:</strong>
     <%= @league.main %>
   </li>
+  <li>
+    <strong><%= link "Matches", to: Routes.league_match_path(@conn, :index, @league.id) %></strong>
+  </li>
 </ul>
 
 <span><%= link "Edit", to: Routes.league_path(@conn, :edit, @league) %></span>
@@ -26,7 +29,7 @@
   <tbody>
     <%= for player <- @league.players do %>
     <tr>
-      <td><a href="<%= Routes.player_path(@conn, :show, player) %>"><%= player.alias %></a></td>
+      <td><%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
       <td><%= player.steamid %></td>
     </tr>
     <% end %>

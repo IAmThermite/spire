@@ -22,10 +22,10 @@
           <div class="nav-wrapper container">
             <a class="brand-logo hide-on-med-and-down" href="/"><img height="64px" src="<%= Routes.static_path(@conn, "/images/banner.png") %>"></a>
             <ul class="right">
-              <li><a href="/">Home</a></li>
-              <li><a href="/players">Players</a></li>
-              <li><a href="/leagues">Leagues</a></li>
-              <li><a href="/about">About</a></li>
+              <li><%= link "Home", to: Routes.page_path(@conn, :index) %></li>
+              <li><%= link "Players", to: Routes.player_path(@conn, :index) %></li>
+              <li><%= link "Leagues", to: Routes.league_path(@conn, :index) %></li>
+              <li><%= link "About", to: Routes.page_path(@conn, :about) %></li>
               <li>|</li>
               <%= if true do %> <!-- if not logged in -->
                 <li><a href="/auth/login">Login</a></li>

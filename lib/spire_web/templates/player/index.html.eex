@@ -17,7 +17,7 @@
       <td><%= player.steamid %></td>
       <td><%= player.steamid3 %></td>
       <td><%= player.alias %></td>
-      <td><a href=<%= Routes.league_path(@conn, :show, player.league) %>><%= player.league.name %></a></td>
+      <td><%= link player.league.name, to: Routes.league_path(@conn, :show, player.league) %></a></td>
 
       <td>
         <span><%= link "Show", to: Routes.player_path(@conn, :show, player) %></span>
