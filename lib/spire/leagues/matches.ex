@@ -17,8 +17,8 @@ defmodule Spire.Leagues.Matches do
       [%Match{}, ...]
 
   """
-  def list_matches do
-    Repo.all(Match)
+  def list_matches(league_id) do
+    Repo.all(from(m in Match, where: m.league_id == ^league_id))
   end
 
   @doc """

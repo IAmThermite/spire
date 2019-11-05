@@ -6,7 +6,7 @@ defmodule SpireWeb.MatchController do
   alias Spire.Leagues.Matches.Match
 
   def index(conn, %{"league_id" => league_id}) do
-    matches = Matches.list_matches()
+    matches = Matches.list_matches(league_id)
     league = Leagues.get_league!(league_id)
     render(conn, "index.html", matches: matches, league: league)
   end
