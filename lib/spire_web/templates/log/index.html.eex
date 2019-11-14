@@ -1,0 +1,28 @@
+<h1>Listing Logs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Logfile</th>
+      <th>Map</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for log <- @logs do %>
+    <tr>
+      <td><%= log.logfile %></td>
+      <td><%= log.map %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.log_path(@conn, :show, log) %></span>
+        <span><%= link "Edit", to: Routes.log_path(@conn, :edit, log) %></span>
+        <span><%= link "Delete", to: Routes.log_path(@conn, :delete, log), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Log", to: Routes.log_path(@conn, :new) %></span>

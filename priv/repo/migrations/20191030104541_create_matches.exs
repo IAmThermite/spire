@@ -3,9 +3,9 @@ defmodule Spire.Repo.Migrations.CreateMatches do
 
   def change do
     create table(:matches) do
-      add :title, :string
+      add :title, :string, null: false
       add :date, :date
-      add :link, :string
+      add :link, :string, null: false
       add :league_id, references(:leagues, on_delete: :restrict)
       
       timestamps()

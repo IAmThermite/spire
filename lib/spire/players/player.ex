@@ -3,6 +3,8 @@ defmodule Spire.Players.Player do
   import Ecto.Changeset
 
   alias Spire.Leagues.League
+  alias Spire.Leagues.Matches.Match
+  alias Spire.PlayersMatches.PlayerMatch
 
   schema "players" do
     field :alias, :string
@@ -11,6 +13,8 @@ defmodule Spire.Players.Player do
     field :steamid3, :string
 
     belongs_to :league, League
+
+    many_to_many :matches, Match, join_through: PlayerMatch, on_replace: :delete
 
     timestamps()
   end

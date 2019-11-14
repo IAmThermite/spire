@@ -23,7 +23,12 @@ defmodule SpireWeb.Router do
     end
 
     resources "/matches", MatchController, except: [:new, :index, :create]
-    resources "/players", PlayerController
+    resources "/players", PlayerController do
+      resources "/logs", LogController, only: [:index]
+    end
+
+    resources "/logs", LogController, except: [:index]
+
   end
 
   # Other scopes may use custom stacks.
