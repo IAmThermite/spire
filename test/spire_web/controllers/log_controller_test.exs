@@ -1,7 +1,7 @@
 defmodule SpireWeb.LogControllerTest do
   use SpireWeb.ConnCase
 
-  alias Spire.Players.Logs
+  alias Spire.Logs
 
   @create_attrs %{logfile: "some logfile", map: "some map"}
   @update_attrs %{logfile: "some updated logfile", map: "some updated map"}

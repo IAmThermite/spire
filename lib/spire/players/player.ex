@@ -4,17 +4,17 @@ defmodule Spire.Players.Player do
 
   alias Spire.Leagues.League
   alias Spire.Leagues.Matches.Match
-  alias Spire.PlayersMatches.PlayerMatch
 
   schema "players" do
     field :alias, :string
     field :steamid, :string
     field :avatar, :string
     field :steamid3, :string
+    field :division, :string
 
     belongs_to :league, League
 
-    many_to_many :matches, Match, join_through: PlayerMatch, on_replace: :delete
+    many_to_many :matches, Match, join_through: "players_matches", on_replace: :delete
 
     timestamps()
   end
@@ -22,8 +22,8 @@ defmodule Spire.Players.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:steamid, :steamid3, :avatar, :alias, :league_id])
-    |> validate_required([:steamid, :avatar, :steamid3, :alias])
+    |> cast(attrs, [:steamid, :steamid3, :avatar, :alias, :division, :league_id])
+    |> validate_required([:steamid, :steamid3, :alias])
     |> unique_constraint(:steamid)
     |> unique_constraint(:steamid3)
     |> assoc_constraint(:league)

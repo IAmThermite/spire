@@ -26,3 +26,52 @@
 
 <span><%= link "Edit", to: Routes.player_path(@conn, :edit, @player) %></span>
 <span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>
+
+<h4>Matches</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Date</th>
+      <th>External Link</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for match <- @matches do %>
+      <tr>
+        <td><%= match.title %></td>
+        <td><%= match.date %></td>
+        <td><a href="<%= match.link %>">Link</a></td>
+        <td><%= link "Match", to: Routes.match_path(@conn, :show, match) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h4>Logs</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Link</th>
+      <th>Map</th>
+      <th>Score</th>
+      <th>Date</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for log <- @logs do %>
+      <tr>
+        <td><a href="https://logs.tf/<%= log.logfile %>"><%= log.logfile %></a></td>
+        <td><%= log.map %></td>
+        <td><%= log.t1_score %> - <%= log.t2_score %></td>
+        <td><%= log.date %></td>
+
+        <td><%= link "Log", to: Routes.log_path(@conn, :show, log) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

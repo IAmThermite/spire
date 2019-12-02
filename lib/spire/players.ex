@@ -23,6 +23,34 @@ defmodule Spire.Players do
   end
 
   @doc """
+  Returns the list of players.
+
+  ## Examples
+
+      iex> list_players_by_match(123)
+      [%Player{}, ...]
+
+  """
+  def list_players_by_match(match_id) do
+    Repo.all(from(p in "players_matches", select: {}, where: p.match_id == ^match_id))
+    |> Repo.preload([:player])
+  end
+
+   @doc """
+  Returns the list of players.
+
+  ## Examples
+
+      iex> list_players_by_log(123)
+      [%Player{}, ...]
+
+  """
+  def list_players_by_match(log_id) do
+    Repo.all(from(p in "players_logs", where: p.log_id == ^log_id))
+    |> Repo.preload([:player])
+  end
+
+  @doc """
   Gets a single player.
 
   Raises `Ecto.NoResultsError` if the Player does not exist.
@@ -40,6 +68,7 @@ defmodule Spire.Players do
     Repo.get!(Player, id)
     |> Repo.preload([:league])
   end
+
   @doc """
   Creates a player.
 

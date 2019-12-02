@@ -1,10 +1,10 @@
-defmodule Spire.Players.LogsTest do
+defmodule Spire.LogsTest do
   use Spire.DataCase
 
-  alias Spire.Players.Logs
+  alias Spire.Logs
 
   describe "logs" do
-    alias Spire.Players.Logs.Log
+    alias Spire.Logs.Log
 
     @valid_attrs %{logfile: "some logfile", map: "some map"}
     @update_attrs %{logfile: "some updated logfile", map: "some updated map"}

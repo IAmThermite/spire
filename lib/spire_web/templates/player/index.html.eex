@@ -12,20 +12,20 @@
     </tr>
   </thead>
   <tbody>
-<%= for player <- @players do %>
-    <tr>
-      <td><%= player.steamid %></td>
-      <td><%= player.steamid3 %></td>
-      <td><%= player.alias %></td>
-      <td><%= link player.league.name, to: Routes.league_path(@conn, :show, player.league) %></a></td>
+    <%= for player <- @players do %>
+      <tr>
+        <td><%= player.steamid %></td>
+        <td><%= player.steamid3 %></td>
+        <td><%= player.alias %></td>
+        <td><%= link player.league.name, to: Routes.league_path(@conn, :show, player.league) %></a></td>
 
-      <td>
-        <span><%= link "Show", to: Routes.player_path(@conn, :show, player) %></span>
-        <span><%= link "Edit", to: Routes.player_path(@conn, :edit, player) %></span>
-        <span><%= link "Delete", to: Routes.player_path(@conn, :delete, player), method: :delete, data: [confirm: "Are you sure?"] %></span>
-      </td>
-    </tr>
-<% end %>
+        <td>
+          <span><%= link "Show", to: Routes.player_path(@conn, :show, player) %></span>
+          <span><%= link "Edit", to: Routes.player_path(@conn, :edit, player) %></span>
+          <span><%= link "Delete", to: Routes.player_path(@conn, :delete, player), method: :delete, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 

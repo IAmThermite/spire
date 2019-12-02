@@ -1,11 +1,19 @@
 defmodule SpireWeb.LogController do
   use SpireWeb, :controller
 
-  alias Spire.Players.Logs
-  alias Spire.Players.Logs.Log
+  alias Spire.Logs
+  alias Spire.Logs.Log
+  alias Spire.Leagues.Matches
 
   def index(conn, %{"player_id" => player_id}) do
-    logs = Logs.list_logs(player_id)
+    player_id = String.to_integer(player_id)
+    logs = Logs.list_logs_by_player(player_id)
+    render(conn, "index.html", logs: logs)
+  end
+
+  def index(conn, %{"match_id" => match_id}) do
+    player_id = String.to_integer(match_id)
+    logs = Logs.list_logs_by_match(match_id)
     render(conn, "index.html", logs: logs)
   end
 

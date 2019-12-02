@@ -17,8 +17,35 @@ defmodule Spire.Leagues.Matches do
       [%Match{}, ...]
 
   """
-  def list_matches(league_id) do
+  def list_matches() do
+    Repo.all(Match)
+  end
+
+  @doc """
+  Returns the list of matches.
+
+  ## Examples
+
+      iex> list_matches_by_league(123)
+      [%Match{}, ...]
+
+  """
+  def list_matches_by_league(league_id) do
     Repo.all(from(m in Match, where: m.league_id == ^league_id))
+  end
+
+  @doc """
+  Returns the list of matches.
+
+  ## Examples
+
+      iex> list_matches_by_player(123)
+      [%Match{}, ...]
+
+  """
+  def list_matches_by_player(player_id) do
+    Repo.all(from(m in "players_matches", select: {}, where: m.player_id == ^player_id))
+    |> Repo.preload([:match])
   end
 
   @doc """

@@ -4,10 +4,12 @@ defmodule SpireWeb.MatchController do
   alias Spire.Leagues
   alias Spire.Leagues.Matches
   alias Spire.Leagues.Matches.Match
+  alias Spire.Logs
+  alias Spire.Players
 
   def index(conn, %{"league_id" => league_id}) do
-    matches = Matches.list_matches(league_id)
     league = Leagues.get_league!(league_id)
+    matches = Matches.list_matches_by_league(league.id)
     render(conn, "index.html", matches: matches, league: league)
   end
 
@@ -33,7 +35,9 @@ defmodule SpireWeb.MatchController do
 
   def show(conn, %{"id" => id}) do
     match = Matches.get_match!(id)
-    render(conn, "show.html", match: match, league: match.league)
+    logs = Logs.list_logs_by_match(match.id)
+    players = Players.list_players_by_match(match.id)
+    render(conn, "show.html", match: match, league: match.league, logs: logs, players: players)
   end
 
   def edit(conn, %{"id" => id}) do

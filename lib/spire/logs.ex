@@ -1,4 +1,4 @@
-defmodule Spire.Players.Logs do
+defmodule Spire.Logs do
   @moduledoc """
   The Players.Logs context.
   """
@@ -6,20 +6,34 @@ defmodule Spire.Players.Logs do
   import Ecto.Query, warn: false
   alias Spire.Repo
 
-  alias Spire.Players.Logs.Log
+  alias Spire.Logs.Log
 
   @doc """
   Returns the list of logs.
 
   ## Examples
 
-      iex> list_logs()
+      iex> list_logs_by_player(123)
       [%Log{}, ...]
 
   """
-  def list_logs(player_id) do
-    Repo.all(from(l in PlayerLog, where: l.player_id == ^player_id))
-    |> Repo.preload([:match, :player, :log])
+  def list_logs_by_player(player_id) do
+    Repo.all(from(l in "players_logs", select: {}, where: l.player_id == ^player_id))
+    |> Repo.preload([:log])
+  end
+
+  @doc """
+  Returns the list of logs.
+
+  ## Examples
+
+      iex> list_logs_by_match(123)
+      [%Log{}, ...]
+
+  """
+  def list_logs_by_match(match_id) do
+    Repo.all(from(l in "logs_matches", select: {}, where: l.match_id == ^match_id))
+    |> Repo.preload([:log])
   end
 
   @doc """

@@ -4,7 +4,7 @@ defmodule Spire.Repo.Migrations.CreatePlayersMatches do
   def change do
     create table(:players_matches) do
       add :player_id, references(:players, on_delete: :restrict)
-      add :match_id, references(:players, on_delete: :delete_all)
+      add :match_id, references(:matches, on_delete: :delete_all)
       timestamps()
     end
     create(index(:players_matches, [:player_id]))

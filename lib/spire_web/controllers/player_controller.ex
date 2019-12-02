@@ -4,7 +4,8 @@ defmodule SpireWeb.PlayerController do
   alias Spire.Players
   alias Spire.Leagues
   alias Spire.Players.Player
-  alias Spire.PlayersMatches
+  alias Spire.Leagues.Matches
+  alias Spire.Logs
 
   def index(conn, _params) do
     players = Players.list_players()
@@ -31,8 +32,9 @@ defmodule SpireWeb.PlayerController do
 
   def show(conn, %{"id" => id}) do
     player = Players.get_player!(id)
-    matches = PlayersMatches.list_players_matches(player.id)
-    render(conn, "show.html", player: player, matches: matches)
+    matches = Matches.list_matches_by_player(player.id)
+    logs = Logs.list_logs_by_player(player.id)
+    render(conn, "show.html", player: player, matches: matches, logs: logs)
   end
 
   def edit(conn, %{"id" => id}) do

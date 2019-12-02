@@ -17,18 +17,20 @@ defmodule SpireWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
     get "/about", PageController, :about
+
     resources "/leagues", LeagueController do
       resources "/matches", MatchController, only: [:new, :index, :create]
     end
 
     resources "/matches", MatchController, except: [:new, :index, :create]
+
     resources "/players", PlayerController do
       resources "/logs", LogController, only: [:index]
     end
 
     resources "/logs", LogController, except: [:index]
-
   end
 
   # Other scopes may use custom stacks.
