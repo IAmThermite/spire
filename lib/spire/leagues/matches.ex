@@ -64,7 +64,7 @@ defmodule Spire.Leagues.Matches do
   """
   def get_match!(id) do
     Repo.get!(Match, id)
-    |> Repo.preload([:league])
+    |> Repo.preload([:league, :logs])
   end
 
   @doc """

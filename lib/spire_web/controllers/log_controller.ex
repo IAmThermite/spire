@@ -11,12 +11,6 @@ defmodule SpireWeb.LogController do
     render(conn, "index.html", logs: logs)
   end
 
-  def index(conn, %{"match_id" => match_id}) do
-    player_id = String.to_integer(match_id)
-    logs = Logs.list_logs_by_match(match_id)
-    render(conn, "index.html", logs: logs)
-  end
-
   def new(conn, _params) do
     changeset = Logs.change_log(%Log{})
     render(conn, "new.html", changeset: changeset)
@@ -27,7 +21,7 @@ defmodule SpireWeb.LogController do
       {:ok, log} ->
         conn
         |> put_flash(:info, "Log created successfully.")
-        |> redirect(to: Routes.log_path(conn, :show, log))
+        |> redirect(to: Routes.page_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -52,7 +46,7 @@ defmodule SpireWeb.LogController do
       {:ok, log} ->
         conn
         |> put_flash(:info, "Log updated successfully.")
-        |> redirect(to: Routes.log_path(conn, :show, log))
+        |> redirect(to: Routes.page_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", log: log, changeset: changeset)
@@ -65,6 +59,6 @@ defmodule SpireWeb.LogController do
 
     conn
     |> put_flash(:info, "Log deleted successfully.")
-    |> redirect(to: Routes.log_path(conn, :index))
+    |> redirect(to: Routes.page_path(conn, :index))
   end
 end

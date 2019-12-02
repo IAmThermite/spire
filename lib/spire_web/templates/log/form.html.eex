@@ -13,6 +13,18 @@
   <%= text_input f, :map %>
   <%= error_tag f, :map %>
 
+  <%= label f, :t1_score %>
+  <%= number_input f, :t1_score %>
+  <%= error_tag f, :t1_score %>
+
+  <%= label f, :t2_score %>
+  <%= number_input f, :t2_score %>
+  <%= error_tag f, :t2_score %>
+
+  <%= label f, :date %>
+  <%= date_input f, :date %>
+  <%= error_tag f, :date %>
+
   <%= label f, :match_id %>
   <%= number_input f, :match_id %>
   <%= error_tag f, :match_id %>

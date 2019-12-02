@@ -35,9 +35,8 @@ defmodule SpireWeb.MatchController do
 
   def show(conn, %{"id" => id}) do
     match = Matches.get_match!(id)
-    logs = Logs.list_logs_by_match(match.id)
     players = Players.list_players_by_match(match.id)
-    render(conn, "show.html", match: match, league: match.league, logs: logs, players: players)
+    render(conn, "show.html", match: match, league: match.league, players: players)
   end
 
   def edit(conn, %{"id" => id}) do

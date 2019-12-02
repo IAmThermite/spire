@@ -40,7 +40,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= for log <- @logs do %>
+    <%= for log <- @match.logs do %>
       <tr>
         <td><a href="https://logs.tf/<%= log.logfile %>"><%= log.logfile %></a></td>
         <td><%= log.map %></td>

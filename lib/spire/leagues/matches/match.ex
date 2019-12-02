@@ -4,13 +4,16 @@ defmodule Spire.Leagues.Matches.Match do
 
   alias Spire.Leagues.League
   alias Spire.Players.Player
+  alias Spire.Logs.Log
 
   schema "matches" do
+    field :title, :string
     field :date, :date
     field :link, :string
-    field :title, :string
 
     belongs_to :league, League
+
+    has_many :logs, Log
 
     many_to_many :players, Player, join_through: "players_matches", on_replace: :delete
 

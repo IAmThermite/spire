@@ -23,20 +23,6 @@ defmodule Spire.Logs do
   end
 
   @doc """
-  Returns the list of logs.
-
-  ## Examples
-
-      iex> list_logs_by_match(123)
-      [%Log{}, ...]
-
-  """
-  def list_logs_by_match(match_id) do
-    Repo.all(from(l in "logs_matches", select: {}, where: l.match_id == ^match_id))
-    |> Repo.preload([:log])
-  end
-
-  @doc """
   Gets a single log.
 
   Raises `Ecto.NoResultsError` if the Log does not exist.
