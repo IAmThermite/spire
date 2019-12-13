@@ -27,11 +27,13 @@
               <li><%= link "About", to: Routes.page_path(@conn, :about) %></li>
               <li>|</li>
 
-              <li><a href="/auth/login">Login</a></li>
-              
-              <li><a href="/logs/new">Upload</a></li>
-              <li><a href="/">Profile</a></li>
-              <li><a href="/auth/logout">Logout</a></li>
+              <%= if @conn.assigns[:player] do %>
+                <li><%= link "Upload", to: Routes.log_path(@conn, :new) %></li>
+                <li><%= link "Profile", to: Routes.player_path(@conn, :show, @conn.assigns[:player].id) %></li>
+                <li><%= link "Logout", to: Routes.auth_path(@conn, :delete) %></li>
+              <% else %>
+                <li><%= link "Login", to: Routes.auth_path(@conn, :request, "steam") %></li>
+              <% end %>
             </ul>
           </div>
         </nav>

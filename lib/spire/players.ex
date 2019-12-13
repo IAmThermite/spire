@@ -45,7 +45,7 @@ defmodule Spire.Players do
       [%Player{}, ...]
 
   """
-  def list_players_by_match(log_id) do
+  def list_players_by_log(log_id) do
     Repo.all(from(p in "players_logs", where: p.log_id == ^log_id))
     |> Repo.preload([:player])
   end
@@ -132,5 +132,22 @@ defmodule Spire.Players do
   """
   def change_player(%Player{} = player) do
     Player.changeset(player, %{})
+  end
+
+  def get_or_create_from_auth(%Ueberauth.Auth{} = auth) do
+    user = auth.extra.raw_info.user
+    case Repo.get_by(Player, steamid: user.steamid) do
+      nil ->
+        opts = %{
+          steamid: user.steamid,
+          steamid3: user.steamid, # TODO: actually do steamid3 stuff
+          avatar: user.avatarfull,
+          alias: user.personaname
+        }
+        create_player(opts)
+
+      player ->
+        {:ok, player}
+    end
   end
 end

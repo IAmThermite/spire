@@ -7,6 +7,7 @@ defmodule SpireWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug SpireWeb.Plugs.SetPlayer
   end
 
   pipeline :api do
@@ -31,8 +32,16 @@ defmodule SpireWeb.Router do
     resources "/logs", LogController
   end
 
+  scope "/auth", SpireWeb do
+    pipe_through :browser
+  
+    get "/logout", AuthController, :delete
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+  end
+
   # Other scopes may use custom stacks.
-  # scope "/api", SpireWeb do
-  #   pipe_through :api
-  # end
+  scope "/api/v1", SpireWeb do
+    pipe_through :api
+  end
 end

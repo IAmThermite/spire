@@ -4,7 +4,6 @@ defmodule SpireWeb.MatchController do
   alias Spire.Leagues
   alias Spire.Leagues.Matches
   alias Spire.Leagues.Matches.Match
-  alias Spire.Logs
   alias Spire.Players
 
   def index(conn, %{"league_id" => league_id}) do

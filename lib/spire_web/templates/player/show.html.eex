@@ -65,7 +65,7 @@
   <tbody>
     <%= for log <- @logs do %>
       <tr>
-        <td><a href="https://logs.tf/<%= log.logfile %>"><%= log.logfile %></a></td>
+        <td><a href="https://logs.tf/<%= log.logfile %>">View on Logs.tf</a></td>
         <td><%= log.map %></td>
         <td><%= log.t1_score %> - <%= log.t2_score %></td>
         <td><%= log.date %></td>
