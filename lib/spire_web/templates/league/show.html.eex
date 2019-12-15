@@ -15,22 +15,19 @@
   </li>
 </ul>
 
-<span><%= link "Edit", to: Routes.league_path(@conn, :edit, @league) %></span>
-<span><%= link "Back", to: Routes.league_path(@conn, :index) %></span>
-
 <h4>Players</h4>
 <table>
   <thead>
     <tr>
       <th>Alias</th>
-      <th>Steam Id</th>
+      <th>Steamid64</th>
     </tr>
   </thead>
   <tbody>
     <%= for player <- @league.players do %>
     <tr>
       <td><%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
-      <td><%= player.steamid %></td>
+      <td><%= player.steamid64 %></td>
     </tr>
     <% end %>
   </tbody>

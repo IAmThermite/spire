@@ -1,6 +1,6 @@
 defmodule Spire.Logs do
   @moduledoc """
-  The Players.Logs context.
+  The Logs context.
   """
 
   import Ecto.Query, warn: false

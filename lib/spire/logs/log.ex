@@ -21,6 +21,7 @@ defmodule Spire.Logs.Log do
     log
     |> cast(attrs, [:logfile, :map, :t1_score, :t2_score, :date, :match_id])
     |> validate_required([:logfile, :t1_score, :t2_score, :date])
+    |> unique_constraint(:logfile)
     |> assoc_constraint(:match)
   end
 end

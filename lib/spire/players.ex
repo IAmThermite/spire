@@ -66,7 +66,7 @@ defmodule Spire.Players do
   """
   def get_player!(id) do
     Repo.get!(Player, id)
-    |> Repo.preload([:league])
+    |> Repo.preload([:league, :permissions])
   end
 
   @doc """
@@ -136,11 +136,12 @@ defmodule Spire.Players do
 
   def get_or_create_from_auth(%Ueberauth.Auth{} = auth) do
     user = auth.extra.raw_info.user
-    case Repo.get_by(Player, steamid: user.steamid) do
+    case Repo.get_by(Player, steamid64: user.steamid) do
       nil ->
         opts = %{
-          steamid: user.steamid,
-          steamid3: user.steamid, # TODO: actually do steamid3 stuff
+          steamid64: user.steamid,
+          steamid3: community_id_to_steam_id3(String.to_integer(user.steamid)),
+          steamid: community_id_to_steam_id(String.to_integer(user.steamid)),
           avatar: user.avatarfull,
           alias: user.personaname
         }
@@ -149,5 +150,22 @@ defmodule Spire.Players do
       player ->
         {:ok, player}
     end
+  end
+  
+  # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L14
+  defp community_id_to_steam_id(community_id) do
+    steam_id1 = rem(community_id, 2)
+    steam_id2 = community_id - 76_561_197_960_265_728
+
+    steam_id2 = div(steam_id2 - steam_id1, 2)
+
+    "STEAM_0:#{steam_id1}:#{steam_id2}"
+  end
+
+  # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L37
+  defp community_id_to_steam_id3(community_id) do
+    steam_id2 = community_id - 76_561_197_960_265_728
+
+    "[U:1:#{steam_id2}]"
   end
 end

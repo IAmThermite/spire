@@ -10,6 +10,6 @@ defmodule Spire.Repo.Migrations.AddPlayersLogs do
     create(index(:players_logs, [:player_id]))
     create(index(:players_logs, [:log_id]))
 
-    create unique_index(:players_logs, [:player_id, :log_id])
+    create unique_index(:players_logs, [:player_id, :log_id], name: :players_logs_index)
   end
 end

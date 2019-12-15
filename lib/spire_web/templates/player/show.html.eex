@@ -1,9 +1,9 @@
-<h1>Show Player</h1>
+<h1><%= @player.alias %></h1>
 
 <ul>
   <li>
-    <strong>Steamid:</strong>
-    <%= @player.steamid %>
+    <strong>Steamid64:</strong>
+    <%= @player.steamid64 %>
   </li>
 
   <li>
@@ -12,8 +12,8 @@
   </li>
 
   <li>
-    <strong>Alias:</strong>
-    <%= @player.alias %>
+    <strong>Steamid:</strong>
+    <%= @player.steamid %>
   </li>
 
   <%= if @player.league_id != nil do %>
@@ -22,10 +22,14 @@
       <%= link @player.league.name, to: Routes.league_path(@conn, :show, @player.league) %>
     </li>
   <% end %>
-</ul>
 
-<span><%= link "Edit", to: Routes.player_path(@conn, :edit, @player) %></span>
-<span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>
+  <%= if @player.division != nil do %>
+    <li>
+      <strong>Division:</strong>
+      <%= @player.division %>
+    </li>
+  <%= end %>
+</ul>
 
 <h4>Matches</h4>
 <table>

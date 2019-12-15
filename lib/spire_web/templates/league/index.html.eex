@@ -16,8 +16,6 @@
         <td><%= if true, do: "yes", else: "no" %></td>
         <td>
           <span><%= link "Show", to: Routes.league_path(@conn, :show, league) %></span>
-          <span><%= link "Edit", to: Routes.league_path(@conn, :edit, league) %></span>
-          <span><%= link "Delete", to: Routes.league_path(@conn, :delete, league), method: :delete, data: [confirm: "Are you sure?"] %></span>
         </td>
       </tr>
     <% end %>

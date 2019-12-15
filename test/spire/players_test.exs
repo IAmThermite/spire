@@ -6,9 +6,9 @@ defmodule Spire.PlayersTest do
   describe "players" do
     alias Spire.Players.Player
 
-    @valid_attrs %{alias: "some alias", primary_league: 42, steamid: "some steamid", steamid3: "some steamid3"}
-    @update_attrs %{alias: "some updated alias", primary_league: 43, steamid: "some updated steamid", steamid3: "some updated steamid3"}
-    @invalid_attrs %{alias: nil, primary_league: nil, steamid: nil, steamid3: nil}
+    @valid_attrs %{alias: "some alias", primary_league: 42, steamid64: "some steamid64", steamid: "some steamid"}
+    @update_attrs %{alias: "some updated alias", primary_league: 43, steamid64: "some updated steamid64", steamid: "some updated steamid"}
+    @invalid_attrs %{alias: nil, primary_league: nil, steamid64: nil, steamid: nil}
 
     def player_fixture(attrs \\ %{}) do
       {:ok, player} =
@@ -33,8 +33,8 @@ defmodule Spire.PlayersTest do
       assert {:ok, %Player{} = player} = Players.create_player(@valid_attrs)
       assert player.alias == "some alias"
       assert player.primary_league == 42
+      assert player.steamid64 == "some steamid64"
       assert player.steamid == "some steamid"
-      assert player.steamid3 == "some steamid3"
     end
 
     test "create_player/1 with invalid data returns error changeset" do
@@ -46,8 +46,8 @@ defmodule Spire.PlayersTest do
       assert {:ok, %Player{} = player} = Players.update_player(player, @update_attrs)
       assert player.alias == "some updated alias"
       assert player.primary_league == 43
+      assert player.steamid64 == "some updated steamid64"
       assert player.steamid == "some updated steamid"
-      assert player.steamid3 == "some updated steamid3"
     end
 
     test "update_player/2 with invalid data returns error changeset" do

@@ -3,9 +3,9 @@ defmodule SpireWeb.PlayerControllerTest do
 
   alias Spire.Players
 
-  @create_attrs %{alias: "some alias", primary_league: 42, steamid: "some steamid", steamid3: "some steamid3"}
-  @update_attrs %{alias: "some updated alias", primary_league: 43, steamid: "some updated steamid", steamid3: "some updated steamid3"}
-  @invalid_attrs %{alias: nil, primary_league: nil, steamid: nil, steamid3: nil}
+  @create_attrs %{alias: "some alias", primary_league: 42, steamid6464: "some steamid6464", steamid64: "some steamid64"}
+  @update_attrs %{alias: "some updated alias", primary_league: 43, steamid64: "some updated steamid64", steamid: "some updated steamid"}
+  @invalid_attrs %{alias: nil, primary_league: nil, steamid64: nil, steamid: nil}
 
   def fixture(:player) do
     {:ok, player} = Players.create_player(@create_attrs)

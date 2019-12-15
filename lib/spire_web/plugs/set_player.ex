@@ -8,15 +8,15 @@ defmodule SpireWeb.Plugs.SetPlayer do
   end
 
   def call(conn, _params) do
-    player_id = get_session(conn, :player_id)
+    player_id = get_session(conn, :user_id)
 
     cond do
       player = player_id && Repo.get(Player, player_id) ->
         conn
-        |> assign(:player, player)
+        |> assign(:user, player)
       true ->
         conn
-        |> assign(:player, nil)
+        |> assign(:user, nil)
     end
   end
 end

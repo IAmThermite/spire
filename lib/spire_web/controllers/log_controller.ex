@@ -3,6 +3,7 @@ defmodule SpireWeb.LogController do
 
   alias Spire.Logs
   alias Spire.Logs.Log
+  alias Spire.Logs.Uploads
 
   def index(conn, %{"player_id" => player_id}) do
     player_id = String.to_integer(player_id)
@@ -16,19 +17,20 @@ defmodule SpireWeb.LogController do
   end
 
   def create(conn, %{"log" => %{"logfile" => logfile} = log_params}) do
-    response = HTTPoison.get!("http://logs.tf/json/#{logfile}")
+    response = HTTPoison.get!("https://logs.tf/json/#{logfile}")
 
     case response do
-      %{"body" => body} ->
+      %{body: body} ->
         size = Jason.decode!(body)["players"]
         |> map_size
         
         cond do
-          size != 12 -> # 6v6
+          size >= 12 and size <= 15 -> # 6v6 (could have subs etc pop in and out however)
             case Logs.create_log(log_params) do
-              {:ok, _log} ->
+              {:ok, log} ->
+                Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id})
                 conn
-                |> put_flash(:info, "Log created successfully. We are processing your request")
+                |> put_flash(:info, "Log created successfully. Processing will be completed shortly")
                 |> redirect(to: Routes.page_path(conn, :index))
         
               {:error, %Ecto.Changeset{} = changeset} ->
@@ -36,7 +38,7 @@ defmodule SpireWeb.LogController do
             end
           true ->
             conn
-            |> put_flash(:error, "Not a valid log")
+            |> put_flash(:error, "Not a valid log (must be 6v6)")
             |> redirect(to: Routes.log_path(conn, :new))
         end
       _ ->

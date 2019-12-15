@@ -12,7 +12,7 @@ defmodule SpireWeb.AuthController do
 
   def delete(conn, _params) do
     conn
-    |> clear_session()
+    |> configure_session(drop: true)
     |> redirect(to: "/")
   end
 
@@ -23,15 +23,14 @@ defmodule SpireWeb.AuthController do
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    IO.puts("HERE")
     case Players.get_or_create_from_auth(auth) do
       {:ok, player} ->
         conn
         |> put_flash(:info, "Logged in.")
-        |> put_session(:player_id, player.id)
+        |> put_session(:user_id, player.id)
         |> redirect(to: "/")
 
-      {:error, reason} ->
+      {:error, _reason} ->
         conn
         |> put_flash(:error, "Failed to log in")
         |> redirect(to: "/")

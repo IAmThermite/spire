@@ -12,7 +12,26 @@
     <%= @log.map %>
   </li>
 
+  <li>
+    <strong>Team 1 Score:</strong>
+    <%= @log.t1_score %>
+  </li>
+
+  <li>
+    <strong>Team 2 Score:</strong>
+    <%= @log.t2_score %>
+  </li>
+
+  <li>
+    <strong>Date Played:</strong>
+    <%= @log.date %>
+  </li>
+
+  <li>
+    <strong>Uploaded At:</strong>
+    <%= @log.inserted_at %>
+  </li>
+
 </ul>
 
 <span><%= link "Edit", to: Routes.log_path(@conn, :edit, @log) %></span>
-<span><%= link "Back", to: Routes.log_path(@conn, :index) %></span>
