@@ -20,6 +20,7 @@ defmodule SpireWeb do
   def controller do
     quote do
       use Phoenix.Controller, namespace: SpireWeb
+      require Logger
 
       import Plug.Conn
       import SpireWeb.Gettext

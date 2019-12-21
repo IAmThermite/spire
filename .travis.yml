@@ -1,0 +1,35 @@
+jobs:
+  include:
+  - language: node_js
+    node_js:
+    - 12.0
+    install:
+    - cd ./functions/stats_comipler
+    - npm install
+    script:
+    - echo "functions script"
+    before_deploy:
+    - mkdir ./functions/build/
+    - cd ./functions/stats_compiler/
+    - zip ../build/stats_compiler * -r
+    deploy:
+      provider: lambda
+      function_name: "spire_stats_compiler"
+      region: "us-east-2"
+
+  - language: elixir
+    addons:
+      postgresql: '9.5'
+    install:
+    - mix local.rebar --force
+    - mix local.hex --force
+    - mix deps.get
+    - mix compile
+    script:
+    - echo "spire-web script"
+
+deploy:
+  secret_access_key:
+    secure: GO0Po130QUms5Qp3UTctv49G876DMaKG4RSnUSTTjAYps7VsUXQmDSDjbbIj3fEXcbvJfJIv6oEoZ/+GvaL8iJPdtyd+MG/x58tkIvJPsEQmiOg3bp7XxohdYAj0js/EUzvqjT7FG6D4roBB9cdBcEpnGtD+6zOyyC07FlG4+gi2DHssK2q7hvGe5GSIeRqrAHqVuVU4VpeyR6UTF88TOtPgDJeLyrzxRb3tNOT+NlRU+e9/sarSIRyUcrq6YgyPpV9B/9F8U4niV7LQtQ+03KD8L/nhIyyDHSVvFWRn8/V9Zhll/dr7/7veXCTjgDNTwmPia8DlxaRFEkNXo/cg/vi5TAXc5WHJ/3fcv7U2RvRH7A55Of9pAIpJY7njJZnWZmHnUOQcbR8TT69utLdhj4TbJzTVR08C/0Tv/tdnfxUq4z2TZ7iCGUWySWBs8fM6ErRS0ieGkkkmRxPx+nW+viJtCJ15ANKlTZAmGHV/3wsFTWQ6Wl20LPcrpWjJ8KLxRmArQqtOlDNiD22zu6ClSDleB2nhIxCLRfhvzWqz1pYOjoyeq2VPUiNyggKKbNXjhPN4kNRbriy7JeQwx2MOgL8SDnqtCu1Hjoco3W7brUsuoWCDtqtsRPo2PHl3NznX7ooyiubeONm2YFlNsoou2PQRdsCVi03FelmxoA9Fi9A=
+  access_key_id:
+    secure: wmz363MhguekmLplI/uv3Mydp3DVEibKumxCVAcQxEI+UUrMCR2IU0YXtiaxEholGg6qlpkoaiNfY4gpgLWR5kNLMskQnyE5f8FbvQ9Dnrxec0/90k7g6UZacNa902cloL3oouT1S9wGYJm5iHJ8oKiQh9zcgNXKLOVcFpXz7J+tx0M/IkwguMm2M3A7glgK9Ty/e+Ut8eZ/8WWfdjoa2FYaKsFLVSwkyi7lIYSxYO8Ts5p1h2R3d64YXmWYw+Tr5H6QZoLLWQIGr1WrvFEXo965x1kWHCBZbEuAfvXtWdioyfjkW8quRxfUilq/yBylU4Z6cPl4YdwuH/Xo+zdho1YeKvpVxqFtCsI6MFZlPeMqdBeUsm6lsUGJC7x+l6Seq7X7KfFc1CWoFoYWwm14ghSj/g3UA94KVNJMfUdu3idhceYfyZpAUDuVyfHUnYcLJGIxuSDbwx7X/Wng236XTzTjzcTuRBMMu+bplWODbKAhcppqlfp9LoegiacBvD2abLong+LXXE2o2BEy68wKeWlsQoEizP+ClxEGI+Mv64BtRFYHSD479wtRHiisqH9V6BqsRp71qO4mgrrUjI+q+zSlfM1XTm3XTwY9TEKy7vXL5mPocUpPLupN4i3gxO/fD9hVs2Lnojzyn+6DvHDiCBz3IYcRoPY1Ya1R2PjNEDc=

@@ -1,4 +1,11 @@
-exports.handler =  async function(event, context) {
-  console.log("EVENT: \n" + JSON.stringify(event, null, 2))
-  return context.logStreamName
-}
+const fetch = require('node-fetch');
+
+exports.handler = async function(event) {
+  console.log("EVENT: \n" + JSON.stringify(event));
+
+  const logData = await fetch(`https://logs.tf/json/${event.log.logname}`).then((res) => res.json());
+
+  console.log(logData)
+
+  return logData;
+};

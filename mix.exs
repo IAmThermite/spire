@@ -48,6 +48,7 @@ defmodule Spire.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_lambda, "~> 2.0"},
+      {:configparser_ex, "~> 4.0"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"}
     ]

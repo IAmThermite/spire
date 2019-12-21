@@ -28,7 +28,7 @@
       <strong>Division:</strong>
       <%= @player.division %>
     </li>
-  <%= end %>
+  <% end %>
 </ul>
 
 <h4>Matches</h4>
