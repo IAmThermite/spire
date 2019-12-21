@@ -9,11 +9,11 @@ jobs:
     - cd functions/stats_compiler
     - npm install
     script:
-    - cd ~/.travis
+    - cd /home/travis/build/IAmThermite/spire
     - ls -al
     - echo "functions script"
     before_deploy:
-    - cd ~/.travis
+    - cd /home/travis/build/IAmThermite/spire
     - mkdir functions/build/
     - cd functions/stats_compiler/
     - zip ../build/stats_compiler * -r
