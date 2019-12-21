@@ -1,5 +1,7 @@
 # spire - The TF2 Log aggregator
 
+[![Build Status](https://travis-ci.com/IAmThermite/spire.svg?token=tYGRow3LJU7tP9shdaEU&branch=master)](https://travis-ci.com/IAmThermite/spire)
+
 ## What the?
 
 There is no way to view all the data from all the matches you have played over the years.
