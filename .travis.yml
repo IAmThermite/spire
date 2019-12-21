@@ -24,6 +24,7 @@ jobs:
       access_key_id:
         secure: wmz363MhguekmLplI/uv3Mydp3DVEibKumxCVAcQxEI+UUrMCR2IU0YXtiaxEholGg6qlpkoaiNfY4gpgLWR5kNLMskQnyE5f8FbvQ9Dnrxec0/90k7g6UZacNa902cloL3oouT1S9wGYJm5iHJ8oKiQh9zcgNXKLOVcFpXz7J+tx0M/IkwguMm2M3A7glgK9Ty/e+Ut8eZ/8WWfdjoa2FYaKsFLVSwkyi7lIYSxYO8Ts5p1h2R3d64YXmWYw+Tr5H6QZoLLWQIGr1WrvFEXo965x1kWHCBZbEuAfvXtWdioyfjkW8quRxfUilq/yBylU4Z6cPl4YdwuH/Xo+zdho1YeKvpVxqFtCsI6MFZlPeMqdBeUsm6lsUGJC7x+l6Seq7X7KfFc1CWoFoYWwm14ghSj/g3UA94KVNJMfUdu3idhceYfyZpAUDuVyfHUnYcLJGIxuSDbwx7X/Wng236XTzTjzcTuRBMMu+bplWODbKAhcppqlfp9LoegiacBvD2abLong+LXXE2o2BEy68wKeWlsQoEizP+ClxEGI+Mv64BtRFYHSD479wtRHiisqH9V6BqsRp71qO4mgrrUjI+q+zSlfM1XTm3XTwY9TEKy7vXL5mPocUpPLupN4i3gxO/fD9hVs2Lnojzyn+6DvHDiCBz3IYcRoPY1Ya1R2PjNEDc=
       function_name: "spire_stats_compiler"
+      role: "arn:aws:iam::903768974813:role/service-role/spire_stats_compiler-role-yknsh8b8"
       region: "us-east-2"
 
   - language: elixir
