@@ -26,6 +26,8 @@ jobs:
       function_name: "spire_stats_compiler"
       role: "arn:aws:iam::903768974813:role/service-role/spire_stats_compiler-role-yknsh8b8"
       region: "us-east-2"
+      handler_name: "index.handler"
+      runtime: "nodejs12.0"
 
   - language: elixir
     elixir: '1.9'
