@@ -4,11 +4,16 @@ jobs:
     node_js:
     - 12.0
     install:
+    - pwd
+    - ls -al
     - cd functions/stats_compiler
     - npm install
     script:
+    - cd ~/.travis
+    - ls -al
     - echo "functions script"
     before_deploy:
+    - cd ~/.travis
     - mkdir functions/build/
     - cd functions/stats_compiler/
     - zip ../build/stats_compiler * -r
