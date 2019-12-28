@@ -12,14 +12,12 @@
   <tbody>
     <%= for league <- @leagues do %>
       <tr>
-        <td><a href="<%= league.website %>"><%= league.name %></a></td>
-        <td><%= if true, do: "yes", else: "no" %></td>
         <td>
-          <span><%= link "Show", to: Routes.league_path(@conn, :show, league) %></span>
+          <span><%= link league.name, to: Routes.league_path(@conn, :show, league) %></span>
         </td>
+        <td><%= if league.main, do: "yes", else: "no" %></td>
+        <td><a href="<%= league.website %>">Website</a></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<span><%= link "New League", to: Routes.league_path(@conn, :new) %></span>

@@ -19,7 +19,7 @@
 
         <td>
           <span><%= link "Show", to: Routes.match_path(@conn, :show, match) %></span>
-          <%= if(Ecto.assoc_loaded?(@conn.assigns[:user].permissions) && @conn.assigns[:user].permissions.can_manage_matches) do %>
+          <%= if(@conn.assigns[:user] && Ecto.assoc_loaded?(@conn.assigns[:user].permissions) && @conn.assigns[:user].permissions.can_manage_matches) do %>
             <span><%= link "Edit", to: Routes.match_path(@conn, :edit, match) %></span>
           <% end %>
         </td>
@@ -28,4 +28,6 @@
   </tbody>
 </table>
 
-<span><%= link "New Match", to: Routes.league_match_path(@conn, :new, @league.id) %></span>
+<%= if(@conn.assigns[:user] && Ecto.assoc_loaded?(@conn.assigns[:user].permissions) && @conn.assigns[:user].permissions.can_manage_matches) do %>
+  <span><%= link "New Match", to: Routes.league_match_path(@conn, :new, @league.id) %></span>
+<% end %>

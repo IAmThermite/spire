@@ -4,7 +4,11 @@ defmodule Spire.Players.Player do
 
   alias Spire.Leagues.League
   alias Spire.Leagues.Matches.Match
-  alias Spire.Players.Permissions
+  alias Spire.Players.Permissions.Permission
+  alias Spire.Players.Stats.IndividualReal
+  alias Spire.Players.Stats.IndividualTotal
+  alias Spire.Players.Stats.AllReal
+  alias Spire.Players.Stats.AllTotal
 
   schema "players" do
     field :alias, :string
@@ -13,9 +17,15 @@ defmodule Spire.Players.Player do
     field :steamid, :string
     field :avatar, :string
     field :division, :string
+    field :main_class, :string
 
     belongs_to :league, League
-    has_one :permissions, Permissions
+    has_one :permissions, Permission
+
+    has_many :stats_individual_real, IndividualReal
+    has_many :stats_individual_total, IndividualTotal
+    has_one :stats_all_real, AllReal
+    has_one :stats_all_total, AllTotal
 
     many_to_many :matches, Match, join_through: "players_matches", on_replace: :delete
 
@@ -25,7 +35,7 @@ defmodule Spire.Players.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:steamid64, :steamid3, :steamid, :avatar, :alias, :division, :league_id])
+    |> cast(attrs, [:steamid64, :steamid3, :steamid, :avatar, :alias, :division, :main_class, :league_id])
     |> validate_required([:steamid64, :steamid3, :steamid, :alias, :avatar])
     |> unique_constraint(:steamid64)
     |> unique_constraint(:steamid3)

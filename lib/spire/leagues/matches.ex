@@ -44,7 +44,7 @@ defmodule Spire.Leagues.Matches do
 
   """
   def list_matches_by_player(player_id) do
-    Repo.all(from(m in "players_matches", select: {}, where: m.player_id == ^player_id))
+    Repo.all(from(m in "players_matches", select: {m.match_id}, where: m.player_id == ^player_id))
     |> Repo.preload([:match])
   end
 

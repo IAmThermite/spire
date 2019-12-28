@@ -18,7 +18,7 @@ defmodule Spire.Logs do
 
   """
   def list_logs_by_player(player_id) do
-    Repo.all(from(l in "players_logs", select: {}, where: l.player_id == ^player_id))
+    Repo.all(from(l in "players_logs", select: {l.log_id}, where: l.player_id == ^player_id))
     |> Repo.preload([:log])
   end
 

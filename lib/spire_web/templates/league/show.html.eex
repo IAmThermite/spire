@@ -7,8 +7,8 @@
   </li>
 
   <li>
-    <strong>Main:</strong>
-    <%= @league.main %>
+    <strong>Main League:</strong>
+    <%= if @league.main, do: "yes", else: "no" %>
   </li>
   <li>
     <strong><%= link "Matches", to: Routes.league_match_path(@conn, :index, @league.id) %></strong>

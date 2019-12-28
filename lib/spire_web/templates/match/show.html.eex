@@ -24,7 +24,9 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.match_path(@conn, :edit, @match) %></span>
+<%= if(@conn.assigns[:user] && Ecto.assoc_loaded?(@conn.assigns[:user].permissions) && @conn.assigns[:user].permissions.can_manage_matches) do %>
+  <span><%= link "Edit", to: Routes.match_path(@conn, :edit, @match) %></span>
+<% end %>
 <span><%= link "Back", to: Routes.league_match_path(@conn, :index, @match.league_id) %></span>
 
 <h4>Players</h4>

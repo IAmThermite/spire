@@ -7,8 +7,18 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Raleway', sans-serif;
 }
 
+/* Materialize overwrites this!!! */
+strong {
+  font-weight: bold;
+}
+
 /* fix stupid materialize overrides on checkboxes */
 input[type="checkbox"] {
   opacity: 1 !important;
   pointer-events: all !important;
+}
+
+/* Color of underline */
+.tabs .indicator {
+  background-color:#000;
 }

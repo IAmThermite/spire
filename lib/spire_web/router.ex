@@ -21,6 +21,8 @@ defmodule SpireWeb.Router do
 
     get "/about", PageController, :about
 
+    get "/admin", AdminController, :index
+
     resources "/leagues", LeagueController do
       resources "/matches", MatchController, only: [:new, :index, :create]
     end

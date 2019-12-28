@@ -66,7 +66,14 @@ defmodule Spire.Players do
   """
   def get_player!(id) do
     Repo.get!(Player, id)
-    |> Repo.preload([:league, :permissions])
+    |> Repo.preload([
+      :league,
+      :permissions,
+      :stats_individual_real,
+      :stats_individual_total,
+      :stats_all_real,
+      :stats_all_total
+    ])
   end
 
   @doc """

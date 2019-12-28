@@ -1,30 +1,34 @@
 defmodule Spire.Players.Permissions do
-  use Ecto.Schema
-  import Ecto.Changeset
+  @moduledoc """
+  The Leagues context.
+  """
 
-  alias Spire.Players.Player
+  import Ecto.Query, warn: false
+  alias Spire.Repo
 
-  schema "permissions" do
-    field :can_upload_logs, :boolean
-    field :can_add_matches, :boolean
-    field :can_approve_logs, :boolean
-    field :can_manage_logs, :boolean
-    field :can_run_pipeline, :boolean
-    field :can_manage_matches, :boolean
-    field :can_manage_leagues, :boolean
-    field :is_super_admin, :boolean
+  alias Spire.Players.Permissions.Permission
 
-    belongs_to :player, Player
-
-    timestamps()
+  def get_permissions_for_player!(player_id) do
+    results = Repo.all(from(p in Permission, where: p.player_id == ^player_id))
+    case results do
+      [permission | _tail] ->
+        permission
+      _ ->
+        nil
+    end
+  end
+  
+  def create_or_update_permissions(attrs \\ %{}) do
+    %Permission{}
+    |> Permission.changeset(attrs)
+    |> Repo.insert(on_conflict: :replace_all_except_primary_key, conflict_target: :player_id)
   end
 
-  @doc false
-  def changeset(permissions, attrs) do
-    permissions
-    |> cast(attrs, [:can_upload_logs, :can_add_matches, :can_approve_logs, :can_manage_leagues, :can_run_pipeline, :can_manage_matches, :can_manage_leagues, :is_super_admin, :player_id])
-    |> unique_constraint(:player_id)
-    |> validate_required([:player_id])
-    |> assoc_constraint(:player)
+  def delete_permission(%Permission{} = permission) do
+    Repo.delete(permission)
+  end
+
+  def change_permission(%Permission{} = permission) do
+    Permission.changeset(permission, %{})
   end
 end

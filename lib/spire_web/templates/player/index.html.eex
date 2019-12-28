@@ -4,24 +4,24 @@
   <thead>
     <tr>
       <th>Alias</th>
-      <th>Steamid64</th>
-      <th>Steamid3</th>
-      <th>Steamid</th>
-      <th>Primary league</th>
+      <th>SteamID64</th>
+      <th>SteamID64</th>
+      <th>Division</th>
+      <th>Main Class</th>
     </tr>
   </thead>
   <tbody>
     <%= for player <- @players do %>
       <tr>
-        <td><%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
+        <td><img src="<%= player.avatar %>" style="vertical-align:middle; height: 2em" /> <%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
         <td><%= player.steamid64 %></td>
-        <td><%= player.steamid3 %></td>
-        <td><%= player.steamid %></td>
         <%= if player.league != nil do %>
           <td><%= link player.league.name, to: Routes.league_path(@conn, :show, player.league) %></a></td>
         <% else %>
           <td></td>
         <% end %>
+        <td><%= player.division %></td>
+        <td><%= player.main_class || "Unknown" %></td>
       </tr>
     <% end %>
   </tbody>
