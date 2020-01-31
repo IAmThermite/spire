@@ -10,12 +10,12 @@ const connect = async () => {
   }
 };
 
-const query = async (query) => {
+const query = async (query, params) => {
   console.log('Running query...');
   console.log(query)
   try {
     const client = await pool.connect();
-    const res = await client.query(query);
+    const res = await client.query(query, params);
     client.release();
 
     return res.rows || [];
