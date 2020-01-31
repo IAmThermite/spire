@@ -3,20 +3,17 @@ jobs:
   - language: node_js
     node_js:
     - 12.0
-    - stage: install
-      script:  
-      - cd functions/stats_compiler
-      - npm install
-    - stage: test
-      script:
-      - npm test
-    - stage: before_deploy
-      script:
-      - cd /home/travis/build/IAmThermite/spire
-      - mkdir functions/build/
-      - cd functions/stats_compiler/
-      - zip ../build/stats_compiler * -r
-    - stage: deploy
+    install:
+    - cd functions/stats_compiler
+    - npm install
+    script:
+    - npm test
+    before_deploy:
+    - cd /home/travis/build/IAmThermite/spire
+    - mkdir functions/build/
+    - cd functions/stats_compiler/
+    - zip ../build/stats_compiler * -q -r
+    deploy:
       provider: lambda
       secret_access_key:
         secure: GO0Po130QUms5Qp3UTctv49G876DMaKG4RSnUSTTjAYps7VsUXQmDSDjbbIj3fEXcbvJfJIv6oEoZ/+GvaL8iJPdtyd+MG/x58tkIvJPsEQmiOg3bp7XxohdYAj0js/EUzvqjT7FG6D4roBB9cdBcEpnGtD+6zOyyC07FlG4+gi2DHssK2q7hvGe5GSIeRqrAHqVuVU4VpeyR6UTF88TOtPgDJeLyrzxRb3tNOT+NlRU+e9/sarSIRyUcrq6YgyPpV9B/9F8U4niV7LQtQ+03KD8L/nhIyyDHSVvFWRn8/V9Zhll/dr7/7veXCTjgDNTwmPia8DlxaRFEkNXo/cg/vi5TAXc5WHJ/3fcv7U2RvRH7A55Of9pAIpJY7njJZnWZmHnUOQcbR8TT69utLdhj4TbJzTVR08C/0Tv/tdnfxUq4z2TZ7iCGUWySWBs8fM6ErRS0ieGkkkmRxPx+nW+viJtCJ15ANKlTZAmGHV/3wsFTWQ6Wl20LPcrpWjJ8KLxRmArQqtOlDNiD22zu6ClSDleB2nhIxCLRfhvzWqz1pYOjoyeq2VPUiNyggKKbNXjhPN4kNRbriy7JeQwx2MOgL8SDnqtCu1Hjoco3W7brUsuoWCDtqtsRPo2PHl3NznX7ooyiubeONm2YFlNsoou2PQRdsCVi03FelmxoA9Fi9A=
