@@ -11,6 +11,7 @@ defmodule Spire.Players.Stats.IndividualTotal do
     field :assists, :integer, default: 0
     field :dpm, :float, default: 0.0
     field :dmg_total, :integer, default: 0
+    field :heal_total, :integer, default: 0
 
     # primary weapon stats
     field :shots_hit_pri, :integer, default: 0
@@ -28,7 +29,6 @@ defmodule Spire.Players.Stats.IndividualTotal do
     field :airshots, :integer, default: 0
     field :headshots, :integer, default: 0
     field :backstabs, :integer, default: 0
-    field :medics_dropped, :integer, default: 0
     field :reflect_kills, :integer, default: 0
 
     # medic stats

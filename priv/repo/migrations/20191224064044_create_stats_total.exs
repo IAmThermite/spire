@@ -7,6 +7,7 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
       add :total_deaths, :integer, default: 0
       add :total_assists, :integer, default: 0
       add :total_damage, :integer, default: 0
+      add :total_healing, :integer, default: 0
       add :total_captures, :integer, default: 0
 
       add :longest_ks, :integer, default: 0
@@ -40,6 +41,7 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
       add :assists, :integer, default: 0
       add :dpm, :float, default: 0.0
       add :dmg_total, :integer, default: 0
+      add :heal_total, :integer, default: 0
 
       add :shots_hit_pri, :integer, default: 0
       add :shots_fired_pri, :integer, default: 0
@@ -54,7 +56,6 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
       add :airshots, :integer, default: 0
       add :headshots, :integer, default: 0
       add :backstabs, :integer, default: 0
-      add :medics_dropped, :integer, default: 0
       add :reflect_kills, :integer, default: 0
   
       add :ubers, :integer, default: 0
@@ -72,6 +73,6 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
 
       timestamps()
     end
-    create unique_index(:stats_individual_total, [:player_id])
+    create unique_index(:stats_individual_total, [:player_id, :class])
   end
 end

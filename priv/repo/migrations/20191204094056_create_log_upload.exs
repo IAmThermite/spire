@@ -13,6 +13,6 @@ defmodule Spire.Repo.Migrations.CreateLogUpload do
     create(index(:log_upload, [:log_id]))
     create(index(:log_upload, [:uploaded_by]))
 
-    create unique_index(:log_upload, [:uploaded_by, :log_id], name: :uploader_log_index)
+    create unique_index(:log_upload, [:log_id, :uploaded_by], name: :log_upload_log_id_uploaded_by_index)
   end
 end

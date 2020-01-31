@@ -8,6 +8,7 @@ defmodule Spire.Players.Stats.AllReal do
     field :total_deaths, :integer, default: 0
     field :total_assists, :integer, default: 0
     field :total_damage, :integer, default: 0
+    field :total_healing, :integer, default: 0
     field :total_captures, :integer, default: 0
 
     field :longest_ks, :integer, default: 0

@@ -31,7 +31,7 @@ config :ueberauth, Ueberauth,
   ]
 
 config :ueberauth, Ueberauth.Strategy.Steam,
-  api_key: System.get_env("STEAM_API_KEY")
+  api_key: System.get_env("STEAM_API_KEY") || ""
 
 config :ex_aws,
   access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, {:awscli, "spire", 30}, :instance_role],

@@ -11,6 +11,6 @@ defmodule Spire.Repo.Migrations.CreatePlayersMatches do
     create(index(:players_matches, [:player_id]))
     create(index(:players_matches, [:match_id]))
 
-    create unique_index(:players_matches, [:player_id, :match_id], name: :players_matches_index)
+    create unique_index(:players_matches, [:player_id, :match_id])
   end
 end

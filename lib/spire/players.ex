@@ -7,6 +7,7 @@ defmodule Spire.Players do
   alias Spire.Repo
 
   alias Spire.Players.Player
+  alias SpireWeb.SteamHelper
 
   @doc """
   Returns the list of players.
@@ -147,8 +148,8 @@ defmodule Spire.Players do
       nil ->
         opts = %{
           steamid64: user.steamid,
-          steamid3: community_id_to_steam_id3(String.to_integer(user.steamid)),
-          steamid: community_id_to_steam_id(String.to_integer(user.steamid)),
+          steamid3: SteamHelper.community_id_to_steam_id3(String.to_integer(user.steamid)),
+          steamid: SteamHelper.community_id_to_steam_id(String.to_integer(user.steamid)),
           avatar: user.avatarfull,
           alias: user.personaname
         }
@@ -158,21 +159,12 @@ defmodule Spire.Players do
         {:ok, player}
     end
   end
-  
-  # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L14
-  defp community_id_to_steam_id(community_id) do
-    steam_id1 = rem(community_id, 2)
-    steam_id2 = community_id - 76_561_197_960_265_728
 
-    steam_id2 = div(steam_id2 - steam_id1, 2)
-
-    "STEAM_0:#{steam_id1}:#{steam_id2}"
+  def get_by_steamid3(steamid3) do
+    Repo.get_by(Player, steamid3: steamid3)
   end
 
-  # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L37
-  defp community_id_to_steam_id3(community_id) do
-    steam_id2 = community_id - 76_561_197_960_265_728
-
-    "[U:1:#{steam_id2}]"
+  def get_by_steamid(steamid) do
+    Repo.get_by(Player, steamid: steamid)
   end
 end

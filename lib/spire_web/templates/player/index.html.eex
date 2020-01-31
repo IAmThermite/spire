@@ -3,9 +3,9 @@
 <table>
   <thead>
     <tr>
-      <th>Alias</th>
+      <th></th>
       <th>SteamID64</th>
-      <th>SteamID64</th>
+      <th>League</th>
       <th>Division</th>
       <th>Main Class</th>
     </tr>
@@ -18,10 +18,10 @@
         <%= if player.league != nil do %>
           <td><%= link player.league.name, to: Routes.league_path(@conn, :show, player.league) %></a></td>
         <% else %>
-          <td></td>
+          <td>Unknown</td>
         <% end %>
-        <td><%= player.division %></td>
-        <td><%= player.main_class || "Unknown" %></td>
+        <td><%= player.division || ""%></td>
+        <td><%= player.main_class || "" %></td>
       </tr>
     <% end %>
   </tbody>

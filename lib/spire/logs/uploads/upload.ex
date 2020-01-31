@@ -6,8 +6,8 @@ defmodule Spire.Logs.Uploads.Upload do
   alias Spire.Players.Player
 
   schema "log_upload" do
-    field :approved, :boolean
-    field :processed, :boolean
+    field :approved, :boolean, default: false
+    field :processed, :boolean, default: false
 
     belongs_to :log, Log
     belongs_to :player, Player, foreign_key: :uploaded_by
@@ -20,7 +20,8 @@ defmodule Spire.Logs.Uploads.Upload do
     upload
     |> cast(attrs, [:approved, :processed, :log_id, :uploaded_by])
     |> validate_required([:approved, :processed, :log_id, :uploaded_by])
-    |> unique_constraint([:log_id, :uploaded_by], name: :uploader_log_index)
-    |> assoc_constraint(:log, :player)
+    |> unique_constraint(:log_id, name: :log_upload_log_id_uploaded_by_index)
+    |> assoc_constraint(:log)
+    |> assoc_constraint(:player)
   end
 end

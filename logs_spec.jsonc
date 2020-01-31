@@ -25,15 +25,15 @@
           "weapon": {
             // some weapons don't actually track stats such as accuracy (see tomislav)
             // SCOUT scattergun scout_pistol maxgun
-            // SOLDIER tf_projectile_rocket quake_rl shotgun_soldier rockerlauncher_directhit (air_strike) (liberty_launcher) (black_box)
+            // SOLDIER tf_projectile_rocket quake_rl shotgun_soldier rockerlauncher_directhit (air_strike) (liberty_launcher) blackbox
             // PYRO flamethrower degreaser flaregun shotgun_pyro (backburner)
             // DEMOMAN tf_projectile_pipe_remote tf_projectile_pipe iron_bomber quickiebomb_launcher (loch_n_load)
-            // HEAVYWEAPONS tomislav shotgun_heavy minigun (family_buisness) (brass_beast)
-            // ENGINEER shotgun_primary (engineer_pistol) (frontier_justice) (widowmaker)
+            // HEAVYWEAPONS long_heatmaker tomislav shotgun_heavy minigun brass_beast (family_buisness)
+            // ENGINEER shotgun_primary pistol frontier_justice widowmaker
             // MEDIC crusaders_crossbow
-            // SNIPER sniperrifle smg (awp?)
-            // SPY revolver (ambassador) (letranger) (enforcer)
-            "tf_projectile_rocket": { // i think these names are just simplified names
+            // SNIPER sniperrifle smg awper_hand
+            // SPY revolver ambassador letranger enforcer
+            "tf_projectile_rocket": {
               "kills": 21,
               "dmg": 7654,
               "avg_dmg": 60.74603174603175, // average damage per shot hit
