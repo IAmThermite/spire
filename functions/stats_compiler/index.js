@@ -272,6 +272,7 @@ const calculateWeaponStats = (stats, logStats) => {
     if (primaryWeapons.includes(weapon)) {
       stats.shots_fired_pri += weaponStats.shots;
       stats.shots_hit_pri += weaponStats.hits;
+      stats.kills_pri += weaponStats.kills;
       
       if (stats.accuracy_pri === 0) {
         stats.accuracy_pri = (weaponStats.hits / weaponStats.shots) * 100
@@ -287,6 +288,7 @@ const calculateWeaponStats = (stats, logStats) => {
     } else if (secondaryWeapons.includes(weapon)) {
       stats.shots_fired_sec += weaponStats.shots;
       stats.shots_hit_sec += weaponStats.hits;
+      stats.kills_sec += weaponStats.kills;
       
       if (stats.accuracy_sec === 0) {
         stats.accuracy_sec = (weaponStats.hits / weaponStats.shots) * 100

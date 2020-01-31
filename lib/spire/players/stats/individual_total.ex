@@ -14,12 +14,14 @@ defmodule Spire.Players.Stats.IndividualTotal do
     field :heal_total, :integer, default: 0
 
     # primary weapon stats
+    field :kills_pri, :integer, default: 0
     field :shots_hit_pri, :integer, default: 0
     field :shots_fired_pri, :integer, default: 0
     field :accuracy_pri, :float, default: 0.0
     field :dmg_per_shot_pri, :float, default: 0.0
 
     # secondary weapon stats
+    field :kills_sec, :integer, default: 0
     field :shots_hit_sec, :integer, default: 0
     field :shots_fired_sec, :integer, default: 0
     field :accuracy_sec, :float, default: 0.0

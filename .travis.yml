@@ -4,10 +4,10 @@ jobs:
     node_js:
     - 12.0
     install:
-    - pwd
-    - ls -al
     - cd functions/stats_compiler
     - npm install
+    test:
+    - npm test
     script:
     - cd /home/travis/build/IAmThermite/spire
     - ls -al

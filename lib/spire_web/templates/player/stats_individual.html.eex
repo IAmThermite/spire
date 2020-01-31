@@ -17,6 +17,7 @@
 
     <h5>Primary Weapon</h5>
     <ul>
+      <li>Kills: <%= stat.kills_pri %></li>
       <li>Shots Fired: <%= stat.shots_fired_pri %></li>
       <li>Shots Hit: <%= stat.shots_hit_pri %></li>
       <li>Accuracy: <%= stat.accuracy_pri %></li>
@@ -25,6 +26,7 @@
 
     <h5>Secondary Weapon</h5>
     <ul>
+      <li>Kills: <%= stat.kills_sec %></li>
       <li>Shots Fired: <%= stat.shots_fired_sec %></li>
       <li>Shots Hit: <%= stat.shots_hit_sec %></li>
       <li>Accuracy: <%= stat.accuracy_sec %></li>

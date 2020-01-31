@@ -197,11 +197,13 @@ describe('calculateStatsIndividual', () => {
         const stats = new StatsIndividual({});
         compiler.calculateWeaponStats(stats, classStats);
   
+        assert.equal(stats.kills_pri, 21);
         assert.equal(stats.shots_fired_pri, 100);
         assert.equal(stats.shots_hit_pri, 50);
         assert.equal(stats.dmg_per_shot_pri, 55.5);
         assert.equal(stats.accuracy_pri, 50);
 
+        assert.equal(stats.kills_sec, 5);
         assert.equal(stats.shots_fired_sec, 50);
         assert.equal(stats.shots_hit_sec, 20);
         assert.equal(stats.dmg_per_shot_sec, 55.5);

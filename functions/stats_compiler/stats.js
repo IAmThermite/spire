@@ -67,11 +67,13 @@ class StatsIndividual {
     this.dmg_total = stats.dmg_total || 0;
     this.heal_total = stats.heal_total || 0;
 
+    this.kills_pri = stats.kills_pri || 0;
     this.shots_hit_pri = stats.shots_hit_pri || 0;
     this.shots_fired_pri = stats.shots_fired_pri || 0;
     this.accuracy_pri = stats.accuracy_pri || 0.0;
     this.dmg_per_shot_pri = stats.dmg_per_shot_pri || 0.0;
 
+    this.kills_sec = stats.kills_sec || 0;
     this.shots_hit_sec = stats.shots_hit_sec || 0;
     this.shots_fired_sec = stats.shots_fired_sec || 0;
     this.accuracy_sec = stats.accuracy_sec || 0.0;
