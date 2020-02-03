@@ -53,8 +53,19 @@ class StatsAll {
     ]
   }
 
-  toQuery = () => {
-    return ""
+  toQuery = (real) => {
+    return `
+      UPDATE stats_all_${real ? 'real' : 'total'}
+      SET
+      total_kills=$1, total_deaths=$2, total_assists=$3, total_damage=$4, total_healing=$5, total_captures=$6,
+      longest_ks=$7,
+      average_dpm=$8,
+      times_seen_scout=$9, times_seen_soldier=$10, times_seen_pyro=$11, times_seen_demoman=$12,
+      times_seen_heavyweapons=$13, times_seen_engineer=$14, times_seen_medic=$15, times_seen_sniper=$16, times_seen_spy=$17,
+      number_of_logs=$18, time_played=$19,
+      updated_at=$20
+      WHERE player_id=$21
+    `;
   }
 }
 
@@ -82,7 +93,6 @@ class StatsIndividual {
     this.airshots = stats.airshots  || 0;
     this.headshots = stats.headshots || 0;
     this.backstabs = stats.backstabs || 0;
-    this.medics_dropped = stats.medics_dropped || 0;
     this.reflect_kills = stats.reflect_kills || 0;
 
     this.ubers = stats.ubers || 0;
@@ -104,12 +114,15 @@ class StatsIndividual {
       this.assists,
       this.dpm,
       this.dmg_total,
+      this.heal_total,
 
+      this.kills_pri,
       this.shots_hit_pri,
       this.shots_fired_pri,
       this.accuracy_pri,
       this.dmg_per_shot_pri,
 
+      this.kills_sec,
       this.shots_hit_sec,
       this.shots_fired_sec,
       this.accuracy_sec,
@@ -118,7 +131,6 @@ class StatsIndividual {
       this.airshots,
       this.headshots,
       this.backstabs,
-      this.medics_dropped,
       this.reflect_kills,
 
       this.ubers,
@@ -134,8 +146,20 @@ class StatsIndividual {
     ];
   }
 
-  toQuery = () => {
-    return ""
+  toQuery = (real) => {
+    const query = `
+      UPDATE stats_individual_${real ? 'real' : 'total'}
+      SET
+      kills=$1, deaths=$2, assists=$3, dpm=$4, dmg_total=$5, heal_total=$6,
+      kills_pri=$7, shots_hit_pri=$8, shots_fired_pri=$9, accuracy_pri=$10, dmg_per_shot_pri=$11,
+      kills_sec=$12, shots_hit_sec=$13, shots_fired_sec=$14, accuracy_sec=$15, dmg_per_shot_sec=$16,
+      airshots=$17, headshots=$18, backstabs=$19, reflect_kills=$20,
+      ubers=$21, kritz=$22, drops=$23, ave_time_to_build=$24, ave_uber_length=$25, ave_time_before_healing=$26, ave_time_before_using=$27,
+      total_playtime=$28, number_of_logs=$29,
+      updated_at=$30
+      WHERE player_id=$31 AND class=$32
+    `
+    return query;
   }
 }
 

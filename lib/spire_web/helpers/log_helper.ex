@@ -14,9 +14,9 @@ defmodule SpireWeb.LogHelper do
     true
   end
 
-  def handle_upload(log, conn, players) do
+  def handle_upload(conn, log, players) do
     # check if log has a match and if user can execute pipline or not
-    match = Matches.get_match!(log.match_id)
+    match = get_match_from_log(log.match_id)
     SpireWeb.FunctionHelper.invoke("spire_stats_compiler", %{"log" => log, "players" => players, "match" => match})
   end
 
@@ -34,8 +34,16 @@ defmodule SpireWeb.LogHelper do
         
       _ ->
         # should not get here
-        Logger.error("SpireWeb.LogHelper.get_player/1", steamid: steamid)
+        Logger.error("#{__MODULE__}.get_player/1", steamid: steamid)
         nil
     end
+  end
+
+  defp get_match_from_log(match_id) when is_integer(match_id) do
+    Matches.get_match!(match_id)
+  end
+
+  defp get_match_from_log(_match_id) do
+    nil
   end
 end

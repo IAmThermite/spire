@@ -25,46 +25,50 @@ defmodule SpireWeb.LogController do
         %{"teams" => %{"Red" => red_team, "Blue" => blue_team}, "players" => players, "info" => log_info} = log_json = Jason.decode!(body)
         num_of_players = map_size(players)
         
-        cond do
-          num_of_players >= 12 and num_of_players <= 15 -> # 6v6 (could have subs etc pop in and out however), i think spec is actually >= 12 < 18
-            log_data = %{
-              logfile: logfile,
-              map: log_info["map"],
-              red_score: red_team["score"],
-              blue_score: blue_team["score"],
-              red_kills: red_team["kills"],
-              blue_kills: blue_team["score"],
-              red_damage: red_team["dmg"],
-              blue_damage: blue_team["dmg"],
-              length: log_info["total_length"],
-              date: DateTime.from_unix!(log_info["date"])
-            }
-            # need to check if log can be uploaded as well true <- LogHelper.can_upload?(log, conn)
+        if num_of_players >= 12 and num_of_players <= 15 do # 6v6 (could have subs etc pop in and out however), i think spec is actually >= 12 < 18
+          log_data = %{
+            logfile: logfile,
+            map: log_info["map"],
+            red_score: red_team["score"],
+            blue_score: blue_team["score"],
+            red_kills: red_team["kills"],
+            blue_kills: blue_team["score"],
+            red_damage: red_team["dmg"],
+            blue_damage: blue_team["dmg"],
+            length: log_info["total_length"],
+            date: DateTime.from_unix!(log_info["date"])
+          }
+          if LogHelper.can_upload?(log_data, conn) do
             case Logs.create_log(log_data) do
               {:ok, log} ->
                 with {:ok, _upload} <- Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id}),
-                     {:ok, extracted_players} <- LogHelper.extract_players_from_log(log_json),
-                     true <- LogHelper.can_upload?(log, conn)
+                      {:ok, extracted_players} <- LogHelper.extract_players_from_log(log_json)
                 do
-                  # LogHelper.handle_upload(log, conn, extracted_players, match)
+                  # LogHelper.handle_upload(conn, log, extracted_players)
                   conn
                   |> put_flash(:info, "Log created successfully. Processing will be completed shortly")
                   |> redirect(to: Routes.page_path(conn, :index))
                 else
                   err ->
-                    Logger.error("LogControler.create: #{inspect(err)}")
+                    Logger.error("#{__MODULE__}.create: #{inspect(err)}")
                     conn
                     |> put_flash(:error, "Log was uploaded but something went wrong, contact an admin for more")
-                    |> redirect(to: Routes.page_path(conn, :index))
+                    |> redirect(to: Routes.log_path(conn, :new))
                 end
         
               {:error, %Ecto.Changeset{} = changeset} ->
                 render(conn, "new.html", changeset: changeset)
             end
-          true ->
+          else
             conn
-            |> put_flash(:error, "Not a valid log (must be 6v6)")
-            |> redirect(to: Routes.log_path(conn, :new))
+            |> put_flash(:error, "Not allowed to upload that log. If you think this is a mistake contact an admin.")
+            |> redirect(to: Routes.page_path(conn, :index))
+          end
+          
+        else
+          conn
+          |> put_flash(:error, "Not a valid log (must be 6v6)")
+          |> redirect(to: Routes.log_path(conn, :new))
         end
       _ ->
         conn

@@ -3,16 +3,27 @@ jobs:
   - language: node_js
     node_js:
     - 12.0
+    addons:
+      postgresql: '9.5'
+    env:
+      global:
+        - PGUSER=postgres
+        - PGDATABASE=spire_test
+        - MIX_ENV=test
+        - NODE_ENV=test
     install:
-    - cd functions/stats_compiler
-    - npm install
+      - cd /home/travis/build/IAmThermite/spire/functions/stats_compiler
+      - npm install
+    before_script:
+      - cd /home/travis/build/IAmThermite/spire
+      - MIX_ENV=test mix ecto.create && mix ecto.migrate
     script:
-    - npm test
+      - npm test
     before_deploy:
-    - cd /home/travis/build/IAmThermite/spire
-    - mkdir functions/build/
-    - cd functions/stats_compiler/
-    - zip ../build/stats_compiler * -q -r
+      - cd /home/travis/build/IAmThermite/spire
+      - mkdir functions/build/
+      - cd functions/stats_compiler/
+      - zip ../build/stats_compiler * -q -r
     deploy:
       provider: lambda
       secret_access_key:
@@ -30,9 +41,11 @@ jobs:
     addons:
       postgresql: '9.5'
     install:
-    - mix local.rebar --force
-    - mix local.hex --force
-    - mix deps.get
-    - mix compile
+      - mix local.rebar --force
+      - mix local.hex --force
+      - mix deps.get
+      - mix compile
+      - mix ecto.create
+      - mix ecto.migrate
     script:
-    - echo "spire-web script"
+      - echo "spire-web script"

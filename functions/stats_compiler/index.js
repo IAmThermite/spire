@@ -47,7 +47,9 @@ const secondaryWeapons = [
   'smg',
 ];
 
-exports.handler = async function(event) {
+const queries = [];
+
+exports.handler = async (event) => {
   await db.connect().catch((error) => {
     throw new Error(error);
   });
@@ -64,21 +66,30 @@ exports.handler = async function(event) {
 
     const logData = log.players[steamid];
 
-    individualStats = calculateIndividualStats(player, steamid, logData, real);
+    individualStats = calculateStatsIndividual(player, steamid, logData, real);
     allStats = calculateStatsAll(player, steamid, logData, real);
 
-    addStatsIndividual(player, individualStats, real);
-    addStatsAll(player, allStats, real);
+    addStatsIndividual(player, individualStats, real).forEach((stat) => {
+      queries.push(stat);
+    });
+    queries.push(addStatsAll(player, allStats, real));
 
     // also add total stats if real
     if (real) {
       individualStats = calculateStatsIndividual(player, steamid, logData, false);
       allStats = calculateStatsAll(player, steamid, logData, false);
-  
-      addStatsIndividual(player, individualStats, false);
-      addStatsAll(player, allStats, real);
+      addStatsIndividual(player, individualStats, false).forEach((stat) => {
+        queries.push(stat);
+      });
+      queries.push(addStatsAll(player, allStats, false));
+
+      queries.push(linkLogToMatch(event.log, event.match));
     }
+
+    queries.push(linkLogToPlayer(player, log));
   });
+
+  await commitAllToDb();
 
   return logData;
 };
@@ -190,7 +201,7 @@ const calculateStatsIndividual = async (player, steamid, logData, real) => {
     stat = calculateStatsForClass(player, logStats, className, real);
 
     // calculate stats that should probably be in the individual
-    // class stats but are not i.e airshots, headshots etc.
+    // class stats but are not i.e airshots, headshots medic etc.
     if (className === "soldier" || className === "demoman") {
       stat.airshots += log.players[steamid].class_stats.airshots;
     }
@@ -206,7 +217,7 @@ const calculateStatsIndividual = async (player, steamid, logData, real) => {
       calculateMedicStats(stats, logData);
     }
 
-    stats.push(stat);
+    stats.push([stat, className]);
   });
 
   return stats;
@@ -218,6 +229,7 @@ const calculateStatsIndividual = async (player, steamid, logData, real) => {
  * @param {String} steamid steamid of player
  * @param {Object} logData the raw json log data
  * @param {Boolean} real is the log for a match
+ * @returns {StatsIndividual} updated stats
  */
 const calculateStatsForClass = async (player, logStats, className, real) => {
   await ensureStatsIndividualExist(player, className, real)
@@ -361,33 +373,25 @@ const calculatePyroStats = (stats, logStats) => {
 
 // PERSISTANCE FUNCTIONS \\
 /**
- * Persist the stats in the db
- * @param {Object} player the player object
+ * Returns the query from the output of the stats
  * @param {StatsAll} stats the stats for the player
  * @param {Boolean} real is the log for a match
+ * @returns {Array} the query and parameters
  */
-const addStatsAll = async (player, stats, real) => {
-  return await db.query(`INSERT INTO stats_all_${real ? 'real' : 'total'} (
-    
-  )
-  VALUES (
-    
-  ) WHERE player_id = $1`, [player, ...stats]);
+const addStatsAll = (player, stats, real) => {
+  const now = getDateTime();
+  return [stats.toQuery(real), stats.asArray().concat([now, player.id])];
 }
 
 /**
- * Persist the stats in the db
- * @param {Object} player the player object
+ * Returns the query from the output of the stats
  * @param {StatsIndividual} stats the stats for the player
  * @param {Boolean} real is the log for a match
+ * @returns {Array} the query and parameters
  */
-const addStatsIndividual = async (player, stats, real) => {
-  return await db.query(`INSERT INTO stats_all_${real ? 'real' : 'total'} (
-      
-    )
-    VALUES (
-      
-    ) WHERE player_id = $1`, [player, ...stats]);
+const addStatsIndividual = (player, stats, real) => {
+  const now = getDateTime();
+  return [stats[0].toQuery(real), stats[0].asArray().concat([now, player.id, stats[1]])];
 }
 
 /**
@@ -396,7 +400,8 @@ const addStatsIndividual = async (player, stats, real) => {
  * @param {Boolean} real is the log for a match
  */
 const getStatsAll = async (player, real) => {
-  return await db.query(`SELECT * FROM stats_all_${real ? 'real' : 'total'} WHERE player_id = $1`, [player]).rows[0];
+  const res = await db.query(`SELECT * FROM stats_all_${real ? 'real' : 'total'} WHERE player_id=$1`, [player.id]);
+  return res[0];
 }
 
 /**
@@ -406,7 +411,8 @@ const getStatsAll = async (player, real) => {
  * @param {Boolean} real is the log for a match
  */
 const getStatsIndividual = async (player, className, real) => {
-  return await db.query(`SELECT * FROM stats_individual_${real ? 'real' : 'total'} WHERE player_id = $1 AND class = $2`, [player, className]).rows[0];
+  const res = await db.query(`SELECT * FROM stats_individual_${real ? 'real' : 'total'} WHERE player_id=$1 AND class=$2`, [player.id, className]);
+  return res[0];
 }
 
 /**
@@ -419,7 +425,7 @@ const ensureStatsAllExist = async (player, real) => {
   const result = await getStatsAll(player, real);
   if (!result || result === {}) {
     const now = getDateTime();
-    await db.query(`INSERT INTO stats_all_${real ? 'real' : 'total'} (player_id, inserted_at, updated_at) VALUES ($1, $2, $3)`, [player, now, now]);
+    await db.query(`INSERT INTO stats_all_${real ? 'real' : 'total'} (player_id, inserted_at, updated_at) VALUES ($1, $2, $3)`, [player.id, now, now]);
   }
 }
 
@@ -432,9 +438,9 @@ const ensureStatsAllExist = async (player, real) => {
  */
 const ensureStatsIndividualExist = async (player, className, real) => {
   const result = await getStatsIndividual(player, className, real);
+  if (!result || result === {}) {
     const now = getDateTime();
-    if (!result || result === {}) {
-    await db.query(`INSERT INTO stats_individual_${real ? 'real' : 'total'} (class, player_id, inserted_at, updated_at) VALUES ($1, $2, $3, $4)`, [className, player, now, now]);
+    await db.query(`INSERT INTO stats_individual_${real ? 'real' : 'total'} (class, player_id, inserted_at, updated_at) VALUES ($1, $2, $3, $4)`, [className, player.id, now, now]);
   }
 }
 
@@ -448,7 +454,47 @@ const getDateTime = () => {
   return new Date();
 }
 
+const linkLogToPlayer = (player, log) => {
+  const now = getDateTime();
+  return ['INSERT INTO players_logs (player_id, log_id, inserted_at, updated_at) VALUES ($1, $2, $3, $4)', [player.id, log.id, now, now]];
+}
+
+const commitAllToDb = async () => {
+  console.log('Starting transaction');
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN')
+    queries.forEach(async query => {
+      console.log('Running query');
+      console.log(query[0]);
+      console.log(query[1]);
+      await client.query(query[0], query[1]);
+    });
+    await client.query('COMMIT');
+    console.log('Transaction completed successfully');
+  } catch(e) {
+    console.error(e);
+    console.error('Queries failed, rolling back changes');
+    await client.query('ROLLBACK');
+  } finally {
+    client.release();
+  }
+}
+
 module.exports = {
+  addStatsAll,
+  addStatsIndividual,
+
+  getStatsAll,
+  getStatsIndividual,
+
+  ensureStatsAllExist,
+  ensureStatsIndividualExist,
+
+  linkLogToPlayer,
+
+  commitAllToDb,
+
   calculateTotalStats,
   calculateSeenStats,
   calculateTimePlayedStats,
@@ -457,4 +503,6 @@ module.exports = {
   calculateWeaponStats,
   calculateMedicStats,
   calculatePyroStats,
+
+  getDateTime,
 };
