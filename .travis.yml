@@ -18,6 +18,7 @@ jobs:
       - mix deps.get
       - mix ecto.create && mix ecto.migrate
     script:
+      - cd /home/travis/build/IAmThermite/spire/functions/stats_compiler
       - npm test
     before_deploy:
       - cd /home/travis/build/IAmThermite/spire
