@@ -8,13 +8,14 @@ jobs:
       - wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb
       - sudo apt-get update
       - sudo apt-get install -y esl-erlang elixir
-      - mix local.rebar --force
-      - mix local.hex --force
     install:
       - cd /home/travis/build/IAmThermite/spire/functions/stats_compiler
       - npm install
     before_script:
       - cd /home/travis/build/IAmThermite/spire
+      - mix local.rebar --force
+      - mix local.hex --force
+      - mix deps.get
       - mix ecto.create && mix ecto.migrate
     script:
       - npm test
