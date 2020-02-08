@@ -1,3 +1,5 @@
+<div class="col s12 orange darken-4">
+<h5 class="underline">General</h5>
 <ul>
   <li>Total Kills: <%= @stats.total_kills %></li>
   <li>Total Assists: <%= @stats.total_assists %></li>
@@ -6,10 +8,9 @@
   <li>Total Deaths: <%= @stats.total_captures %></li>
   <li>Longest Killstreak: <%= @stats.longest_ks %></li>
   <li>Average DPM: <%= @stats.average_dpm %></li>
-  <li>Times Appeared: <%= @stats.number_of_logs %></li>
-  <li>Time Played: <%= @stats.time_played %></li>
 </ul>
 
+<h5 class="underline">Times Played</h5>
 <ul>
   <li>Times Played Scout: <%= @stats.times_seen_scout %></li>
   <li>Times Played Soldier: <%= @stats.times_seen_soldier %></li>
@@ -20,4 +21,7 @@
   <li>Times Played Medic: <%= @stats.times_seen_medic %></li>
   <li>Times Played Sniper: <%= @stats.times_seen_sniper %></li>
   <li>Times Played Spy: <%= @stats.times_seen_spy %></li>
+  <li>Times Appeared: <%= @stats.number_of_logs %></li>
+  <li>Total Time Played: <%= @stats.time_played %></li>
 </ul>
+</div>

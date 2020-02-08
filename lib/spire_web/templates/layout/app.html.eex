@@ -31,6 +31,9 @@
                 <li><%= link "Upload", to: Routes.log_path(@conn, :new) %></li>
                 <li><%= link "Profile", to: Routes.player_path(@conn, :show, @conn.assigns[:user].id) %></li>
                 <li><%= link "Logout", to: Routes.auth_path(@conn, :delete) %></li>
+                <%= if is_admin?(@conn) do %>
+                  <li><%= link "Admin", to: Routes.admin_path(@conn, :index) %></li>
+                <% end %>
               <% else %>
                 <li><%= link "Login", to: Routes.auth_path(@conn, :request, "steam") %></li>
               <% end %>

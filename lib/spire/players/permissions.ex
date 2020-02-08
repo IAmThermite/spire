@@ -8,7 +8,7 @@ defmodule Spire.Players.Permissions do
 
   alias Spire.Players.Permissions.Permission
 
-  def get_permissions_for_player!(player_id) do
+  def get_permissions_for_player(player_id) do
     results = Repo.all(from(p in Permission, where: p.player_id == ^player_id))
     case results do
       [permission | _tail] ->
@@ -17,7 +17,7 @@ defmodule Spire.Players.Permissions do
         nil
     end
   end
-  
+
   def create_or_update_permissions(attrs \\ %{}) do
     %Permission{}
     |> Permission.changeset(attrs)

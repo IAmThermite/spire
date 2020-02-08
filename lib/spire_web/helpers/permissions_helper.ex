@@ -5,8 +5,8 @@ defmodule SpireWeb.PermissionsHelper do
   end
 
   def has_permssions_for?(conn, resource) do
-    if logged_in?(conn) and Ecto.assoc_loaded?(conn.assigns[:user].permissions) do
-      permissions = Permissions.get_permissions_for_player!(conn.assigns[:user].id)
+    if logged_in?(conn) do
+      permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
       case permissions do
         %{^resource => true} ->
           true

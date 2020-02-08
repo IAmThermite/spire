@@ -1,6 +1,6 @@
 defmodule SpireWeb.AuthController do
   use SpireWeb, :controller
-  
+
   plug(Ueberauth)
 
   alias Ueberauth.Strategy.Helpers

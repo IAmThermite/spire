@@ -22,3 +22,7 @@ input[type="checkbox"] {
 .tabs .indicator {
   background-color:#000;
 }
+
+.underline {
+  text-decoration: underline;
+}

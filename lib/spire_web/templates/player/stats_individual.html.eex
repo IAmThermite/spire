@@ -1,11 +1,11 @@
 <ul class="tabs orange darken-4">
   <%= for stat <- @stats do %>
-    <li class="tab col s3"><a class="active white-text" href="#<%= @name <> stat.class %>><%= String.capitalize(stat.class) %>"</a></li>
+    <li class="tab col s3"><a class="active white-text" href="#<%= @name <> stat.class %>"><%= String.capitalize(stat.class) %></a></li>
   <% end %>
 </ul>
 <%= for stat <- @stats do %>
-  <div id="<%= @name <> stat.class %>" class="col s12">
-    <h5>General</h5>
+  <div id="<%= @name <> stat.class %>" class="col s12 orange darken-4">
+    <h5 class="underline">General</h5>
     <ul>
       <li>Kills: <%= stat.kills %></li>
       <li>Assists: <%= stat.assists %></li>
@@ -15,7 +15,7 @@
       <li>Kills: <%= stat.kills %></li>
     </ul>
 
-    <h5>Primary Weapon</h5>
+    <h5 class="underline">Primary Weapon</h5>
     <ul>
       <li>Kills: <%= stat.kills_pri %></li>
       <li>Shots Fired: <%= stat.shots_fired_pri %></li>
@@ -24,16 +24,32 @@
       <li>Average Damage per Shot: <%= stat.dmg_per_shot_pri %></li>
     </ul>
 
-    <h5>Secondary Weapon</h5>
-    <ul>
-      <li>Kills: <%= stat.kills_sec %></li>
-      <li>Shots Fired: <%= stat.shots_fired_sec %></li>
-      <li>Shots Hit: <%= stat.shots_hit_sec %></li>
-      <li>Accuracy: <%= stat.accuracy_sec %></li>
-      <li>Average Damage per Shot: <%= stat.dmg_per_shot_sec %></li>
-    </ul>
+    <%= if stat.class != "medic" do %>
+      <h5 class="underline">Secondary Weapon</h5>
+      <ul>
+        <li>Kills: <%= stat.kills_sec %></li>
+        <li>Shots Fired: <%= stat.shots_fired_sec %></li>
+        <li>Shots Hit: <%= stat.shots_hit_sec %></li>
+        <li>Accuracy: <%= stat.accuracy_sec %></li>
+        <li>Average Damage per Shot: <%= stat.dmg_per_shot_sec %></li>
+      </ul>
+    <% end %>
+
+    <%= if stat.class == "medic" do %>
+      <h5 class="underline">Medic Stats</h5>
+      <ul>
+        <li>Times Used: <%= stat.ubers + stat.kritz %></li>
+        <li>Ubers: <%= stat.ubers %></li>
+        <li>Kritzkrieg: <%= stat.kritz %></li>
+        <li>Drops: <%= stat.drops %></li>
+        <li>Ave Time to Build: <%= stat.ave_time_to_build %></li>
+        <li>Ave Uber Length: <%= stat.ave_uber_length %></li>
+        <li>Ave Time Before Healing: <%= stat.ave_time_before_healing %></li>
+        <li>Ave Time Before Using: <%= stat.ave_time_before_using %></li>
+      </ul>
+    <% end %>
     
-    <h5>Misc</h5>
+    <h5 class="underline">Misc</h5>
     <ul>
       <%= cond do %>
         <% stat.class == "soldier" or stat.class == "demoman" -> %>
@@ -48,23 +64,8 @@
         <% true -> %>
           <!-- no special stats -->
       <% end %>
-      <li>Medics Dropped: <%= stat.medics_dropped %></li>
       <li>Total Playtime: <%= stat.total_playtime %></li>
       <li>Times Played: <%= stat.number_of_logs %></li>
     </ul>
-
-    <%= if stat.class == "medic" do %>
-      <h5>Medic Stats</h5>
-      <ul>
-        <li>Times Used: <%= stat.ubers + stat.kritz %></li>
-        <li>Ubers: <%= stat.ubers %></li>
-        <li>Kritzkrieg: <%= stat.kritz %></li>
-        <li>Drops: <%= stat.drops %></li>
-        <li>Ave Time to Build: <%= stat.ave_time_to_build %></li>
-        <li>Ave Uber Length: <%= stat.ave_uber_length %></li>
-        <li>Ave Time Before Healing: <%= stat.ave_time_before_healing %></li>
-        <li>Ave Time Before Using: <%= stat.ave_time_before_using %></li>
-      </ul>
-    <% end %>
   </div>
 <% end %>

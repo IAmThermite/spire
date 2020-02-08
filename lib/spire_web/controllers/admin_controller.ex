@@ -1,6 +1,7 @@
 defmodule SpireWeb.AdminController do
   use SpireWeb, :controller
   alias Spire.Players
+  alias Spire.Players.Permissions
 
   def index(conn, _params) do
     # get uploads in queue
