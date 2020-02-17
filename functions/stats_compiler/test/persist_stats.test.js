@@ -21,9 +21,7 @@ describe('getOrCreatePlayers', async () => {
     const player_snubs = [{steamid: '1', steamid3: '1', steamid64: '1', alias: 'ALIAS', avatar: 'AVATAR'}];
     const players = await compiler.getOrCreatePlayers(player_snubs);
     players.forEach(player => {
-      player.then(res => {
-        assert.equal(res.alias, 'ALIAS');
-      })
+      assert.equal(player.alias, 'ALIAS');
     });
   });
 
@@ -31,9 +29,7 @@ describe('getOrCreatePlayers', async () => {
     const player_snubs = [{steamid: '1', steamid3: '1', steamid64: '1', alias: 'ALIAS', avatar: 'AVATAR'}, {steamid: '2', steamid3: '2', steamid64: '2', alias: 'ALIAS', avatar: 'AVATAR'}];
     const players = await compiler.getOrCreatePlayers(player_snubs);
     players.forEach(player => {
-      player.then(res => {
-        assert.equal(player.alias, 'ALIAS');
-      })
+      assert.equal(player.alias, 'ALIAS');
     });
     assert.equal(players.length, 2);
   });
