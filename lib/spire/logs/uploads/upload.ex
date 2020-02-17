@@ -20,7 +20,7 @@ defmodule Spire.Logs.Uploads.Upload do
     upload
     |> cast(attrs, [:approved, :processed, :log_id, :uploaded_by])
     |> validate_required([:approved, :processed, :log_id, :uploaded_by])
-    |> unique_constraint(:log_id, name: :log_upload_log_id_uploaded_by_index)
+    |> unique_constraint(:log_id)
     |> assoc_constraint(:log)
     |> assoc_constraint(:player)
   end

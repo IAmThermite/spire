@@ -1,10 +1,10 @@
 <ul class="tabs orange darken-4">
   <%= for stat <- @stats do %>
-    <li class="tab col s3"><a class="active white-text" href="#<%= @name <> stat.class %>"><%= String.capitalize(stat.class) %></a></li>
+    <li class="tab col s3"><a class="white-text" href="#<%= @name <> "_" <> stat.class %>"><%= String.capitalize(stat.class) %></a></li>
   <% end %>
 </ul>
 <%= for stat <- @stats do %>
-  <div id="<%= @name <> stat.class %>" class="col s12 orange darken-4">
+  <div id="<%= @name <> "_" <> stat.class %>" class="col s12 orange darken-4">
     <h5 class="underline">General</h5>
     <ul>
       <li>Kills: <%= stat.kills %></li>
@@ -12,7 +12,6 @@
       <li>Deaths: <%= stat.deaths %></li>
       <li>DPM: <%= stat.dpm %></li>
       <li>Total Damage: <%= stat.dmg_total %></li>
-      <li>Kills: <%= stat.kills %></li>
     </ul>
 
     <h5 class="underline">Primary Weapon</h5>
@@ -38,6 +37,7 @@
     <%= if stat.class == "medic" do %>
       <h5 class="underline">Medic Stats</h5>
       <ul>
+        <li>Total Healing: <%= stat.heal_total %></li>
         <li>Times Used: <%= stat.ubers + stat.kritz %></li>
         <li>Ubers: <%= stat.ubers %></li>
         <li>Kritzkrieg: <%= stat.kritz %></li>

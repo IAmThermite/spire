@@ -6,6 +6,9 @@ defmodule SpireWeb.LogController do
   alias Spire.Logs.Uploads
   alias SpireWeb.LogHelper
 
+  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug :require_permissions when action in [:delete, :update, :edit]
+
   def index(conn, %{"player_id" => player_id}) do
     player_id = String.to_integer(player_id)
     logs = Logs.list_logs_by_player(player_id)
@@ -24,7 +27,7 @@ defmodule SpireWeb.LogController do
       %{body: body} ->
         %{"teams" => %{"Red" => red_team, "Blue" => blue_team}, "players" => players, "info" => log_info} = log_json = Jason.decode!(body)
         num_of_players = map_size(players)
-        
+
         if num_of_players >= 12 and num_of_players <= 15 do # 6v6 (could have subs etc pop in and out however), i think spec is actually >= 12 < 18
           log_data = %{
             logfile: logfile,
@@ -41,21 +44,19 @@ defmodule SpireWeb.LogController do
           if LogHelper.can_upload?(log_data, conn) do
             case Logs.create_log(log_data) do
               {:ok, log} ->
-                with {:ok, _upload} <- Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id}),
-                      {:ok, extracted_players} <- LogHelper.extract_players_from_log(log_json)
-                do
-                  # LogHelper.handle_upload(conn, log, extracted_players)
-                  conn
-                  |> put_flash(:info, "Log created successfully. Processing will be completed shortly")
-                  |> redirect(to: Routes.page_path(conn, :index))
-                else
+                case Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id}) do
+                  {:ok, upload} ->
+                    LogHelper.handle_upload(conn, log, upload)
+                    conn
+                    |> put_flash(:info, "Log created successfully. Processing will be completed shortly")
+                    |> redirect(to: Routes.page_path(conn, :index))
                   err ->
                     Logger.error("#{__MODULE__}.create: #{inspect(err)}")
                     conn
                     |> put_flash(:error, "Log was uploaded but something went wrong, contact an admin for more")
                     |> redirect(to: Routes.log_path(conn, :new))
                 end
-        
+
               {:error, %Ecto.Changeset{} = changeset} ->
                 render(conn, "new.html", changeset: changeset)
             end
@@ -64,7 +65,6 @@ defmodule SpireWeb.LogController do
             |> put_flash(:error, "Not allowed to upload that log. If you think this is a mistake contact an admin.")
             |> redirect(to: Routes.page_path(conn, :index))
           end
-          
         else
           conn
           |> put_flash(:error, "Not a valid log (must be 6v6)")
@@ -109,5 +109,19 @@ defmodule SpireWeb.LogController do
     conn
     |> put_flash(:info, "Log deleted successfully.")
     |> redirect(to: Routes.page_path(conn, :index))
+  end
+
+  defp require_permissions(conn, _) do
+    cond do
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+        conn
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_logs) ->
+        conn
+      true ->
+        conn
+        |> put_flash(:error, "You do not have the permissions to do this")
+        |> redirect(to: Routes.page_path(conn, :index))
+        |> halt
+    end
   end
 end

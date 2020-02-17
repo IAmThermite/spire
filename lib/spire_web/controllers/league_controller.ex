@@ -4,6 +4,9 @@ defmodule SpireWeb.LeagueController do
   alias Spire.Leagues
   alias Spire.Leagues.League
 
+  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug :require_permissions when action not in [:index, :show]
+
   def index(conn, _params) do
     leagues = Leagues.list_leagues()
     render(conn, "index.html", leagues: leagues)
@@ -58,5 +61,16 @@ defmodule SpireWeb.LeagueController do
     conn
     |> put_flash(:info, "League deleted successfully.")
     |> redirect(to: Routes.league_path(conn, :index))
+  end
+
+  defp require_permissions(conn, _) do
+    if SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_leagues) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You do not have the permissions to do this")
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt
+    end
   end
 end

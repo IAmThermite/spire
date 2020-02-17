@@ -4,20 +4,22 @@ defmodule SpireWeb.LogHelper do
   alias Spire.Players
   alias Spire.Leagues.Matches
 
+  alias Spire.Players.Permissions
+
   def extract_players_from_log(log_json) do
     {:ok, []}
   end
 
   def can_upload?(log, conn) do
+    permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
     # check if they have permissions
     # is_player_part_of_log(log, conn.assigns[:user])
     true
   end
 
-  def handle_upload(conn, log, players) do
-    # check if log has a match and if user can execute pipline or not
-    match = get_match_from_log(log.match_id)
-    SpireWeb.FunctionHelper.invoke("spire_stats_compiler", %{"log" => log, "players" => players, "match" => match})
+  def handle_upload(conn, log, upload) do
+    match = get_match_from_log(log[:match_id])
+    SpireWeb.FunctionHelper.invoke("spire_stats_compiler", %{"log" => log, "match" => match, "upload" => upload})
   end
 
   def is_player_part_of_log(log, player) do
@@ -31,7 +33,7 @@ defmodule SpireWeb.LogHelper do
 
       :steamid3 ->
         Players.get_by_steamid3(steamid)
-        
+
       _ ->
         # should not get here
         Logger.error("#{__MODULE__}.get_player/1", steamid: steamid)

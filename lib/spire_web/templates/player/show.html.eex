@@ -1,5 +1,9 @@
 <h1><img src="<%= @player.avatar %>" style="vertical-align:middle; height: 1em" /> <%= @player.alias %></h1>
 
+<%= if can_manage?(@conn, @player.id) do %>
+  <%= button "Edit", method: :get, to: Routes.player_path(@conn, :edit, @player.id) %>
+<% end %>
+
 <ul>
   <li>
     <strong>SteamID64:</strong>
@@ -29,41 +33,50 @@
       <%= @player.division %>
     </li>
   <% end %>
+
+  <%= if @player.main_class != nil do %>
+    <li>
+      <strong>Main Class:</strong>
+      <%= String.capitalize(@player.main_class) %>
+    </li>
+  <% end %>
 </ul>
 
 <h4>Stats</h4>
 <div class="row">
   <div class="col s12">
     <ul class="tabs brown">
-      <li class="tab col s3"><a class="active white-text" href="#individual_total">Individual Total</a></li>
+      <li class="tab col s3"><a class="white-text" href="#individual_total">Individual Total</a></li>
       <li class="tab col s3"><a class="white-text" href="#individual_real">Individual Real</a></li>
       <li class="tab col s3"><a class="white-text" href="#all_total">All Total</a></li>
       <li class="tab col s3"><a class="white-text" href="#all_real">All Real</a></li>
     </ul>
   </div>
-
-  <%= if @player.stats_individual_total do %>
-    <div id="individual_total" class="col s12">
-      <%= render "stats_individual.html", stats: @player.stats_individual_total, name: "total" %>
+  <div class="col s12">
+    <div id="individual_total">
+      <%= if @player.stats_individual_total != [] do %>
+        <%= render "stats_individual.html", stats: @player.stats_individual_total, name: "total" %>
+      <% end %>
     </div>
-  <% end %>
-
-  <%= if @player.stats_individual_real do %>
-    <div id="individual_real" class="col s12">
-      <%= render "stats_individual.html", stats: @player.stats_individual_real, name: "real" %>
+  
+    <div id="individual_real">
+      <%= if @player.stats_individual_real != [] do %>
+        <%= render "stats_individual.html", stats: @player.stats_individual_real, name: "real" %>
+      <% end %>
     </div>
-  <% end %>
-
-  <%= if @player.stats_all_total do %>
-    <div id="all_total" class="col s12">
-      <%= render "stats_all.html", stats: @player.stats_all_total %>
+  
+    <div id="all_total">
+      <%= if @player.stats_all_total do %>
+        <%= render "stats_all.html", stats: @player.stats_all_total %>
+      <% end %>
     </div>
-  <% end %>
-  <%= if @player.stats_all_real do %>
-    <div id="all_real" class="col s12">
-      <%= render "stats_all.html", stats: @player.stats_all_real %>
+  
+    <div id="all_real">
+      <%= if @player.stats_all_real do %>
+        <%= render "stats_all.html", stats: @player.stats_all_real %>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>
 
 <h4>Matches</h4>

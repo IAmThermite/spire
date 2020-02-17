@@ -31,4 +31,8 @@ defmodule Spire.Players.Permissions do
   def change_permission(%Permission{} = permission) do
     Permission.changeset(permission, %{})
   end
+
+  def change_permission(_) do
+    Permission.changeset(%Permission{}, %{})
+  end
 end

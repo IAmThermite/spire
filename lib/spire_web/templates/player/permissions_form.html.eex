@@ -1,0 +1,46 @@
+<%= form_for @permissions_changeset, @action, fn f -> %>
+  <input name="_method" type="hidden" value="put">
+  <p>
+    <%= label f, :can_upload_logs %>
+    <%= checkbox f, :can_upload_logs %>
+    <%= error_tag f, :can_upload_logs %>
+  </p>
+
+  <p>
+    <%= label f, :can_manage_logs %>
+    <%= checkbox f, :can_manage_logs %>
+    <%= error_tag f, :can_manage_logs %>
+  </p>
+
+  <p>
+    <%= label f, :can_run_pipeline %>
+    <%= checkbox f, :can_run_pipeline %>
+    <%= error_tag f, :can_run_pipeline %>
+  </p>
+
+  <p>
+    <%= label f, :can_manage_players %>
+    <%= checkbox f, :can_manage_players %>
+    <%= error_tag f, :can_manage_players %>
+  </p>
+
+  <p>
+    <%= label f, :can_manage_matches %>
+    <%= checkbox f, :can_manage_matches %>
+    <%= error_tag f, :can_manage_matches %>
+  </p>
+  
+  <p>
+    <%= label f, :can_manage_leagues %>
+    <%= checkbox f, :can_manage_leagues %>
+    <%= error_tag f, :can_manage_leagues %>
+  </p>
+
+  <p>
+    <%= label f, :is_super_admin %>
+    <%= checkbox f, :is_super_admin %>
+    <%= error_tag f, :is_super_admin %>
+  </p>
+
+  <%= submit "Update Permissions" %>
+<% end %>

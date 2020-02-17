@@ -1,14 +1,28 @@
 defmodule SpireWeb.LayoutView do
   use SpireWeb, :view
 
+  alias Spire.Players.Permissions
+  alias SpireWeb.PermissionsHelper, as: Helper
+
   def is_admin?(conn) do
-    with %{id: id} <- conn.assigns[:user],
-         %{id: id} <- Spire.Players.Permissions.get_permissions_for_player(id)
-    do
-      true
+    if Helper.is_logged_in?(conn) do
+      permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
+      cond do
+        permissions.is_super_admin ->
+          true
+        permissions.can_manage_logs ->
+          true
+        permissions.can_run_pipeline ->
+          true
+        permissions.can_manage_matches ->
+          true
+        permissions.can_manage_leagues ->
+          true
+        true ->
+          false
+      end
     else
-      _err ->
-        false
+      false
     end
   end
 end

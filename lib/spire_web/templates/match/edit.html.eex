@@ -2,4 +2,4 @@
 
 <%= render "form.html", Map.put(assigns, :action, Routes.match_path(@conn, :update, @match)) %>
 
-<span><%= link "Back", to: Routes.league_match_path(@conn, :index, @match.league_id) %></span>
+<span><%= link "Back", to: Routes.league_match_path(@conn, :show, @match.id) %></span>

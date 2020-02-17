@@ -9,11 +9,18 @@
   <%= text_input f, :alias %>
   <%= error_tag f, :alias %>
 
-  <%= label f, :league_id %>
-  <%= select f, :league_id, @league_options %>
-  <%= error_tag f, :league_id %>
-
-  <div>
-    <%= submit "Save" %>
+  <div class="input_field">
+    <%= label f, :league_id %>
+    <%= select f, :league_id, @league_options, prompt: "None" %>
+    <%= error_tag f, :league_id %>
   </div>
+
+  <div class="input_field">
+    <%= label f, :main_class %>
+    <%= select f, :main_class, ["Scout": "scout", "Soldier": "soldier", "Pyro": "pyro", "Demoman": "demoman", "Heavy": "heavyweapons", "Engineer": "engineer", "Medic": "medic", "Sniper": "sniper", "Spy": "spy"], prompt: "Not Specified" %>
+    <%= error_tag f, :main_class %>
+  </div>
+
+  <%= submit "Save" %>
 <% end %>
+

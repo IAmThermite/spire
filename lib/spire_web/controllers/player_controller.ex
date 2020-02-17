@@ -6,6 +6,10 @@ defmodule SpireWeb.PlayerController do
   alias Spire.Players.Player
   alias Spire.Leagues.Matches
   alias Spire.Logs
+  alias Spire.Players.Permissions
+
+  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug :require_permissions when action not in [:index, :show, :update, :edit]
 
   def index(conn, _params) do
     players = Players.list_players()
@@ -38,23 +42,63 @@ defmodule SpireWeb.PlayerController do
   end
 
   def edit(conn, %{"id" => id}) do
-    player = Players.get_player!(id)
-    league_options = Enum.map(Leagues.list_leagues(), fn(l) -> [value: l.id, key: l.name] end)
-    changeset = Players.change_player(player)
-    render(conn, "edit.html", player: player, league_options: league_options, changeset: changeset)
+    if can_manage?(conn, id) do
+      render_form(conn, id)
+    else
+      conn
+      |> put_flash(:error, "You do not have the permissions to do this")
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt
+    end
   end
 
   def update(conn, %{"id" => id, "player" => player_params}) do
-    player = Players.get_player!(id)
+    if can_manage?(conn, id) do
+      player = Players.get_player!(id)
 
-    case Players.update_player(player, player_params) do
-      {:ok, player} ->
-        conn
-        |> put_flash(:info, "Player updated successfully.")
-        |> redirect(to: Routes.player_path(conn, :show, player))
+      case Players.update_player(player, player_params) do
+        {:ok, player} ->
+          conn
+          |> put_flash(:info, "Player updated successfully.")
+          |> redirect(to: Routes.player_path(conn, :show, player))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", player: player, changeset: changeset)
+        {:error, %Ecto.Changeset{} = changeset} ->
+          render_form_with_changeset(conn, id, changeset)
+        end
+    else
+      conn
+      |> put_flash(:error, "You do not have the permissions to do this")
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt
+    end
+  end
+
+  def update(conn, %{"id" => id, "permission" => permission_params}) do
+    if can_manage?(conn, id) do
+      player = Players.get_player!(id)
+      permissions = Permissions.get_permissions_for_player(id)
+
+      modified_params =
+        permission_params
+        |> Map.put("player_id", id)
+
+      case Permissions.create_or_update_permissions(modified_params) do
+        {:ok, permissions} ->
+          conn
+          |> put_flash(:info, "Player permissions updated successfully.")
+          |> redirect(to: Routes.player_path(conn, :show, player))
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          IO.inspect(changeset)
+          conn
+          |> put_flash(:error, "Something went wrong when updating permissions")
+          |> render_form(id)
+        end
+    else
+      conn
+      |> put_flash(:error, "You do not have the permissions to do this")
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt
     end
   end
 
@@ -65,5 +109,47 @@ defmodule SpireWeb.PlayerController do
     conn
     |> put_flash(:info, "Player deleted successfully.")
     |> redirect(to: Routes.player_path(conn, :index))
+  end
+
+  defp require_permissions(conn, _) do
+    if SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You do not have the permissions to do this")
+      |> redirect(to: Routes.page_path(conn, :index))
+      |> halt
+    end
+  end
+
+  defp can_manage?(conn, player_id) do
+    {id, _} = Integer.parse(player_id)
+    cond do
+      id == conn.assigns[:user].id ->
+        true
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+        true
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) ->
+        true
+      true ->
+        false
+    end
+  end
+
+  defp render_form(conn, player_id) do
+    player = Players.get_player!(player_id)
+    permissions = Permissions.get_permissions_for_player(player_id)
+    league_options = Enum.map(Leagues.list_leagues(), fn(l) -> [value: l.id, key: l.name] end)
+    changeset = Players.change_player(player)
+    permissions_changeset = Permissions.change_permission(permissions)
+    render(conn, "edit.html", player: player, permissions: permissions, league_options: league_options, changeset: changeset, permissions_changeset: permissions_changeset)
+  end
+
+  defp render_form_with_changeset(conn, player_id, changeset) do
+    player = Players.get_player!(player_id)
+    permissions = Permissions.get_permissions_for_player(player_id)
+    league_options = Enum.map(Leagues.list_leagues(), fn(l) -> [value: l.id, key: l.name] end)
+    permissions_changeset = Permissions.change_permission(permissions)
+    render(conn, "edit.html", player: player, permissions: permissions, league_options: league_options, changeset: changeset, permissions_changeset: permissions_changeset)
   end
 end

@@ -19,7 +19,7 @@
 
   <li>
     <strong>Link:</strong>
-    <%= @match.link %>
+    <%= link "External", to: @match.link %>
   </li>
 
 </ul>

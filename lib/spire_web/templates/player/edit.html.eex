@@ -1,5 +1,10 @@
 <h1>Edit Player</h1>
 
 <%= render "form.html", Map.put(assigns, :action, Routes.player_path(@conn, :update, @player)) %>
+<%= if is_admin?(@conn) do %>
+  <hr />
+  <h4>Permissions</h4>
+  <%= render "permissions_form.html", Map.put(assigns, :action, Routes.player_path(@conn, :update, @player)) %>
+<% end %>
 
-<span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.player_path(@conn, :show, @player.id) %></span>

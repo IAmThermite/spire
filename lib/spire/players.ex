@@ -69,7 +69,6 @@ defmodule Spire.Players do
     Repo.get!(Player, id)
     |> Repo.preload([
       :league,
-      :permissions,
       :stats_individual_real,
       :stats_individual_total,
       :stats_all_real,

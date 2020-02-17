@@ -6,6 +6,9 @@ defmodule SpireWeb.MatchController do
   alias Spire.Leagues.Matches.Match
   alias Spire.Players
 
+  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug :require_permissions when action not in [:index, :show]
+
   def index(conn, %{"league_id" => league_id}) do
     league = Leagues.get_league!(league_id)
     matches = Matches.list_matches_by_league(league.id)
@@ -65,5 +68,33 @@ defmodule SpireWeb.MatchController do
     conn
     |> put_flash(:info, "Match deleted successfully.")
     |> redirect(to: Routes.league_match_path(conn, :index, match.league_id))
+  end
+
+  defp require_permissions(conn, _) do
+    cond do
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+        conn
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_matches) ->
+        conn
+      true ->
+        conn
+        |> put_flash(:error, "You do not have the permissions to do this")
+        |> redirect(to: Routes.page_path(conn, :index))
+        |> halt
+    end
+  end
+
+  defp can_approve(conn, _) do
+    cond do
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+        conn
+      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_approve_logs) ->
+        conn
+      true ->
+        conn
+        |> put_flash(:error, "You do not have the permissions to do this")
+        |> redirect(to: Routes.page_path(conn, :index))
+        |> halt
+    end
   end
 end
