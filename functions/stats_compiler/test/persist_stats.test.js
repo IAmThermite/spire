@@ -21,7 +21,11 @@ describe('getOrCreatePlayers', async () => {
     const player_snubs = [{steamid: '1', steamid3: '1', steamid64: '1', alias: 'ALIAS', avatar: 'AVATAR'}];
     const players = await compiler.getOrCreatePlayers(player_snubs);
     players.forEach(player => {
-      assert.equal(player.alias, 'ALIAS');
+      player.then(res => {
+        assert.equal(res.alias, 'ALIAS');
+      }).catch(error => {
+        throw new Error(error)
+      })
     });
   });
 
@@ -29,7 +33,11 @@ describe('getOrCreatePlayers', async () => {
     const player_snubs = [{steamid: '1', steamid3: '1', steamid64: '1', alias: 'ALIAS', avatar: 'AVATAR'}, {steamid: '2', steamid3: '2', steamid64: '2', alias: 'ALIAS', avatar: 'AVATAR'}];
     const players = await compiler.getOrCreatePlayers(player_snubs);
     players.forEach(player => {
-      assert.equal(player.alias, 'ALIAS');
+      player.then(res => {
+        assert.equal(res.alias, 'ALIAS');
+      }).catch(error => {
+        throw new Error(error)
+      })
     });
     assert.equal(players.length, 2);
   });
