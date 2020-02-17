@@ -28,7 +28,7 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
       add :headshots, :integer, default: 0
       add :backstabs, :integer, default: 0
       add :reflect_kills, :integer, default: 0
-  
+
       add :ubers, :integer, default: 0
       add :kritz, :integer, default: 0
       add :drops, :integer, default: 0
@@ -40,12 +40,12 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
       add :total_playtime, :integer, default: 0
       add :number_of_logs, :integer, default: 0
 
-      add :player_id, references(:players, on_delete: :delete_all)
+      add :player_id, references(:players, on_delete: :delete_all), null: false
 
       timestamps()
     end
     create unique_index(:stats_individual_real, [:player_id, :class])
-    
+
     create table(:stats_individual_total) do
       add :class, :string, null: false
 
@@ -72,7 +72,7 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
       add :headshots, :integer, default: 0
       add :backstabs, :integer, default: 0
       add :reflect_kills, :integer, default: 0
-  
+
       add :ubers, :integer, default: 0
       add :kritz, :integer, default: 0
       add :drops, :integer, default: 0
@@ -84,7 +84,7 @@ defmodule Spire.Repo.Migrations.CreateStatsTotal do
       add :total_playtime, :integer, default: 0
       add :number_of_logs, :integer, default: 0
 
-      add :player_id, references(:players, on_delete: :delete_all)
+      add :player_id, references(:players, on_delete: :delete_all), null: false
 
       timestamps()
     end

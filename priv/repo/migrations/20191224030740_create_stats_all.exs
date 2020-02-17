@@ -13,7 +13,7 @@ defmodule Spire.Repo.Migrations.CreateStatsReal do
       add :longest_ks, :integer, default: 0
 
       add :average_dpm, :float, default: 0.0
-      
+
       add :times_seen_scout, :integer, default: 0
       add :times_seen_soldier, :integer, default: 0
       add :times_seen_pyro, :integer, default: 0
@@ -27,12 +27,12 @@ defmodule Spire.Repo.Migrations.CreateStatsReal do
       add :number_of_logs, :integer, default: 0
       add :time_played, :integer, default: 0
 
-      add :player_id, references(:players, on_delete: :delete_all)
+      add :player_id, references(:players, on_delete: :delete_all), null: false
 
       timestamps()
     end
     create unique_index(:stats_all_real, [:player_id])
-    
+
     create table(:stats_all_total) do
       add :total_kills, :integer, default: 0
       add :total_deaths, :integer, default: 0
@@ -44,7 +44,7 @@ defmodule Spire.Repo.Migrations.CreateStatsReal do
       add :longest_ks, :integer, default: 0
 
       add :average_dpm, :float, default: 0.0
-      
+
       add :times_seen_scout, :integer, default: 0
       add :times_seen_soldier, :integer, default: 0
       add :times_seen_pyro, :integer, default: 0
@@ -58,7 +58,7 @@ defmodule Spire.Repo.Migrations.CreateStatsReal do
       add :number_of_logs, :integer, default: 0
       add :time_played, :integer, default: 0
 
-      add :player_id, references(:players, on_delete: :delete_all)
+      add :player_id, references(:players, on_delete: :delete_all), null: false
 
       timestamps()
     end
