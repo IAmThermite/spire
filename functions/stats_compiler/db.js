@@ -4,7 +4,8 @@ const pool = new Pool();
 const connect = async () => {
   console.log('connecting to postgres');
   try {
-    return await pool.connect();
+    const client = await pool.connect();
+    return client;
   } catch(e) {
     throw new Error(e);
   }

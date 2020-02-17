@@ -50,48 +50,7 @@ const secondaryWeapons = [
 const queries = [];
 
 exports.handler = async (event) => {
-  await db.connect().catch((error) => {
-    throw new Error(error);
-  });
-
-  console.log("EVENT: \n" + JSON.stringify(event));
-
-  const players = event.players.map(player => player.id);
-
-  const log = await fetch(`https://logs.tf/json/${event.log.logname}`).then((res) => res.json());
-  
-  players.forEach(player => {
-    const steamid = log.names[player.steamid3] ? player.steamid3 : player.steamid;
-    const real = !!event.match;
-
-    const logData = log.players[steamid];
-
-    individualStats = calculateStatsIndividual(player, steamid, logData, real);
-    allStats = calculateStatsAll(player, steamid, logData, real);
-
-    addStatsIndividual(player, individualStats, real).forEach((stat) => {
-      queries.push(stat);
-    });
-    queries.push(addStatsAll(player, allStats, real));
-
-    // also add total stats if real
-    if (real) {
-      individualStats = calculateStatsIndividual(player, steamid, logData, false);
-      allStats = calculateStatsAll(player, steamid, logData, false);
-      addStatsIndividual(player, individualStats, false).forEach((stat) => {
-        queries.push(stat);
-      });
-      queries.push(addStatsAll(player, allStats, false));
-
-      queries.push(linkLogToMatch(event.log, event.match));
-    }
-
-    queries.push(linkLogToPlayer(player, log));
-  });
-
-  await commitAllToDb();
-
-  return logData;
+  main()
 };
 
 // TOTAL STATS \\
@@ -415,6 +374,68 @@ const getStatsIndividual = async (player, className, real) => {
   return res[0];
 }
 
+const getOrCreatePlayers = async (players) => {
+  const client = await db.connect();
+
+  try {
+    const results = players.map(async player => {
+      const res = await client.query('SELECT * FROM players WHERE steamid64=$1', [player.steamid64]);
+      if(res.rows[0]) {
+        return res.rows[0];
+      } else {
+        console.log(`Player ${player.steamid64} did not exist, creating...`);
+        const now = getDateTime();
+        const res = await client.query(`INSERT INTO players
+                                  (steamid, steamid3, steamid64, alias, avatar, inserted_at, updated_at)
+                                  VALUES ($1, $2, $3, $4, $5, $6, $7)
+                                  RETURNING id, steamid, steamid3, steamid64, alias`,
+          [player.steamid, player.steamid3, player.steamid64, player.alias, player.avatar, now, now]
+        );
+        return res.rows[0];
+      }
+    });
+    return results;
+  } catch(e) {
+    throw new Error(e);
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Returns the Steamid64 of the user
+ * @param {String} steamid The steamid provided by the logs
+ * @returns {String}
+ */
+const steamidToSteamid64 = (steamid) => {
+  if(steamid.startsWith('[')) {
+    parts = steamid.replace('[U:', '').replace(']', '').split(':');
+    idPart1 = Number.parseInt(parts[0]);
+    idPart2 = Number.parseInt(parts[1]);
+    return (BigInt(idPart1) + BigInt(idPart2) + 76_561_197_960_265_727n).toString();
+  } else {
+    parts = steamid.replace('STEAM_0', '').split(':');
+    idPart1 = Number.parseInt(parts[0]);
+    idPart2 = Number.parseInt(parts[1]);
+    return (BigInt(idPart1) + BigInt(idPart2) + 76_561_197_960_265_727n).toString;
+  }
+}
+
+const steamid64ToSteamId3 = (steamid) => {
+  steam_id2 = BigInt(steamid) - 76_561_197_960_265_728n;
+
+  return `[U:1:${steam_id2}]`;
+}
+
+const steamid64ToSteamId = (steamid) => {
+  steam_id1 = BigInt(steamid) % 2n;
+  steam_id2 = BigInt(steamid) - 76_561_197_960_265_728n;
+
+  steam_id2 = (steam_id2 - steam_id1) / 2n;
+
+  return `STEAM_0:${steam_id1}:${steam_id2}` // 0 since tf2 is old
+}
+
 /**
  * Check to see if the player has stats
  * otherwise create them
@@ -481,12 +502,67 @@ const commitAllToDb = async () => {
   }
 }
 
+const main = async () => {
+  await db.connect().catch((error) => {
+    throw new Error(error);
+  });
+
+  console.log("EVENT: \n" + JSON.stringify(event));
+
+  const log = await fetch(`https://logs.tf/json/${event.log.logname}`).then((res) => res.json());
+
+  const playerStubs = Object.keys(log.names).map(player => {
+    const steamid64 = steamidToSteamid64(player)
+    return {alias: log.names[player], steamid64, steamid3: steamid64ToSteamId3(steamid64), steamid: steamid64ToSteamId(steamid64), avatar: 'AVATAR'}
+  });
+  
+  const players = await getOrCreatePlayers(playerStubs)
+
+  players.forEach(player => {
+    const steamid = log.names[player.steamid3] ? player.steamid3 : player.steamid;
+    const real = !!event.match;
+
+    const logData = log.players[steamid];
+
+    individualStats = calculateStatsIndividual(player, steamid, logData, real);
+    allStats = calculateStatsAll(player, steamid, logData, real);
+
+    addStatsIndividual(player, individualStats, real).forEach((stat) => {
+      queries.push(stat);
+    });
+    queries.push(addStatsAll(player, allStats, real));
+
+    // also add total stats if real
+    if (real) {
+      individualStats = calculateStatsIndividual(player, steamid, logData, false);
+      allStats = calculateStatsAll(player, steamid, logData, false);
+      addStatsIndividual(player, individualStats, false).forEach((stat) => {
+        queries.push(stat);
+      });
+      queries.push(addStatsAll(player, allStats, false));
+
+      queries.push(linkLogToMatch(event.log, event.match));
+    }
+
+    queries.push(linkLogToPlayer(player, log));
+  });
+
+  await commitAllToDb();
+
+  return logData;
+};
+
 module.exports = {
   addStatsAll,
   addStatsIndividual,
 
   getStatsAll,
   getStatsIndividual,
+
+  getOrCreatePlayers,
+  steamidToSteamid64,
+  steamid64ToSteamId,
+  steamid64ToSteamId3,
 
   ensureStatsAllExist,
   ensureStatsIndividualExist,
@@ -505,4 +581,6 @@ module.exports = {
   calculatePyroStats,
 
   getDateTime,
+
+  main,
 };

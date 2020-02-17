@@ -6,10 +6,43 @@ const should = require('should');
 
 let playerId = 0;
 
-describe('test persistance', async () => {
+describe('getOrCreatePlayers', async () => {
+  beforeEach(async () => {
+    const now = compiler.getDateTime();
+    await db.query('DELETE FROM players');
+    await db.query('INSERT INTO players (steamid64, steamid3, steamid, alias, avatar, inserted_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', ['1', '1', '1', 'ALIAS', 'AVATAR', now, now]);
+  });
+
+  afterEach(async () => {
+    await db.query('DELETE FROM players');
+  });
+
+  it('should return the already existing player', async () => {
+    const player_snubs = [{steamid: '1', steamid3: '1', steamid64: '1', alias: 'ALIAS', avatar: 'AVATAR'}];
+    const players = await compiler.getOrCreatePlayers(player_snubs);
+    players.forEach(player => {
+      player.then(res => {
+        assert.equal(res.alias, 'ALIAS');
+      })
+    });
+  });
+
+  it('should create and return a non existing player', async () => {
+    const player_snubs = [{steamid: '1', steamid3: '1', steamid64: '1', alias: 'ALIAS', avatar: 'AVATAR'}, {steamid: '2', steamid3: '2', steamid64: '2', alias: 'ALIAS', avatar: 'AVATAR'}];
+    const players = await compiler.getOrCreatePlayers(player_snubs);
+    players.forEach(player => {
+      player.then(res => {
+        assert.equal(player.alias, 'ALIAS');
+      })
+    });
+    assert.equal(players.length, 2);
+  });
+});
+
+describe('test stats persistance', async () => {
   before(async () => {
     const now = compiler.getDateTime();
-    const player = await db.query('INSERT INTO players (steamid64, steamid3, steamid, alias, avatar, inserted_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', [1, '1', '1', 'ALIAS', 'AVATAR', now, now]);
+    const player = await db.query('INSERT INTO players (steamid64, steamid3, steamid, alias, avatar, inserted_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', ['1', '1', '1', 'ALIAS', 'AVATAR', now, now]);
     playerId = player[0].id;
   });
 
