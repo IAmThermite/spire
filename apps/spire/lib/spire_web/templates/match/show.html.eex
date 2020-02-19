@@ -1,0 +1,67 @@
+<h2><%= @match.title %></h1>
+
+<ul>
+  <li>
+    <strong>Date:</strong>
+    <%= @match.date %>
+  </li>
+
+  <li>
+    <strong>League:</strong>
+    <span><%= link @league.name, to: Routes.league_path(@conn, :show, @league) %></span>
+  </li>
+
+  <li>
+    <%= link "External Link", to: @match.link %>
+  </li>
+</ul>
+
+<%= if(can_manage?(@conn)) do %>
+  <%= button "Edit", method: :get, to: Routes.player_path(@conn, :edit, @match.id) %>
+<% end %>
+
+<h4>Players</h4>
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Steamid</th>
+      <th>Division</th>
+      <th>Main Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for player <- @players do %>
+      <tr>
+        <td><img src="<%= player.avatar %>" style="vertical-align:middle; height: 2em" /> <%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
+        <td><%= link player.steamid, to: Routes.player_path(@conn, :show, player) %></td>
+        <td><%= player.division || ""%></td>
+        <td><%= player.main_class || "" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h4>Logs</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Score</th>
+      <th>Map</th>
+      <th>Date</th>
+      <th>Logs.tf Link</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for log <- @match.logs do %>
+      <tr>
+        <td><%= log.t1_score %> - <%= log.t2_score %></td>
+        <td><%= log.map %></td>
+        <td><%= log.date %></td>
+        <td><a href="https://logs.tf/<%= log.logfile %>">logs.tf/<%= log.logfile %></a></td>
+        <td><%= link "Show", to: Routes.log_path(@conn, :show, log) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

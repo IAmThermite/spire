@@ -1,0 +1,37 @@
+<h2><%= @league.name %></h2>
+
+<ul>
+  <li>
+    <a href="<%= @league.website %>"><strong>Website</strong></a>
+  </li>
+  <li>
+    <strong>Main League:</strong>
+    <%= if @league.main, do: "yes", else: "no" %>
+  </li>
+  <li>
+    <strong><%= link "Matches", to: Routes.league_match_path(@conn, :index, @league.id) %></strong>
+  </li>
+  <%= if can_manage?(@conn) do %>
+    <li>
+      <%= button "Edit", method: :get, to: Routes.league_path(@conn, :edit, @league.id) %>
+    </li>
+  <% end %>
+</ul>
+
+<h4>Players</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Alias</th>
+      <th>Steamid64</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for player <- @league.players do %>
+    <tr>
+      <td><%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
+      <td><%= player.steamid64 %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

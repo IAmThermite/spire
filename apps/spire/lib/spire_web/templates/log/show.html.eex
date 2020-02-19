@@ -1,0 +1,36 @@
+<h2><%= @log.logfile %></h2>
+
+<ul>
+  <li>
+    <strong>Map:</strong>
+    <%= @log.map %>
+  </li>
+
+  <li>
+    <strong>Team 1 Score:</strong>
+    <%= @log.t1_score %>
+  </li>
+
+  <li>
+    <strong>Team 2 Score:</strong>
+    <%= @log.t2_score %>
+  </li>
+
+  <li>
+    <strong>Date Played:</strong>
+    <%= @log.date %>
+  </li>
+
+  <li>
+    <strong>Uploaded At:</strong>
+    <%= @log.inserted_at %>
+  </li>
+
+  <li>
+    <strong>View on Logs.tf</strong>
+    <a href="https://logs.tf/<%= @log.logfile %>">logs.tf/<%= @log.logfile %></a>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.log_path(@conn, :edit, @log) %></span>

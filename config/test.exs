@@ -1,18 +1,25 @@
 use Mix.Config
 
 # Configure your database
-config :spire, Spire.Repo,
+config :spire_db, SpireDb.Repo,
   username: "postgres",
   password: "postgres",
-  database: "spire_test",
+  database: "spire_db_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-# We don't run a server during test. If one is required,
-# you can enable the server option below.
-config :spire, SpireWeb.Endpoint,
-  http: [port: 4002],
-  server: false
+# Configure your database
+config :schemas, Schemas.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "schemas_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
 
-# Print only warnings and errors during test
-config :logger, level: :warn
+# Configure your database
+config :spire_schemas, SpireDb.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "spire_schemas_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
