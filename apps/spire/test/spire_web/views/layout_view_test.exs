@@ -1,3 +1,3 @@
-defmodule SpireWeb.LayoutViewTest do
-  use SpireWeb.ConnCase, async: true
+defmodule Spire.SpireWeb.LayoutViewTest do
+  use Spire.SpireWeb.ConnCase, async: true
 end

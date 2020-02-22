@@ -1,4 +1,4 @@
-defmodule SpireWeb.Endpoint do
+defmodule Spire.SpireWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :spire
 
   # Serve at "/" the static files from "priv/static" directory.
@@ -38,5 +38,5 @@ defmodule SpireWeb.Endpoint do
     key: "_spire_key",
     signing_salt: "dUJRmbmp"
 
-  plug SpireWeb.Router
+  plug Spire.SpireWeb.Router
 end

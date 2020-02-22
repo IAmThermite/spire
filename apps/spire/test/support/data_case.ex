@@ -16,7 +16,7 @@ defmodule Spire.DataCase do
 
   using do
     quote do
-      alias SpireDb.Repo
+      alias Spire.SpireDB.Repo
 
       import Ecto
       import Ecto.Changeset
@@ -26,10 +26,10 @@ defmodule Spire.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SpireDb.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Spire.SpireDB.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(SpireDb.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Spire.SpireDB.Repo, {:shared, self()})
     end
 
     :ok

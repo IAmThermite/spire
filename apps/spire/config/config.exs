@@ -8,14 +8,14 @@
 use Mix.Config
 
 # Configures the endpoint
-config :spire, SpireWeb.Endpoint,
+config :spire, Spire.SpireWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "nccLXt6V5rNZO8UqUW3zCdLsiXZpk8gpViJL5DK5e50I+tqs/b34esaKtE0OOrhW",
-  render_errors: [view: SpireWeb.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: Spire.SpireWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Spire.PubSub, adapter: Phoenix.PubSub.PG2]
 
 config :spire,
-  ecto_repos: [SpireDb.Repo]
+  ecto_repos: [Spire.SpireDB.Repo]
 
 config :ueberauth, Ueberauth.Strategy.Steam,
   api_key: System.get_env("STEAM_API_KEY") || raise "STEAM_API_KEY not set!"

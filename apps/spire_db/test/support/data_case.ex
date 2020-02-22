@@ -1,4 +1,4 @@
-defmodule SpireDb.DataCase do
+defmodule Spire.SpireDB.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,20 +16,20 @@ defmodule SpireDb.DataCase do
 
   using do
     quote do
-      alias SpireDb.Repo
+      alias Spire.SpireDB.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
-      import SpireDb.DataCase
+      import Spire.SpireDB.DataCase
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SpireDb.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Spire.SpireDB.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(SpireDb.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Spire.SpireDB.Repo, {:shared, self()})
     end
 
     :ok

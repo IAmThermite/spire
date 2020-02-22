@@ -1,10 +1,10 @@
-defmodule SpireDb.Leagues.Matches.Match do
+defmodule Spire.SpireDB.Leagues.Matches.Match do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias SpireDb.Leagues.League
-  alias SpireDb.Players.Player
-  alias SpireDb.Logs.Log
+  alias Spire.SpireDB.Leagues.League
+  alias Spire.SpireDB.Players.Player
+  alias Spire.SpireDB.Logs.Log
 
   schema "matches" do
     field :title, :string

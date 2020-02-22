@@ -1,4 +1,4 @@
-defmodule SpireDb.Repo.Migrations.CreateMatches do
+defmodule Spire.SpireDB.Repo.Migrations.CreateMatches do
   use Ecto.Migration
 
   def change do

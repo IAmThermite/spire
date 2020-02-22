@@ -1,12 +1,12 @@
-defmodule SpireWeb.LogController do
-  use SpireWeb, :controller
+defmodule Spire.SpireWeb.LogController do
+  use Spire.SpireWeb, :controller
 
-  alias SpireDb.Logs
-  alias SpireDb.Logs.Log
-  alias SpireDb.Logs.Uploads
-  alias SpireWeb.LogHelper
+  alias Spire.SpireDB.Logs
+  alias Spire.SpireDB.Logs.Log
+  alias Spire.SpireDB.Logs.Uploads
+  alias Spire.SpireWeb.LogHelper
 
-  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
   plug :require_permissions when action in [:delete, :update, :edit]
 
   def index(conn, %{"player_id" => player_id}) do
@@ -113,9 +113,9 @@ defmodule SpireWeb.LogController do
 
   defp require_permissions(conn, _) do
     cond do
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         conn
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_logs) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_logs) ->
         conn
       true ->
         conn

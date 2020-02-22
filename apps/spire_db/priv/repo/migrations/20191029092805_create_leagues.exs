@@ -1,4 +1,4 @@
-defmodule SpireDb.Repo.Migrations.CreateLeagues do
+defmodule Spire.SpireDB.Repo.Migrations.CreateLeagues do
   use Ecto.Migration
 
   def change do

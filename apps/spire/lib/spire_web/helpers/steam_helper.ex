@@ -1,4 +1,4 @@
-defmodule SpireWeb.SteamHelper do  
+defmodule Spire.SpireWeb.SteamHelper do
   # https://developer.valvesoftware.com/wiki/SteamID
   # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L14
   def community_id_to_steam_id(community_id) do

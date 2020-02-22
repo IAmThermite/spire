@@ -1,3 +1,3 @@
-# SpireDb
+# Spire.SpireDB
 
 **TODO: Add description**

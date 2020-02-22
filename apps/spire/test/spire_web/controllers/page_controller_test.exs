@@ -1,5 +1,5 @@
-defmodule SpireWeb.PageControllerTest do
-  use SpireWeb.ConnCase
+defmodule Spire.SpireWeb.PageControllerTest do
+  use Spire.SpireWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

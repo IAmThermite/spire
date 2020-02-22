@@ -1,6 +1,6 @@
-defmodule SpireDb do
+defmodule Spire.SpireDB do
   @moduledoc """
-  SpireDb keeps the contexts that define your domain
+  Spire.SpireDB keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

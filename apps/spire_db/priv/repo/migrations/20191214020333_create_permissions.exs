@@ -1,4 +1,4 @@
-defmodule SpireDb.Repo.Migrations.CreatePermissions do
+defmodule Spire.SpireDB.Repo.Migrations.CreatePermissions do
   use Ecto.Migration
 
   def change do

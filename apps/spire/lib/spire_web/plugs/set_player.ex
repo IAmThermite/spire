@@ -1,8 +1,8 @@
-defmodule SpireWeb.Plugs.SetPlayer do
+defmodule Spire.SpireWeb.Plugs.SetPlayer do
   import Plug.Conn
 
-  alias SpireDb.Repo
-  alias SpireDb.Players.Player
+  alias Spire.SpireDB.Repo
+  alias Spire.SpireDB.Players.Player
 
   def init(_params) do
   end

@@ -1,4 +1,4 @@
-defmodule SpireDb.Repo.Migrations.AddClassToPlayers do
+defmodule Spire.SpireDB.Repo.Migrations.AddClassToPlayers do
   use Ecto.Migration
 
   def change do

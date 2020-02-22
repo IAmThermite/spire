@@ -1,9 +1,9 @@
-defmodule SpireDb.Logs.Uploads.Upload do
+defmodule Spire.SpireDB.Logs.Uploads.Upload do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias SpireDb.Logs.Log
-  alias SpireDb.Players.Player
+  alias Spire.SpireDB.Logs.Log
+  alias Spire.SpireDB.Players.Player
 
   schema "log_upload" do
     field :approved, :boolean, default: false

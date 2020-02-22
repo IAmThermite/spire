@@ -1,4 +1,4 @@
-defmodule SpireDb.Repo.Migrations.CreateLogs do
+defmodule Spire.SpireDB.Repo.Migrations.CreateLogs do
   use Ecto.Migration
 
   def change do

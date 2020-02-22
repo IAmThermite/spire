@@ -1,5 +1,5 @@
-defmodule SpireWeb.PermissionsHelper do
-  alias SpireDb.Players.Permissions
+defmodule Spire.SpireWeb.PermissionsHelper do
+  alias Spire.SpireDB.Players.Permissions
 
   def is_logged_in?(conn) do
     conn.assigns[:user] != nil

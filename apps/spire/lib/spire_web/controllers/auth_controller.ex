@@ -1,10 +1,10 @@
-defmodule SpireWeb.AuthController do
-  use SpireWeb, :controller
+defmodule Spire.SpireWeb.AuthController do
+  use Spire.SpireWeb, :controller
 
   plug(Ueberauth)
 
   alias Ueberauth.Strategy.Helpers
-  alias SpireDb.Players
+  alias Spire.SpireDB.Players
 
   def request(conn, _params) do
     render(conn, "request.html", callback_url: Helpers.callback_url(conn))

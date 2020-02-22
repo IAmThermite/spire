@@ -1,7 +1,7 @@
-defmodule SpireDb.Players.Stats.IndividualTotal do
+defmodule Spire.SpireDB.Players.Stats.IndividualTotal do
   use Ecto.Schema
 
-  alias SpireDb.Players.Player
+  alias Spire.SpireDB.Players.Player
 
   schema "stats_individual_total" do
     field :class, :string

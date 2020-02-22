@@ -9,7 +9,7 @@ defmodule Spire.Application do
     # List all child processes to be supervised
     children = [
       # Start the endpoint when the application starts
-      SpireWeb.Endpoint
+      Spire.SpireWeb.Endpoint
       # Starts a worker by calling: Spire.Worker.start_link(arg)
       # {Spire.Worker, arg},
     ]
@@ -23,7 +23,7 @@ defmodule Spire.Application do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    SpireWeb.Endpoint.config_change(changed, removed)
+    Spire.SpireWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

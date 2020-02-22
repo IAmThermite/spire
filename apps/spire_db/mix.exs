@@ -1,4 +1,4 @@
-defmodule SpireDb.MixProject do
+defmodule Spire.SpireDB.MixProject do
   use Mix.Project
 
   def project do
@@ -22,7 +22,7 @@ defmodule SpireDb.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {SpireDb.Application, []},
+      mod: {Spire.SpireDB.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

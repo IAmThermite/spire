@@ -1,4 +1,4 @@
-defmodule SpireDb.Repo.Migrations.AddDivisionToPlayers do
+defmodule Spire.SpireDB.Repo.Migrations.AddDivisionToPlayers do
   use Ecto.Migration
 
   def change do

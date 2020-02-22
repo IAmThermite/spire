@@ -1,3 +1,3 @@
-defmodule SpireWeb.Api.LogController do
-  use SpireWeb, :controller
+defmodule Spire.SpireWeb.Api.LogController do
+  use Spire.SpireWeb, :controller
 end

@@ -1,10 +1,10 @@
-defmodule SpireWeb.LeagueController do
-  use SpireWeb, :controller
+defmodule Spire.SpireWeb.LeagueController do
+  use Spire.SpireWeb, :controller
 
-  alias SpireDb.Leagues
-  alias SpireDb.Leagues.League
+  alias Spire.SpireDB.Leagues
+  alias Spire.SpireDB.Leagues.League
 
-  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
   plug :require_permissions when action not in [:index, :show]
 
   def index(conn, _params) do
@@ -64,7 +64,7 @@ defmodule SpireWeb.LeagueController do
   end
 
   defp require_permissions(conn, _) do
-    if SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_leagues) do
+    if Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_leagues) do
       conn
     else
       conn

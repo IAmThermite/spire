@@ -11,7 +11,7 @@ secret_key_base =
     You can generate one by calling: mix phx.gen.secret
     """
 
-config :spire, SpireWeb.Endpoint,
+config :spire, Spire.SpireWeb.Endpoint,
   http: [:inet6, port: String.to_integer(System.get_env("PORT") || "4000")],
   secret_key_base: secret_key_base
 
@@ -20,7 +20,7 @@ config :spire, SpireWeb.Endpoint,
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start each relevant endpoint:
 #
-#     config :spire, SpireWeb.Endpoint, server: true
+#     config :spire, Spire.SpireWeb.Endpoint, server: true
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.

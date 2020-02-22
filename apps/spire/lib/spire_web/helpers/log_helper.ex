@@ -1,10 +1,10 @@
-defmodule SpireWeb.LogHelper do
+defmodule Spire.SpireWeb.LogHelper do
   require Logger
 
-  alias SpireDb.Players
-  alias SpireDb.Leagues.Matches
+  alias Spire.SpireDB.Players
+  alias Spire.SpireDB.Leagues.Matches
 
-  alias SpireDb.Players.Permissions
+  alias Spire.SpireDB.Players.Permissions
 
   def extract_players_from_log(log_json) do
     {:ok, []}
@@ -19,7 +19,7 @@ defmodule SpireWeb.LogHelper do
 
   def handle_upload(conn, log, upload) do
     match = get_match_from_log(log[:match_id])
-    SpireWeb.FunctionHelper.invoke("spire_stats_compiler", %{"log" => log, "match" => match, "upload" => upload})
+    Spire.SpireWeb.FunctionHelper.invoke("spire_stats_compiler", %{"log" => log, "match" => match, "upload" => upload})
   end
 
   def is_player_part_of_log(log, player) do
@@ -27,7 +27,7 @@ defmodule SpireWeb.LogHelper do
   end
 
   defp get_player(steamid) do
-    case SpireWeb.SteamHelper.get_steamid_type(steamid) do
+    case Spire.SpireWeb.SteamHelper.get_steamid_type(steamid) do
       :steamid ->
         Players.get_by_steamid(steamid)
 

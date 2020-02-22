@@ -1,14 +1,14 @@
-defmodule SpireDb.Players.Player do
+defmodule Spire.SpireDB.Players.Player do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias SpireDb.Leagues.League
-  alias SpireDb.Leagues.Matches.Match
-  alias SpireDb.Players.Permissions.Permission
-  alias SpireDb.Players.Stats.IndividualReal
-  alias SpireDb.Players.Stats.IndividualTotal
-  alias SpireDb.Players.Stats.AllReal
-  alias SpireDb.Players.Stats.AllTotal
+  alias Spire.SpireDB.Leagues.League
+  alias Spire.SpireDB.Leagues.Matches.Match
+  alias Spire.SpireDB.Players.Permissions.Permission
+  alias Spire.SpireDB.Players.Stats.IndividualReal
+  alias Spire.SpireDB.Players.Stats.IndividualTotal
+  alias Spire.SpireDB.Players.Stats.AllReal
+  alias Spire.SpireDB.Players.Stats.AllTotal
 
   schema "players" do
     field :alias, :string

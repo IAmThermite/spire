@@ -1,12 +1,12 @@
-defmodule SpireWeb.MatchController do
-  use SpireWeb, :controller
+defmodule Spire.SpireWeb.MatchController do
+  use Spire.SpireWeb, :controller
 
-  alias SpireDb.Leagues
-  alias SpireDb.Leagues.Matches
-  alias SpireDb.Leagues.Matches.Match
-  alias SpireDb.Players
+  alias Spire.SpireDB.Leagues
+  alias Spire.SpireDB.Leagues.Matches
+  alias Spire.SpireDB.Leagues.Matches.Match
+  alias Spire.SpireDB.Players
 
-  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
   plug :require_permissions when action not in [:index, :show]
 
   def index(conn, %{"league_id" => league_id}) do
@@ -72,9 +72,9 @@ defmodule SpireWeb.MatchController do
 
   defp require_permissions(conn, _) do
     cond do
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         conn
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_matches) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_matches) ->
         conn
       true ->
         conn
@@ -86,9 +86,9 @@ defmodule SpireWeb.MatchController do
 
   defp can_approve(conn, _) do
     cond do
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         conn
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_approve_logs) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_approve_logs) ->
         conn
       true ->
         conn

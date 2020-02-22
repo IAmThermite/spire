@@ -1,5 +1,5 @@
-defmodule SpireWeb.ErrorView do
-  use SpireWeb, :view
+defmodule Spire.SpireWeb.ErrorView do
+  use Spire.SpireWeb, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

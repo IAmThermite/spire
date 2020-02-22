@@ -1,5 +1,5 @@
-defmodule SpireWeb.PageController do
-  use SpireWeb, :controller
+defmodule Spire.SpireWeb.PageController do
+  use Spire.SpireWeb, :controller
 
   def index(conn, _params) do
     render(conn, "index.html")

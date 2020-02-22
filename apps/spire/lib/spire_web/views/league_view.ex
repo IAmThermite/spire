@@ -1,12 +1,12 @@
-defmodule SpireWeb.LeagueView do
-  use SpireWeb, :view
+defmodule Spire.SpireWeb.LeagueView do
+  use Spire.SpireWeb, :view
 
   def can_manage?(conn) do
-    if SpireWeb.PermissionsHelper.is_logged_in?(conn) do
+    if Spire.SpireWeb.PermissionsHelper.is_logged_in?(conn) do
       cond do
-        SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+        Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
           true
-        SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_leagues) ->
+        Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_leagues) ->
           true
         true ->
           false

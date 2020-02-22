@@ -6,7 +6,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :spire, SpireWeb.Endpoint,
+config :spire, Spire.SpireWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -46,7 +46,7 @@ config :spire, SpireWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :spire, SpireWeb.Endpoint,
+config :spire, Spire.SpireWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",

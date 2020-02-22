@@ -2,7 +2,7 @@ use Mix.Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :spire, SpireWeb.Endpoint,
+config :spire, Spire.SpireWeb.Endpoint,
   http: [port: 4002],
   server: false
 

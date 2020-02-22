@@ -1,9 +1,9 @@
-defmodule SpireWeb.AdminController do
-  use SpireWeb, :controller
-  alias SpireDb.Players
-  alias SpireDb.Players.Permissions
+defmodule Spire.SpireWeb.AdminController do
+  use Spire.SpireWeb, :controller
+  alias Spire.SpireDB.Players
+  alias Spire.SpireDB.Players.Permissions
 
-  plug SpireWeb.Plugs.RequireAuthentication
+  plug Spire.SpireWeb.Plugs.RequireAuthentication
   plug :require_permissions
 
   def index(conn, _params) do
@@ -13,7 +13,7 @@ defmodule SpireWeb.AdminController do
   end
 
   defp require_permissions(conn, _) do
-    if SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) do
+    if Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) do
       conn
     else
       conn

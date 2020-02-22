@@ -1,14 +1,14 @@
-defmodule SpireWeb.PlayerController do
-  use SpireWeb, :controller
+defmodule Spire.SpireWeb.PlayerController do
+  use Spire.SpireWeb, :controller
 
-  alias SpireDb.Players
-  alias SpireDb.Leagues
-  alias SpireDb.Players.Player
-  alias SpireDb.Leagues.Matches
-  alias SpireDb.Logs
-  alias SpireDb.Players.Permissions
+  alias Spire.SpireDB.Players
+  alias Spire.SpireDB.Leagues
+  alias Spire.SpireDB.Players.Player
+  alias Spire.SpireDB.Leagues.Matches
+  alias Spire.SpireDB.Logs
+  alias Spire.SpireDB.Players.Permissions
 
-  plug SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
+  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
   plug :require_permissions when action not in [:index, :show, :update, :edit]
 
   def index(conn, _params) do
@@ -112,7 +112,7 @@ defmodule SpireWeb.PlayerController do
   end
 
   defp require_permissions(conn, _) do
-    if SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) do
+    if Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) do
       conn
     else
       conn
@@ -127,9 +127,9 @@ defmodule SpireWeb.PlayerController do
     cond do
       id == conn.assigns[:user].id ->
         true
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         true
-      SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) ->
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) ->
         true
       true ->
         false

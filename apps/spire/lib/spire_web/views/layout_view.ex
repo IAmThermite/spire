@@ -1,8 +1,8 @@
-defmodule SpireWeb.LayoutView do
-  use SpireWeb, :view
+defmodule Spire.SpireWeb.LayoutView do
+  use Spire.SpireWeb, :view
 
-  alias SpireDb.Players.Permissions
-  alias SpireWeb.PermissionsHelper, as: Helper
+  alias Spire.SpireDB.Players.Permissions
+  alias Spire.SpireWeb.PermissionsHelper, as: Helper
 
   def is_admin?(conn) do
     if Helper.is_logged_in?(conn) do

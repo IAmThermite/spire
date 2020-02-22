@@ -1,12 +1,12 @@
-defmodule SpireDb.Players.Permissions do
+defmodule Spire.SpireDB.Players.Permissions do
   @moduledoc """
   The Leagues context.
   """
 
   import Ecto.Query, warn: false
-  alias SpireDb.Repo
+  alias Spire.SpireDB.Repo
 
-  alias SpireDb.Players.Permissions.Permission
+  alias Spire.SpireDB.Players.Permissions.Permission
 
   def get_permissions_for_player(player_id) do
     results = Repo.all(from(p in Permission, where: p.player_id == ^player_id))

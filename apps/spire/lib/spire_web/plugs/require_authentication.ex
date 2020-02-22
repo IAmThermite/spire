@@ -1,8 +1,8 @@
-defmodule SpireWeb.Plugs.RequireAuthentication do
+defmodule Spire.SpireWeb.Plugs.RequireAuthentication do
   import Plug.Conn
 
-  alias SpireDb.Repo
-  alias SpireDb.Players.Player
+  alias Spire.SpireDB.Repo
+  alias Spire.SpireDB.Players.Player
 
   def init(_params) do
   end
@@ -15,7 +15,7 @@ defmodule SpireWeb.Plugs.RequireAuthentication do
         conn
       true ->
         conn
-          |> Phoenix.Controller.redirect(to: SpireWeb.Router.Helpers.auth_path(conn, :request, :steam))
+          |> Phoenix.Controller.redirect(to: Spire.SpireWeb.Router.Helpers.auth_path(conn, :request, :steam))
           |> halt()
     end
   end

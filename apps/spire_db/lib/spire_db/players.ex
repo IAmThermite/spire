@@ -1,13 +1,13 @@
-defmodule SpireDb.Players do
+defmodule Spire.SpireDB.Players do
   @moduledoc """
   The Players context.
   """
 
   import Ecto.Query, warn: false
-  alias SpireDb.Repo
+  alias Spire.SpireDB.Repo
 
-  alias SpireDb.Players.Player
-  alias SpireWeb.SteamHelper
+  alias Spire.SpireDB.Players.Player
+  alias Spire.SpireWeb.SteamHelper
 
   @doc """
   Returns the list of players.

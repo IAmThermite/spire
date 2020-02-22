@@ -1,12 +1,12 @@
-defmodule SpireDb.Logs.Uploads do
+defmodule Spire.SpireDB.Logs.Uploads do
   @moduledoc """
   The Logs.Uploads context.
   """
 
   import Ecto.Query, warn: false
-  alias SpireDb.Repo
+  alias Spire.SpireDB.Repo
 
-  alias SpireDb.Logs.Uploads.Upload
+  alias Spire.SpireDB.Logs.Uploads.Upload
 
   @doc """
   Returns the list of uploads.

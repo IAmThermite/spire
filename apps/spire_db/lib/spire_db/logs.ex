@@ -1,12 +1,12 @@
-defmodule SpireDb.Logs do
+defmodule Spire.SpireDB.Logs do
   @moduledoc """
   The Logs context.
   """
 
   import Ecto.Query, warn: false
-  alias SpireDb.Repo
+  alias Spire.SpireDB.Repo
 
-  alias SpireDb.Logs.Log
+  alias Spire.SpireDB.Logs.Log
 
   @doc """
   Returns the list of logs.

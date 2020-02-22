@@ -1,4 +1,4 @@
-defmodule SpireDb.Application do
+defmodule Spire.SpireDB.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -7,9 +7,9 @@ defmodule SpireDb.Application do
 
   def start(_type, _args) do
     children = [
-      SpireDb.Repo
+      Spire.SpireDB.Repo
     ]
 
-    Supervisor.start_link(children, strategy: :one_for_one, name: SpireDb.Supervisor)
+    Supervisor.start_link(children, strategy: :one_for_one, name: Spire.SpireDB.Supervisor)
   end
 end

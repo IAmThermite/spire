@@ -1,8 +1,8 @@
-defmodule SpireDb.Logs.Log do
+defmodule Spire.SpireDB.Logs.Log do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias SpireDb.Leagues.Matches.Match
+  alias Spire.SpireDB.Leagues.Matches.Match
 
   schema "logs" do
     field :logfile, :string

@@ -1,8 +1,8 @@
-defmodule SpireWeb.PlayerView do
-  use SpireWeb, :view
+defmodule Spire.SpireWeb.PlayerView do
+  use Spire.SpireWeb, :view
 
   def can_manage?(conn, id) do
-    if SpireWeb.PermissionsHelper.is_logged_in?(conn) do
+    if Spire.SpireWeb.PermissionsHelper.is_logged_in?(conn) do
       cond do
         id == conn.assigns[:user].id ->
           true
@@ -17,6 +17,6 @@ defmodule SpireWeb.PlayerView do
   end
 
   def is_admin?(conn) do
-    SpireWeb.PermissionsHelper.is_logged_in?(conn) and SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin)
+    Spire.SpireWeb.PermissionsHelper.is_logged_in?(conn) and Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin)
   end
 end

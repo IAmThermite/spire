@@ -1,3 +1,3 @@
-defmodule SpireWeb.LogView do
-  use SpireWeb, :view
+defmodule Spire.SpireWeb.LogView do
+  use Spire.SpireWeb, :view
 end

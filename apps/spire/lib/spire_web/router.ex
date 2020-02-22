@@ -1,5 +1,5 @@
-defmodule SpireWeb.Router do
-  use SpireWeb, :router
+defmodule Spire.SpireWeb.Router do
+  use Spire.SpireWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -7,14 +7,14 @@ defmodule SpireWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug SpireWeb.Plugs.SetPlayer
+    plug Spire.SpireWeb.Plugs.SetPlayer
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", SpireWeb do
+  scope "/", Spire.SpireWeb do
     pipe_through :browser
 
     get "/", PageController, :index
@@ -36,16 +36,16 @@ defmodule SpireWeb.Router do
     end
   end
 
-  scope "/auth", SpireWeb do
+  scope "/auth", Spire.SpireWeb do
     pipe_through :browser
-  
+
     get "/logout", AuthController, :delete
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.
-  scope "/api/v1", SpireWeb do
+  scope "/api/v1", Spire.SpireWeb do
     pipe_through :api
   end
 end

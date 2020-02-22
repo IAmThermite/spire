@@ -1,8 +1,8 @@
-defmodule SpireDb.Players.Permissions.Permission do
+defmodule Spire.SpireDB.Players.Permissions.Permission do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias SpireDb.Players.Player
+  alias Spire.SpireDB.Players.Player
 
   schema "permissions" do
     field :can_upload_logs, :boolean, default: true

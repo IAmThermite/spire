@@ -1,12 +1,12 @@
-defmodule SpireDb.Leagues do
+defmodule Spire.SpireDB.Leagues do
   @moduledoc """
   The Leagues context.
   """
 
   import Ecto.Query, warn: false
-  alias SpireDb.Repo
+  alias Spire.SpireDB.Repo
 
-  alias SpireDb.Leagues.League
+  alias Spire.SpireDB.Leagues.League
 
   @doc """
   Returns the list of leagues.

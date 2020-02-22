@@ -1,9 +1,9 @@
-defmodule SpireDb.Leagues.League do
+defmodule Spire.SpireDB.Leagues.League do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias SpireDb.Players.Player
-  alias SpireDb.Leagues.Matches.Match
+  alias Spire.SpireDB.Players.Player
+  alias Spire.SpireDB.Leagues.Matches.Match
 
   schema "leagues" do
     field :main, :boolean, default: false

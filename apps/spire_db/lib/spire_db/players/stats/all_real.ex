@@ -1,7 +1,7 @@
-defmodule SpireDb.Players.Stats.AllReal do
+defmodule Spire.SpireDB.Players.Stats.AllReal do
   use Ecto.Schema
 
-  alias SpireDb.Players.Player
+  alias Spire.SpireDB.Players.Player
 
   schema "stats_all_real" do
     field :total_kills, :integer, default: 0
