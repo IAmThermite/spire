@@ -7,7 +7,7 @@ database_url =
     For example: ecto://USER:PASS@HOST/DATABASE
     """
 
-config :spire_db, SpireDb.Repo,
+config :spire_db, Spire.SpireDB.Repo,
   # ssl: true,
   url: database_url,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
@@ -31,7 +31,7 @@ database_url =
     For example: ecto://USER:PASS@HOST/DATABASE
     """
 
-config :spire_schemas, SpireDb.Repo,
+config :spire_schemas, Spire.SpireDB.Repo,
   # ssl: true,
   url: database_url,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")

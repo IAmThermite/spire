@@ -1,7 +1,7 @@
 use Mix.Config
 
 # Configure your database
-config :spire_db, SpireDb.Repo,
+config :spire_db, Spire.SpireDB.Repo,
   username: "postgres",
   password: "postgres",
   database: "spire_dev",

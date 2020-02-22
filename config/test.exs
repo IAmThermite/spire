@@ -1,7 +1,7 @@
 use Mix.Config
 
 # Configure your database
-config :spire_db, SpireDb.Repo,
+config :spire_db, Spire.SpireDB.Repo,
   username: "postgres",
   password: "postgres",
   database: "spire_db_test",
@@ -17,7 +17,7 @@ config :schemas, Schemas.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # Configure your database
-config :spire_schemas, SpireDb.Repo,
+config :spire_schemas, Spire.SpireDB.Repo,
   username: "postgres",
   password: "postgres",
   database: "spire_schemas_test",
