@@ -44,7 +44,7 @@ defmodule Spire.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:ueberauth_steam, "~> 0.1.2", github: "kouwasi/ueberauth_steam"},
-      {:httpoison, "~> 1.6", override: true},
+      {:httpoison, "~> 1.6.2"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_lambda, "~> 2.0"},
       {:configparser_ex, "~> 4.0"},
