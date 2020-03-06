@@ -10,7 +10,7 @@ defmodule Spire.SpireWeb.LogHelper do
     {:ok, []}
   end
 
-  def can_upload?(log, conn) do
+  def can_upload?(log_data, conn) do
     permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
     # check if they have permissions
     # is_player_part_of_log(log, conn.assigns[:user])
@@ -19,15 +19,16 @@ defmodule Spire.SpireWeb.LogHelper do
 
   def handle_upload(conn, log, upload) do
     match = get_match_from_log(log[:match_id])
-    Spire.SpireWeb.FunctionHelper.invoke("spire_stats_compiler", %{"log" => log, "match" => match, "upload" => upload})
+    Spire.Utils.SQSUtils.send_message(upload)
+    # TODO: more error handling
   end
 
   def is_player_part_of_log(log, player) do
     false
   end
 
-  defp get_player(steamid) do
-    case Spire.SpireWeb.SteamHelper.get_steamid_type(steamid) do
+  defp get_player_from_log(steamid) do
+    case Spire.Utils.SteamUtils.get_steamid_type(steamid) do
       :steamid ->
         Players.get_by_steamid(steamid)
 

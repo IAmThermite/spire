@@ -39,7 +39,8 @@ defmodule Spire.SpireDB.MixProject do
       {:ecto_sql, "~> 3.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:postgrex, ">= 0.0.0"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:utils, in_umbrella: true}
     ]
   end
 

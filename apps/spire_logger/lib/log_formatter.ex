@@ -4,10 +4,8 @@ defmodule Spire.LogFormatter do
   """
   @remove_keys [
     :application,
-    :module,
     :line,
     :file,
-    :function,
     :pid,
     :registered_name,
     :domain,
@@ -19,7 +17,7 @@ defmodule Spire.LogFormatter do
   ]
 
   def format(level, message, timestamp, metadata) do
-    "#{fmt_timestamp(timestamp)} [#{level}] #{message}\n\t#{fmt_metadata(metadata)}\n"
+    "#{fmt_timestamp(timestamp)} [#{level}] #{message}\t#{fmt_metadata(metadata)}\n"
   rescue
     error ->
       IO.inspect(error)

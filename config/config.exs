@@ -13,7 +13,6 @@ import_config "../apps/*/config/config.exs"
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-
 config :logger, :console,
   format: {Spire.LogFormatter, :format},
   metadata: :all

@@ -1,9 +1,9 @@
-defmodule Spire.LogFormatter.MixProject do
+defmodule Sprie.Utils.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :spire_logger,
+      app: :utils,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -24,6 +24,13 @@ defmodule Spire.LogFormatter.MixProject do
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
-    []
+    [
+      {:httpoison, "~> 1.6.2", override: true},
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_sqs, "~> 3.1.0"},
+      {:configparser_ex, "~> 4.0"},
+      {:hackney, "~> 1.9"},
+      {:sweet_xml, "~> 0.6"},
+    ]
   end
 end

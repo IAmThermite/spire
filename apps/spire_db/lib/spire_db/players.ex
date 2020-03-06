@@ -7,7 +7,7 @@ defmodule Spire.SpireDB.Players do
   alias Spire.SpireDB.Repo
 
   alias Spire.SpireDB.Players.Player
-  alias Spire.SpireWeb.SteamHelper
+  alias Spire.Utils.SteamUtils
 
   @doc """
   Returns the list of players.
@@ -147,8 +147,8 @@ defmodule Spire.SpireDB.Players do
       nil ->
         opts = %{
           steamid64: user.steamid,
-          steamid3: SteamHelper.community_id_to_steam_id3(String.to_integer(user.steamid)),
-          steamid: SteamHelper.community_id_to_steam_id(String.to_integer(user.steamid)),
+          steamid3: SteamUtils.community_id_to_steam_id3(user.steamid),
+          steamid: SteamUtils.community_id_to_steam_id(user.steamid),
           avatar: user.avatarfull,
           alias: user.personaname
         }
@@ -156,6 +156,16 @@ defmodule Spire.SpireDB.Players do
 
       player ->
         {:ok, player}
+    end
+  end
+
+  def get_or_create_from_stub(stub) do
+    case Repo.get_by(Player, steamid64: stub["steamid64"]) do
+      nil ->
+        {:ok, player} = Repo.insert(Player, stub)
+        player
+      player ->
+        player
     end
   end
 
