@@ -37,7 +37,7 @@ defmodule Spire.SpireDB.Players do
     |> Repo.preload([:player])
   end
 
-   @doc """
+  @doc """
   Returns the list of players.
 
   ## Examples
@@ -141,8 +141,9 @@ defmodule Spire.SpireDB.Players do
     Player.changeset(player, %{})
   end
 
-  def get_or_create_from_auth(%Ueberauth.Auth{} = auth) do
+  def get_or_create_from_auth(auth) do
     user = auth.extra.raw_info.user
+
     case Repo.get_by(Player, steamid64: user.steamid) do
       nil ->
         opts = %{
@@ -152,6 +153,7 @@ defmodule Spire.SpireDB.Players do
           avatar: user.avatarfull,
           alias: user.personaname
         }
+
         create_player(opts)
 
       player ->
@@ -164,6 +166,7 @@ defmodule Spire.SpireDB.Players do
       nil ->
         {:ok, player} = Repo.insert(Player, stub)
         player
+
       player ->
         player
     end

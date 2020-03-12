@@ -13,10 +13,13 @@ defmodule Spire.SpireWeb.Plugs.RequireAuthentication do
     cond do
       player = player_id && Repo.get(Player, player_id) ->
         conn
+
       true ->
         conn
-          |> Phoenix.Controller.redirect(to: Spire.SpireWeb.Router.Helpers.auth_path(conn, :request, :steam))
-          |> halt()
+        |> Phoenix.Controller.redirect(
+          to: Spire.SpireWeb.Router.Helpers.auth_path(conn, :request, :steam)
+        )
+        |> halt()
     end
   end
 end

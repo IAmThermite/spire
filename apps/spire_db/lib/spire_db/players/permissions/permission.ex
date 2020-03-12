@@ -21,7 +21,16 @@ defmodule Spire.SpireDB.Players.Permissions.Permission do
   @doc false
   def changeset(permissions, attrs) do
     permissions
-    |> cast(attrs, [:can_upload_logs, :can_manage_logs, :can_run_pipeline, :can_manage_players, :can_manage_matches, :can_manage_leagues, :is_super_admin, :player_id])
+    |> cast(attrs, [
+      :can_upload_logs,
+      :can_manage_logs,
+      :can_run_pipeline,
+      :can_manage_players,
+      :can_manage_matches,
+      :can_manage_leagues,
+      :is_super_admin,
+      :player_id
+    ])
     |> unique_constraint(:player_id)
     |> validate_required([:player_id])
     |> assoc_constraint(:player)

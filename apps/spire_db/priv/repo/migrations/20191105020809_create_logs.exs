@@ -10,6 +10,5 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateLogs do
     end
 
     create unique_index(:logs, [:logfile])
-
   end
 end

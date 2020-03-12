@@ -18,7 +18,7 @@ defmodule Spire.SpireWeb.PlayerController do
 
   def new(conn, _params) do
     changeset = Players.change_player(%Player{})
-    league_options = Enum.map(Leagues.list_leagues(), fn(l) -> [value: l.id, key: l.name] end)
+    league_options = Enum.map(Leagues.list_leagues(), fn l -> [value: l.id, key: l.name] end)
     render(conn, "new.html", league_options: league_options, changeset: changeset)
   end
 
@@ -64,7 +64,7 @@ defmodule Spire.SpireWeb.PlayerController do
 
         {:error, %Ecto.Changeset{} = changeset} ->
           render_form_with_changeset(conn, id, changeset)
-        end
+      end
     else
       conn
       |> put_flash(:error, "You do not have the permissions to do this")
@@ -90,10 +90,11 @@ defmodule Spire.SpireWeb.PlayerController do
 
         {:error, %Ecto.Changeset{} = changeset} ->
           IO.inspect(changeset)
+
           conn
           |> put_flash(:error, "Something went wrong when updating permissions")
           |> render_form(id)
-        end
+      end
     else
       conn
       |> put_flash(:error, "You do not have the permissions to do this")
@@ -124,13 +125,17 @@ defmodule Spire.SpireWeb.PlayerController do
 
   defp can_manage?(conn, player_id) do
     {id, _} = Integer.parse(player_id)
+
     cond do
       id == conn.assigns[:user].id ->
         true
+
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         true
+
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) ->
         true
+
       true ->
         false
     end
@@ -139,17 +144,31 @@ defmodule Spire.SpireWeb.PlayerController do
   defp render_form(conn, player_id) do
     player = Players.get_player!(player_id)
     permissions = Permissions.get_permissions_for_player(player_id)
-    league_options = Enum.map(Leagues.list_leagues(), fn(l) -> [value: l.id, key: l.name] end)
+    league_options = Enum.map(Leagues.list_leagues(), fn l -> [value: l.id, key: l.name] end)
     changeset = Players.change_player(player)
     permissions_changeset = Permissions.change_permission(permissions)
-    render(conn, "edit.html", player: player, permissions: permissions, league_options: league_options, changeset: changeset, permissions_changeset: permissions_changeset)
+
+    render(conn, "edit.html",
+      player: player,
+      permissions: permissions,
+      league_options: league_options,
+      changeset: changeset,
+      permissions_changeset: permissions_changeset
+    )
   end
 
   defp render_form_with_changeset(conn, player_id, changeset) do
     player = Players.get_player!(player_id)
     permissions = Permissions.get_permissions_for_player(player_id)
-    league_options = Enum.map(Leagues.list_leagues(), fn(l) -> [value: l.id, key: l.name] end)
+    league_options = Enum.map(Leagues.list_leagues(), fn l -> [value: l.id, key: l.name] end)
     permissions_changeset = Permissions.change_permission(permissions)
-    render(conn, "edit.html", player: player, permissions: permissions, league_options: league_options, changeset: changeset, permissions_changeset: permissions_changeset)
+
+    render(conn, "edit.html",
+      player: player,
+      permissions: permissions,
+      league_options: league_options,
+      changeset: changeset,
+      permissions_changeset: permissions_changeset
+    )
   end
 end

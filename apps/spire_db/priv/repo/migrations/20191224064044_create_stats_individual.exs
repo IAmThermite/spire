@@ -44,6 +44,7 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateStatsTotal do
 
       timestamps()
     end
+
     create unique_index(:stats_individual_real, [:player_id, :class])
 
     create table(:stats_individual_total) do
@@ -88,6 +89,7 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateStatsTotal do
 
       timestamps()
     end
+
     create unique_index(:stats_individual_total, [:player_id, :class])
   end
 end

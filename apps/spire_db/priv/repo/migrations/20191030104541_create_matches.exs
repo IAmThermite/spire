@@ -10,6 +10,5 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateMatches do
 
       timestamps()
     end
-
   end
 end

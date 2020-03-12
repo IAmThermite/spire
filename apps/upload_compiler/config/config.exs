@@ -11,4 +11,4 @@ config :upload_compiler,
   ecto_repos: [Spire.SpireDB.Repo]
 
 config :upload_compiler,
-  sqs_queue_url: System.get_env("SPIRE_SQS_QUEUE_URL") || raise "SPIRE_SQS_QUEUE_URL not set!"
+  sqs_queue_url: System.get_env("SPIRE_SQS_QUEUE_URL") || raise("SPIRE_SQS_QUEUE_URL not set!")

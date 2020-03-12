@@ -26,8 +26,7 @@ defmodule Spire.LogFormatter do
 
   defp fmt_timestamp({date, {hh, mm, ss, ms}}) do
     with {:ok, timestamp} <- NaiveDateTime.from_erl({date, {hh, mm, ss}}, {ms * 1000, 3}),
-      result <- NaiveDateTime.to_iso8601(timestamp)
-    do
+         result <- NaiveDateTime.to_iso8601(timestamp) do
       "#{result}Z"
     end
   end

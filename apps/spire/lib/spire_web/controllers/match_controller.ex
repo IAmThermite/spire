@@ -23,6 +23,7 @@ defmodule Spire.SpireWeb.MatchController do
 
   def create(conn, %{"league_id" => league_id, "match" => match_params}) do
     params = Map.put(match_params, "league_id", league_id)
+
     case Matches.create_match(params) do
       {:ok, match} ->
         conn
@@ -74,8 +75,10 @@ defmodule Spire.SpireWeb.MatchController do
     cond do
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         conn
+
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_matches) ->
         conn
+
       true ->
         conn
         |> put_flash(:error, "You do not have the permissions to do this")
@@ -88,8 +91,10 @@ defmodule Spire.SpireWeb.MatchController do
     cond do
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         conn
+
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_approve_logs) ->
         conn
+
       true ->
         conn
         |> put_flash(:error, "You do not have the permissions to do this")

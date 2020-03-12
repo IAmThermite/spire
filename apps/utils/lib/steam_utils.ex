@@ -21,7 +21,8 @@ defmodule Spire.Utils.SteamUtils do
 
     steam_id2 = div(steam_id2 - steam_id1, 2)
 
-    "STEAM_0:#{steam_id1}:#{steam_id2}" # 0 since tf2 is old
+    # 0 since tf2 is old
+    "STEAM_0:#{steam_id1}:#{steam_id2}"
   end
 
   # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L37
@@ -90,28 +91,37 @@ defmodule Spire.Utils.SteamUtils do
         String.replace(steamid, "[U:", "")
         |> String.replace("]", "")
         |> String.split(":")
+
       [part1, part2] = parts
 
-      Integer.parse(part1) + Integer.parse(part2) + 76_561_197_960_265_727
+      (Integer.parse(part1) + Integer.parse(part2) + 76_561_197_960_265_727)
       |> Integer.to_string()
     else
       parts =
         String.replace(steamid, "STEAM_0:", "")
         |> String.split(":")
+
       [part1, part2] = parts
 
-      Integer.parse(part1) + Integer.parse(part2) + 76_561_197_960_265_727
+      (Integer.parse(part1) + Integer.parse(part2) + 76_561_197_960_265_727)
       |> Integer.to_string()
     end
   end
 
   def get_steam_player(steamid64) do
-    res = HTTPoison.get!("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=#{Application.get_env(:utils, :steam_api_key)}&steamids=#{steamid64}")
+    res =
+      HTTPoison.get!(
+        "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=#{
+          Application.get_env(:utils, :steam_api_key)
+        }&steamids=#{steamid64}"
+      )
+
     %{"response" => %{"players" => players}} = Jason.decode!(res)
 
     case players do
       [player | _tail] ->
         {:ok, player}
+
       _ ->
         {:error, nil}
     end

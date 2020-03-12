@@ -10,9 +10,11 @@ defmodule Spire.SpireDB.Players.Permissions do
 
   def get_permissions_for_player(player_id) do
     results = Repo.all(from(p in Permission, where: p.player_id == ^player_id))
+
     case results do
       [permission | _tail] ->
         permission
+
       _ ->
         nil
     end

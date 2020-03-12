@@ -43,7 +43,7 @@ defmodule Spire.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:ueberauth_steam, "~> 0.1.2", github: "kouwasi/ueberauth_steam"},
+      {:ueberauth_steam, "~> 0.1.3", github: "IAmThermite/ueberauth_steam"},
       {:httpoison, "~> 1.6.2", override: true},
       {:spire_db, in_umbrella: true},
       {:utils, in_umbrella: true}

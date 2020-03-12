@@ -9,6 +9,5 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateLeagues do
 
       timestamps()
     end
-
   end
 end

@@ -35,7 +35,16 @@ defmodule Spire.SpireDB.Players.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:steamid64, :steamid3, :steamid, :avatar, :alias, :division, :main_class, :league_id])
+    |> cast(attrs, [
+      :steamid64,
+      :steamid3,
+      :steamid,
+      :avatar,
+      :alias,
+      :division,
+      :main_class,
+      :league_id
+    ])
     |> validate_required([:steamid64, :steamid3, :steamid, :alias, :avatar])
     |> unique_constraint(:steamid64)
     |> unique_constraint(:steamid3)

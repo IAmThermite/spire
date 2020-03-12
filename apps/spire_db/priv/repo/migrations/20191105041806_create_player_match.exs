@@ -8,6 +8,7 @@ defmodule Spire.SpireDB.Repo.Migrations.CreatePlayersMatches do
 
       timestamps()
     end
+
     create(index(:players_matches, [:player_id]))
     create(index(:players_matches, [:match_id]))
 

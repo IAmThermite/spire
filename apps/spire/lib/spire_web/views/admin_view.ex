@@ -6,8 +6,10 @@ defmodule Spire.SpireWeb.AdminView do
       cond do
         Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
           true
+
         Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, resource) ->
           true
+
         true ->
           false
       end

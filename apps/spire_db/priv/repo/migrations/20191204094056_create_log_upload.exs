@@ -10,6 +10,7 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateLogUpload do
 
       timestamps()
     end
+
     create(index(:log_upload, [:uploaded_by]))
 
     create unique_index(:log_upload, [:log_id])

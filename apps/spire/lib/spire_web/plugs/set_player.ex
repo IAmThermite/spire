@@ -14,6 +14,7 @@ defmodule Spire.SpireWeb.Plugs.SetPlayer do
       player = player_id && Repo.get(Player, player_id) ->
         conn
         |> assign(:user, player)
+
       true ->
         conn
         |> assign(:user, nil)

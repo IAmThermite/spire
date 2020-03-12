@@ -25,10 +25,16 @@ defmodule Spire.SpireWeb.LogController do
 
     case response do
       %{body: body} ->
-        %{"teams" => %{"Red" => red_team, "Blue" => blue_team}, "players" => players, "info" => log_info} = log_json = Jason.decode!(body)
+        %{
+          "teams" => %{"Red" => red_team, "Blue" => blue_team},
+          "players" => players,
+          "info" => log_info
+        } = log_json = Jason.decode!(body)
+
         num_of_players = map_size(players)
 
-        if num_of_players >= 12 and num_of_players <= 15 do # 6v6 (could have subs etc pop in and out however), i think spec is actually >= 12 < 18
+        # 6v6 (could have subs etc pop in and out however), i think spec is actually >= 12 < 18
+        if num_of_players >= 12 and num_of_players <= 15 do
           log_data = %{
             logfile: logfile,
             map: log_info["map"],
@@ -41,19 +47,29 @@ defmodule Spire.SpireWeb.LogController do
             length: log_info["total_length"],
             date: DateTime.from_unix!(log_info["date"])
           }
+
           if LogHelper.can_upload?(log_data, conn) do
             case Logs.create_log(log_data) do
               {:ok, log} ->
                 case Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id}) do
                   {:ok, upload} ->
                     LogHelper.handle_upload(conn, log, upload)
+
                     conn
-                    |> put_flash(:info, "Log created successfully. Processing will be completed shortly")
+                    |> put_flash(
+                      :info,
+                      "Log created successfully. Processing will be completed shortly"
+                    )
                     |> redirect(to: Routes.page_path(conn, :index))
+
                   err ->
                     Logger.error("#{__MODULE__}.create: #{inspect(err)}")
+
                     conn
-                    |> put_flash(:error, "Log was uploaded but something went wrong, contact an admin for more")
+                    |> put_flash(
+                      :error,
+                      "Log was uploaded but something went wrong, contact an admin for more"
+                    )
                     |> redirect(to: Routes.log_path(conn, :new))
                 end
 
@@ -62,7 +78,10 @@ defmodule Spire.SpireWeb.LogController do
             end
           else
             conn
-            |> put_flash(:error, "Not allowed to upload that log. If you think this is a mistake contact an admin.")
+            |> put_flash(
+              :error,
+              "Not allowed to upload that log. If you think this is a mistake contact an admin."
+            )
             |> redirect(to: Routes.page_path(conn, :index))
           end
         else
@@ -70,6 +89,7 @@ defmodule Spire.SpireWeb.LogController do
           |> put_flash(:error, "Not a valid log (must be 6v6)")
           |> redirect(to: Routes.log_path(conn, :new))
         end
+
       _ ->
         conn
         |> put_flash(:error, "Failed to get log info")
@@ -115,8 +135,10 @@ defmodule Spire.SpireWeb.LogController do
     cond do
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         conn
+
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_logs) ->
         conn
+
       true ->
         conn
         |> put_flash(:error, "You do not have the permissions to do this")

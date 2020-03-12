@@ -24,8 +24,31 @@ defmodule Spire.SpireDB.Logs.Log do
   @doc false
   def changeset(log, attrs) do
     log
-    |> cast(attrs, [:logfile, :map, :red_score, :blue_score, :red_kills, :blue_kills, :red_damage, :blue_damage, :length, :date, :match_id])
-    |> validate_required([:logfile, :map, :red_score, :blue_score, :red_kills, :blue_kills, :red_damage, :blue_damage, :length, :date])
+    |> cast(attrs, [
+      :logfile,
+      :map,
+      :red_score,
+      :blue_score,
+      :red_kills,
+      :blue_kills,
+      :red_damage,
+      :blue_damage,
+      :length,
+      :date,
+      :match_id
+    ])
+    |> validate_required([
+      :logfile,
+      :map,
+      :red_score,
+      :blue_score,
+      :red_kills,
+      :blue_kills,
+      :red_damage,
+      :blue_damage,
+      :length,
+      :date
+    ])
     |> unique_constraint(:logfile)
     |> assoc_constraint(:match)
   end

@@ -12,10 +12,10 @@ defmodule Spire.SpireDB.Repo.Migrations.CreatePlayers do
 
       timestamps()
     end
+
     create unique_index(:players, [:steamid64])
     create unique_index(:players, [:steamid3])
     create unique_index(:players, [:steamid])
     create index(:players, [:alias])
-
   end
 end

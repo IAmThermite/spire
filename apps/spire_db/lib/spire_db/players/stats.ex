@@ -15,6 +15,7 @@ defmodule Spire.SpireDB.Players.Stats do
     case Repo.get_by(AllReal, player_id: player.id) do
       nil ->
         Repo.insert!(%AllReal{player_id: player.id})
+
       stats ->
         stats
     end
@@ -25,6 +26,7 @@ defmodule Spire.SpireDB.Players.Stats do
       nil ->
         stats = Repo.insert!(%AllTotal{player_id: player.id})
         stats
+
       stats ->
         stats
     end
@@ -35,6 +37,7 @@ defmodule Spire.SpireDB.Players.Stats do
       nil ->
         stats = Repo.insert!(%IndividualReal{player_id: player.id, class: class})
         stats
+
       stats ->
         stats
     end
@@ -45,6 +48,7 @@ defmodule Spire.SpireDB.Players.Stats do
       nil ->
         stats = Repo.insert!(%IndividualTotal{player_id: player.id, class: class})
         stats
+
       stats ->
         stats
     end

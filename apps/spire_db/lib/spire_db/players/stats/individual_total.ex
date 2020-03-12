@@ -19,6 +19,7 @@ defmodule Spire.SpireDB.Players.Stats.IndividualTotal do
     field :shots_fired_pri, :integer, default: 0
     field :accuracy_pri, :float, default: 0.0
     field :dmg_per_shot_pri, :float, default: 0.0
+    field :dmg_pri, :integer, default: 0
 
     # secondary weapon stats
     field :kills_sec, :integer, default: 0
@@ -26,6 +27,7 @@ defmodule Spire.SpireDB.Players.Stats.IndividualTotal do
     field :shots_fired_sec, :integer, default: 0
     field :accuracy_sec, :float, default: 0.0
     field :dmg_per_shot_sec, :float, default: 0.0
+    field :dmg_sec, :integer, default: 0
 
     # misc stats
     field :airshots, :integer, default: 0

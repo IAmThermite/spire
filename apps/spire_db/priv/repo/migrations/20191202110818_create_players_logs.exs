@@ -7,6 +7,7 @@ defmodule Spire.SpireDB.Repo.Migrations.CreatePlayersLogs do
       add :log_id, references(:logs, on_delete: :delete_all)
       timestamps()
     end
+
     create(index(:players_logs, [:player_id]))
     create(index(:players_logs, [:log_id]))
 

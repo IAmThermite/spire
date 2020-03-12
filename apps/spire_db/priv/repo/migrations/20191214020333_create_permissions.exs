@@ -14,6 +14,7 @@ defmodule Spire.SpireDB.Repo.Migrations.CreatePermissions do
 
       timestamps()
     end
+
     create unique_index(:permissions, [:player_id])
   end
 end
