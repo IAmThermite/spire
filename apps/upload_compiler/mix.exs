@@ -30,6 +30,7 @@ defmodule Spire.UploadCompiler.MixProject do
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true}
       {:spire_db, in_umbrella: true},
+      {:spire_logger, in_umbrella: true},
       {:jason, "~> 1.0"},
       {:broadway_sqs, "~> 0.6.0"},
       {:httpoison, "~> 1.6.2", override: true}
