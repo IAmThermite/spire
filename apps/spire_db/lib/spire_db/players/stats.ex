@@ -19,38 +19,39 @@ defmodule Spire.SpireDB.Players.Stats do
       stats ->
         stats
     end
+    |> Repo.preload([:player])
   end
 
   def get_or_create_stats_all_for_player!(player, false) do
     case Repo.get_by(AllTotal, player_id: player.id) do
       nil ->
-        stats = Repo.insert!(%AllTotal{player_id: player.id})
-        stats
+        Repo.insert!(%AllTotal{player_id: player.id})
 
       stats ->
         stats
     end
+    |> Repo.preload([:player])
   end
 
   def get_or_create_stats_individual_for_player!(player, class, true) do
     case Repo.get_by(IndividualReal, player_id: player.id, class: class) do
       nil ->
-        stats = Repo.insert!(%IndividualReal{player_id: player.id, class: class})
-        stats
+        Repo.insert!(%IndividualReal{player_id: player.id, class: class})
 
       stats ->
         stats
     end
+    |> Repo.preload([:player])
   end
 
   def get_or_create_stats_individual_for_player!(player, class, false) do
     case Repo.get_by(IndividualTotal, player_id: player.id, class: class) do
       nil ->
-        stats = Repo.insert!(%IndividualTotal{player_id: player.id, class: class})
-        stats
+        Repo.insert!(%IndividualTotal{player_id: player.id, class: class})
 
       stats ->
         stats
     end
+    |> Repo.preload([:player])
   end
 end

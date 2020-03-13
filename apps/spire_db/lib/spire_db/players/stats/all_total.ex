@@ -1,5 +1,6 @@
 defmodule Spire.SpireDB.Players.Stats.AllTotal do
   use Ecto.Schema
+  import Ecto.Changeset
 
   alias Spire.SpireDB.Players.Player
 
@@ -31,5 +32,11 @@ defmodule Spire.SpireDB.Players.Stats.AllTotal do
     belongs_to :player, Player
 
     timestamps()
+  end
+
+  def changeset(stats, attrs \\ %{}) do
+    stats
+    |> cast(attrs, __schema__(:fields))
+    |> validate_required([:player_id])
   end
 end

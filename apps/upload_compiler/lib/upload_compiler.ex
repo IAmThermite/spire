@@ -50,7 +50,8 @@ defmodule Spire.UploadCompiler do
 
     stats_individual =
       Enum.map(players, fn player ->
-        player_log_json = log_json["players"][player.steamid3]
+        # TODO: fix for older logs
+        player_log_json = get_log_json_for_player(player, log_json)
 
         Enum.map(player_log_json["class_stats"], fn stat ->
           Stats.get_or_create_stats_individual_for_player!(player, stat["type"], real)
@@ -60,12 +61,16 @@ defmodule Spire.UploadCompiler do
 
     updated_stats_all =
       Enum.map(stats_all, fn stat ->
-        AllCalculations.calculate_stats(stat, log_json)
+        player_log_json = get_log_json_for_player(stat.player, log_json)
+
+        AllCalculations.calculate_stats(stat, player_log_json)
       end)
 
     updated_stats_individual =
       Enum.map(stats_individual, fn stat ->
-        IndividualCalculations.calculate_stats(stat, log_json)
+        player_log_json = get_log_json_for_player(stat.player, log_json)
+
+        IndividualCalculations.calculate_stats(stat, player_log_json)
       end)
 
     persist_stats([updated_stats_all | updated_stats_individual], upload["logfile"])
@@ -108,5 +113,9 @@ defmodule Spire.UploadCompiler do
 
     multis_with_upload = [Ecto.Multi.update(multis, %{upload: upload.id}, upload) | multis]
     Repo.transaction(multis_with_upload)
+  end
+
+  defp get_log_json_for_player(player, log_json) do
+    log_json["players"][player.steamid3] || log_json["players"][player.steamid]
   end
 end

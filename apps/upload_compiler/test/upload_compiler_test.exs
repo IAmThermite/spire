@@ -3,6 +3,5 @@ defmodule Spire.UploadCompilerTest do
   doctest Spire.UploadCompiler
 
   describe "get_player_stubs/1" do
-
   end
 end

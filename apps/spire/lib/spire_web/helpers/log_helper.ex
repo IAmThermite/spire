@@ -7,7 +7,7 @@ defmodule Spire.SpireWeb.LogHelper do
   alias Spire.SpireDB.Players.Permissions
 
   def extract_players_from_log(log_json) do
-    {:ok, []}
+    []
   end
 
   def can_upload?(log_data, conn) do
@@ -34,11 +34,6 @@ defmodule Spire.SpireWeb.LogHelper do
 
       :steamid3 ->
         Players.get_by_steamid3(steamid)
-
-      _ ->
-        # should not get here
-        Logger.error("#{__MODULE__}.get_player/1", steamid: steamid)
-        nil
     end
   end
 

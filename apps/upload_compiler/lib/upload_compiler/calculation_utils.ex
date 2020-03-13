@@ -56,20 +56,27 @@ defmodule Spire.UploadCompiler.CalculationUtils do
   @doc """
   Add the value to the stats, i.e kills
   """
-  def add_stat(%{changes: stats} = changeset, stat, value) do
-    new_stat = stats[stat] + value
-    Ecto.Changeset.put_change(changeset, stat, new_stat)
+  def add_stat(stats, stat, value) when is_number(value) do
+    new_stat = Map.get(stats, stat) + value
+    %{stats | stat => new_stat}
   end
 
   @doc """
   Set an averaged value to the stats, i.e dpm
   """
-  def average_stat(%{changes: stats} = changeset, stat, value) do
-    if stats[stat] == 0 do
-      Ecto.Changeset.put_change(changeset, stat, value)
+  def average_stat(stats, stat, value) when is_number(value) do
+    if Map.get(stats, stat) == 0 do
+      %{stats | stat => value}
     else
-      new_stat = (stats[stat] + (stats[stat] + value)) / 2
-      Ecto.Changeset.put_change(changeset, stat, new_stat)
+      new_stat = (Map.get(stats, stat) + value) / 2
+      %{stats | stat => new_stat}
     end
+  end
+
+  @doc """
+  Set a value on the stats
+  """
+  def put_stat(stats, stat, value) when is_number(value) do
+    %{stats | stat => value}
   end
 end
