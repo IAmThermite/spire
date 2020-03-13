@@ -11,7 +11,7 @@ install:
   - mix ecto.create
   - mix ecto.migrate
 script:
-  - echo "spire-web script"
+  - cd apps/upload_compiler/ && mix test
 # deploy:
 #   provider: lambda
 #   secret_access_key:

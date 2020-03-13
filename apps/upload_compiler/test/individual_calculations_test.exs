@@ -178,7 +178,6 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
         heal_total: 2000,
         ave_time_to_build: 55,
         drops: 1,
-        ave_time_before_healing: 1.5,
         ave_uber_length: 7,
         ave_time_before_healing: 2,
         ave_time_before_using: 20
@@ -266,6 +265,9 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
       refute new_stats.kills == 0
       refute new_stats.accuracy_pri == 0
       refute new_stats.airshots == 0
+      refute new_stats.kills_pri == 0
+      refute new_stats.kills_sec == 0
+      refute new_stats.total_playtime == 0
     end
   end
 end
