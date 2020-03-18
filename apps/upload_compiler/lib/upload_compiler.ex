@@ -63,14 +63,22 @@ defmodule Spire.UploadCompiler do
       Enum.map(stats_all, fn stat ->
         player_log_json = get_log_json_for_player(stat.player, log_json)
 
-        AllCalculations.calculate_stats(stat, player_log_json)
+        attrs =
+          AllCalculations.calculate_stats(stat, player_log_json)
+          |> Map.from_struct()
+
+        Stats.All.changeset(%Stats.All{}, attrs)
       end)
 
     updated_stats_individual =
       Enum.map(stats_individual, fn stat ->
         player_log_json = get_log_json_for_player(stat.player, log_json)
 
-        IndividualCalculations.calculate_stats(stat, player_log_json)
+        attrs =
+          IndividualCalculations.calculate_stats(stat, player_log_json)
+          |> Map.from_struct()
+
+        Stats.Individual.changeset(%Stats.Individual{}, attrs)
       end)
 
     persist_stats([updated_stats_all | updated_stats_individual], upload)

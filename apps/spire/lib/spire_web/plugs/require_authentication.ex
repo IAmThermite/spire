@@ -11,7 +11,7 @@ defmodule Spire.SpireWeb.Plugs.RequireAuthentication do
     player_id = get_session(conn, :user_id)
 
     cond do
-      player = player_id && Repo.get(Player, player_id) ->
+      player_id && Repo.get(Player, player_id) ->
         conn
 
       true ->

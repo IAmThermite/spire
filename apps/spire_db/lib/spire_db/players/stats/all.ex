@@ -1,10 +1,12 @@
-defmodule Spire.SpireDB.Players.Stats.AllTotal do
+defmodule Spire.SpireDB.Players.Stats.All do
   use Ecto.Schema
   import Ecto.Changeset
 
   alias Spire.SpireDB.Players.Player
 
-  schema "stats_all_total" do
+  schema "stats_all" do
+    field :real, :boolean, null: false, default: false
+
     field :total_kills, :integer, default: 0
     field :total_deaths, :integer, default: 0
     field :total_assists, :integer, default: 0
@@ -37,6 +39,6 @@ defmodule Spire.SpireDB.Players.Stats.AllTotal do
   def changeset(stats, attrs \\ %{}) do
     stats
     |> cast(attrs, __schema__(:fields))
-    |> validate_required([:player_id])
+    |> validate_required([:player_id, :real])
   end
 end

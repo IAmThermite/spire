@@ -9,6 +9,9 @@ defmodule Spire.SpireWeb.LayoutView do
       permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
 
       cond do
+        permissions == nil ->
+          false
+
         permissions.is_super_admin ->
           true
 

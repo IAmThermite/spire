@@ -3,7 +3,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
   doctest Spire.UploadCompiler.AllCalculations
 
   alias Spire.UploadCompiler.AllCalculations
-  alias Spire.SpireDB.Players.Stats.AllTotal
+  alias Spire.SpireDB.Players.Stats.All
 
   @class_stat %{
     "type" => "soldier",
@@ -64,7 +64,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
 
   describe "calculate_general_stats/2" do
     test "it should add general stats" do
-      stats = %AllTotal{}
+      stats = %All{}
 
       new_stats = AllCalculations.calculate_general_stats(stats, @log_json)
 
@@ -79,7 +79,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
     end
 
     test "it should add when stats already exist" do
-      stats = %AllTotal{
+      stats = %All{
         total_kills: 4,
         total_assists: 4,
         total_deaths: 4,
@@ -103,7 +103,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
     end
 
     test "it should not change longest_ks when ks in logs is lower" do
-      stats = %AllTotal{longest_ks: 5}
+      stats = %All{longest_ks: 5}
 
       new_stats = AllCalculations.calculate_general_stats(stats, @log_json)
 
@@ -113,7 +113,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
 
   describe "calculate_seen_stats/2" do
     test "it should add the number of times seen for each class" do
-      stats = %AllTotal{}
+      stats = %All{}
 
       new_stats = AllCalculations.calculate_seen_stats(stats, [@class_stat])
 
@@ -121,7 +121,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
     end
 
     test "it should add the number of times seen for each class 2" do
-      stats = %AllTotal{times_seen_soldier: 2}
+      stats = %All{times_seen_soldier: 2}
 
       new_stats = AllCalculations.calculate_seen_stats(stats, [@class_stat])
 
@@ -135,7 +135,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
         |> Map.put("type", "scout")
       ]
 
-      stats = %AllTotal{times_seen_soldier: 2, times_seen_scout: 4}
+      stats = %All{times_seen_soldier: 2, times_seen_scout: 4}
 
       new_stats = AllCalculations.calculate_seen_stats(stats, class_stats)
 
@@ -152,7 +152,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
         |> Map.put("type", "scout")
         |> Map.put("total_time", 1500)
       ]
-      stats = %AllTotal{}
+      stats = %All{}
 
       new_stats = AllCalculations.calculate_additional_stats(stats, class_stats)
 
@@ -167,7 +167,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
         |> Map.put("type", "scout")
         |> Map.put("total_time", 1500)
       ]
-      stats = %AllTotal{time_played: 4000, number_of_logs: 3}
+      stats = %All{time_played: 4000, number_of_logs: 3}
 
       new_stats = AllCalculations.calculate_additional_stats(stats, class_stats)
 
@@ -178,7 +178,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
 
   describe "calculate_stats/2" do
     test "calculates total stats" do
-      stats = %AllTotal{}
+      stats = %All{}
 
       new_stats = AllCalculations.calculate_stats(stats, @log_json)
 

@@ -15,7 +15,7 @@ defmodule Spire.Utils.SteamUtils do
       "STEAM_0:0:79062019"
   """
   def community_id_to_steam_id(community_id) do
-    steamid64 = Integer.to_string(community_id)
+    steamid64 = String.to_integer(community_id)
     steam_id1 = rem(steamid64, 2)
     steam_id2 = steamid64 - 76_561_197_960_265_728
 
@@ -35,7 +35,7 @@ defmodule Spire.Utils.SteamUtils do
       "[U:1:158124038]"
   """
   def community_id_to_steam_id3(community_id) do
-    steamid64 = Integer.to_string(community_id)
+    steamid64 = String.to_integer(community_id)
     steam_id2 = steamid64 - 76_561_197_960_265_728
 
     "[U:1:#{steam_id2}]"

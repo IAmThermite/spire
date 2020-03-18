@@ -5,10 +5,8 @@ defmodule Spire.SpireDB.Players.Player do
   alias Spire.SpireDB.Leagues.League
   alias Spire.SpireDB.Leagues.Matches.Match
   alias Spire.SpireDB.Players.Permissions.Permission
-  alias Spire.SpireDB.Players.Stats.IndividualReal
-  alias Spire.SpireDB.Players.Stats.IndividualTotal
-  alias Spire.SpireDB.Players.Stats.AllReal
-  alias Spire.SpireDB.Players.Stats.AllTotal
+  alias Spire.SpireDB.Players.Stats.Individual
+  alias Spire.SpireDB.Players.Stats.All
 
   schema "players" do
     field :alias, :string
@@ -22,10 +20,8 @@ defmodule Spire.SpireDB.Players.Player do
     belongs_to :league, League
     has_one :permissions, Permission
 
-    has_many :stats_individual_real, IndividualReal
-    has_many :stats_individual_total, IndividualTotal
-    has_one :stats_all_real, AllReal
-    has_one :stats_all_total, AllTotal
+    has_many :stats_individual, Individual
+    has_many :stats_all, All
 
     many_to_many :matches, Match, join_through: "players_matches", on_replace: :delete
 

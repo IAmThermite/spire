@@ -3,11 +3,11 @@ defmodule Spire.UploadCompiler.CalculationUtilsTest do
   doctest Spire.UploadCompiler.CalculationUtils
 
   alias Spire.UploadCompiler.CalculationUtils
-  alias Spire.SpireDB.Players.Stats.AllTotal
+  alias Spire.SpireDB.Players.Stats.All
 
   describe "add_stat/3" do
     test "it should add to stats" do
-      stats = %AllTotal{total_kills: 10}
+      stats = %All{total_kills: 10}
 
       new_stats = CalculationUtils.add_stat(stats, :total_kills, 5)
 
@@ -15,7 +15,7 @@ defmodule Spire.UploadCompiler.CalculationUtilsTest do
     end
 
     test "it should add to stats when stat is 0" do
-      stats = %AllTotal{}
+      stats = %All{}
 
       new_stats = CalculationUtils.add_stat(stats, :total_kills, 5)
 
@@ -25,7 +25,7 @@ defmodule Spire.UploadCompiler.CalculationUtilsTest do
 
   describe "average_stat/3" do
     test "it should average out two stats" do
-      stats = %AllTotal{average_dpm: 100}
+      stats = %All{average_dpm: 100}
 
       new_stats = CalculationUtils.average_stat(stats, :average_dpm, 150)
 
@@ -33,7 +33,7 @@ defmodule Spire.UploadCompiler.CalculationUtilsTest do
     end
 
     test "it should average out two stats 2" do
-      stats = %AllTotal{average_dpm: 150}
+      stats = %All{average_dpm: 150}
 
       new_stats = CalculationUtils.average_stat(stats, :average_dpm, 100)
 
@@ -41,7 +41,7 @@ defmodule Spire.UploadCompiler.CalculationUtilsTest do
     end
 
     test "it should put the value directly when stat is 0" do
-      stats = %AllTotal{}
+      stats = %All{}
 
       new_stats = CalculationUtils.average_stat(stats, :average_dpm, 150)
 

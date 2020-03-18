@@ -6,15 +6,13 @@ defmodule Spire.SpireDB.Players.Stats do
   import Ecto.Query, warn: false
   alias Spire.SpireDB.Repo
 
-  alias Spire.SpireDB.Players.Stats.AllReal
-  alias Spire.SpireDB.Players.Stats.AllTotal
-  alias Spire.SpireDB.Players.Stats.IndividualReal
-  alias Spire.SpireDB.Players.Stats.IndividualTotal
+  alias Spire.SpireDB.Players.Stats.All
+  alias Spire.SpireDB.Players.Stats.Individual
 
-  def get_or_create_stats_all_for_player!(player, true) do
-    case Repo.get_by(AllReal, player_id: player.id) do
+  def get_or_create_stats_all_for_player!(player, real) do
+    case Repo.get_by(All, player_id: player.id) do
       nil ->
-        Repo.insert!(%AllReal{player_id: player.id})
+        Repo.insert!(%All{player_id: player.id, real: real})
 
       stats ->
         stats
@@ -22,32 +20,10 @@ defmodule Spire.SpireDB.Players.Stats do
     |> Repo.preload([:player])
   end
 
-  def get_or_create_stats_all_for_player!(player, false) do
-    case Repo.get_by(AllTotal, player_id: player.id) do
+  def get_or_create_stats_individual_for_player!(player, class, real) do
+    case Repo.get_by(Individual, player_id: player.id, class: class) do
       nil ->
-        Repo.insert!(%AllTotal{player_id: player.id})
-
-      stats ->
-        stats
-    end
-    |> Repo.preload([:player])
-  end
-
-  def get_or_create_stats_individual_for_player!(player, class, true) do
-    case Repo.get_by(IndividualReal, player_id: player.id, class: class) do
-      nil ->
-        Repo.insert!(%IndividualReal{player_id: player.id, class: class})
-
-      stats ->
-        stats
-    end
-    |> Repo.preload([:player])
-  end
-
-  def get_or_create_stats_individual_for_player!(player, class, false) do
-    case Repo.get_by(IndividualTotal, player_id: player.id, class: class) do
-      nil ->
-        Repo.insert!(%IndividualTotal{player_id: player.id, class: class})
+        Repo.insert!(%Individual{player_id: player.id, class: class, real: real})
 
       stats ->
         stats

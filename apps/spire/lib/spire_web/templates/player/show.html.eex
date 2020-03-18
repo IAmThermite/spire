@@ -53,27 +53,28 @@
     </ul>
   </div>
   <div class="col s12">
+    <% stats = get_stats_map(@player.stats_individual, @player.stats_all) %>
     <div id="individual_total">
-      <%= if @player.stats_individual_total != [] do %>
-        <%= render "stats_individual.html", stats: @player.stats_individual_total, name: "total" %>
+      <%= if stats["stats_individual_total"] != nil do %>
+        <%= render "stats_individual.html", stats: stats["stats_individual_total"], name: "total" %>
       <% end %>
     </div>
   
     <div id="individual_real">
-      <%= if @player.stats_individual_real != [] do %>
-        <%= render "stats_individual.html", stats: @player.stats_individual_real, name: "real" %>
+      <%= if stats["stats_individual_real"] != nil do %>
+        <%= render "stats_individual.html", stats: stats["stats_individual_real"], name: "real" %>
       <% end %>
     </div>
   
     <div id="all_total">
-      <%= if @player.stats_all_total do %>
-        <%= render "stats_all.html", stats: @player.stats_all_total %>
+      <%= if stats["stats_all_total"] != nil do %>
+        <%= render "stats_all.html", stats: stats["stats_all_total"] %>
       <% end %>
     </div>
   
     <div id="all_real">
-      <%= if @player.stats_all_real do %>
-        <%= render "stats_all.html", stats: @player.stats_all_real %>
+      <%= if stats["stats_all_real"] != nil do %>
+        <%= render "stats_all.html", stats: stats["stats_all_real"] %>
       <% end %>
     </div>
   </div>

@@ -3,7 +3,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
   doctest Spire.UploadCompiler.IndividualCalculations
 
   alias Spire.UploadCompiler.IndividualCalculations
-  alias Spire.SpireDB.Players.Stats.IndividualTotal
+  alias Spire.SpireDB.Players.Stats.Individual
 
   @class_stat %{
     "type" => "soldier",
@@ -57,7 +57,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
   describe "calculate_general_stats/2" do
     test "it should add general stats" do
-      stats = %IndividualTotal{}
+      stats = %Individual{}
 
       new_stats = IndividualCalculations.calculate_general_stats(stats, @class_stat)
 
@@ -69,7 +69,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should add general stats when stats are non 0" do
-      stats = %IndividualTotal{kills: 5, deaths: 5, assists: 5, dpm: 200}
+      stats = %Individual{kills: 5, deaths: 5, assists: 5, dpm: 200}
 
       new_stats = IndividualCalculations.calculate_general_stats(stats, @class_stat)
 
@@ -82,7 +82,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
   describe "calculate_weapon_stats/2" do
     test "it adds weapon stats" do
-      stats = %IndividualTotal{}
+      stats = %Individual{}
 
       new_stats = IndividualCalculations.calculate_weapon_stats(stats, @class_stat)
 
@@ -95,7 +95,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it adds weapon stats when stats are non 0" do
-      stats = %IndividualTotal{
+      stats = %Individual{
         kills_pri: 5,
         dmg_pri: 5000,
         shots_hit_pri: 20,
@@ -128,7 +128,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
         @class_stat
         |> Map.put("weapon", weapons)
 
-      stats = %IndividualTotal{}
+      stats = %Individual{}
 
       new_stats = IndividualCalculations.calculate_weapon_stats(stats, class_stats)
 
@@ -143,7 +143,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
   describe "calculate_medic_stats/2" do
     test "it does nothing when class is not medic" do
-      stats = %IndividualTotal{class: "soldier"}
+      stats = %Individual{class: "soldier"}
 
       new_stats = IndividualCalculations.calculate_medic_stats(stats, @log_json)
 
@@ -151,7 +151,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should calculate the number of ubers and kritz" do
-      stats = %IndividualTotal{class: "medic"}
+      stats = %Individual{class: "medic"}
 
       new_stats = IndividualCalculations.calculate_medic_stats(stats, @log_json)
 
@@ -160,7 +160,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should add the other stats" do
-      stats = %IndividualTotal{class: "medic"}
+      stats = %Individual{class: "medic"}
 
       new_stats = IndividualCalculations.calculate_medic_stats(stats, @log_json)
 
@@ -173,7 +173,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should add the other stats when stats already exist" do
-      stats = %IndividualTotal{
+      stats = %Individual{
         class: "medic",
         heal_total: 2000,
         ave_time_to_build: 55,
@@ -196,7 +196,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
   describe "calculate_soldier_demoman_stats/2" do
     test "does nothing when class is not soldier or demoman" do
-      stats = %IndividualTotal{class: "medic"}
+      stats = %Individual{class: "medic"}
 
       new_stats = IndividualCalculations.calculate_soldier_demoman_stats(stats, @log_json)
 
@@ -204,7 +204,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should add airshots when class is soldier" do
-      stats = %IndividualTotal{class: "soldier"}
+      stats = %Individual{class: "soldier"}
 
       new_stats = IndividualCalculations.calculate_soldier_demoman_stats(stats, @log_json)
 
@@ -212,7 +212,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should add airshots when class is demoman" do
-      stats = %IndividualTotal{class: "demoman"}
+      stats = %Individual{class: "demoman"}
 
       new_stats = IndividualCalculations.calculate_soldier_demoman_stats(stats, @log_json)
 
@@ -222,7 +222,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
   describe "calculate_sniper_stats/2" do
     test "it should do nothing if class is not sniper" do
-      stats = %IndividualTotal{class: "soldier"}
+      stats = %Individual{class: "soldier"}
 
       new_stats = IndividualCalculations.calculate_sniper_stats(stats, @log_json)
 
@@ -230,7 +230,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should add headshots if class is sniper" do
-      stats = %IndividualTotal{class: "sniper"}
+      stats = %Individual{class: "sniper"}
 
       new_stats = IndividualCalculations.calculate_sniper_stats(stats, @log_json)
 
@@ -240,7 +240,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
   describe "calculate_spy_stats/2" do
     test "it should do nothing if class is not spy" do
-      stats = %IndividualTotal{class: "soldier"}
+      stats = %Individual{class: "soldier"}
 
       new_stats = IndividualCalculations.calculate_spy_stats(stats, @log_json)
 
@@ -248,7 +248,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
     end
 
     test "it should add headshots if class is spy" do
-      stats = %IndividualTotal{class: "spy"}
+      stats = %Individual{class: "spy"}
 
       new_stats = IndividualCalculations.calculate_spy_stats(stats, @log_json)
 
@@ -258,7 +258,7 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
   describe "calculate_stats/2" do
     test "it should calculate stats" do
-      stats = %IndividualTotal{class: "soldier"}
+      stats = %Individual{class: "soldier"}
 
       new_stats = IndividualCalculations.calculate_stats(stats, @log_json)
 

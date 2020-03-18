@@ -69,10 +69,8 @@ defmodule Spire.SpireDB.Players do
     Repo.get!(Player, id)
     |> Repo.preload([
       :league,
-      :stats_individual_real,
-      :stats_individual_total,
-      :stats_all_real,
-      :stats_all_total
+      :stats_individual,
+      :stats_all
     ])
   end
 

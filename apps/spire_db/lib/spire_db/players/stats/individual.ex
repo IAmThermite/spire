@@ -1,10 +1,11 @@
-defmodule Spire.SpireDB.Players.Stats.IndividualReal do
+defmodule Spire.SpireDB.Players.Stats.Individual do
   use Ecto.Schema
   import Ecto.Changeset
 
   alias Spire.SpireDB.Players.Player
 
-  schema "stats_individual_real" do
+  schema "stats_individual" do
+    field :real, :boolean, null: false, default: false
     field :class, :string
 
     field :kills, :integer, default: 0
@@ -56,6 +57,6 @@ defmodule Spire.SpireDB.Players.Stats.IndividualReal do
   def changeset(stats, attrs \\ %{}) do
     stats
     |> cast(attrs, __schema__(:fields))
-    |> validate_required([:player_id, :class])
+    |> validate_required([:player_id, :class, :real])
   end
 end
