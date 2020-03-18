@@ -29,7 +29,7 @@ defmodule Spire.UploadCompiler do
 
     real = Map.has_key?(data, "match")
 
-    upload = Jason.decode!(data)
+    upload = Jason.decode!(data["upload"])
 
     %HTTPoison.Response{body: body, status_code: 200} =
       HTTPoison.get!("https://logs.tf/json/#{upload["logfile"]}")
@@ -73,7 +73,7 @@ defmodule Spire.UploadCompiler do
         IndividualCalculations.calculate_stats(stat, player_log_json)
       end)
 
-    persist_stats([updated_stats_all | updated_stats_individual], upload["logfile"])
+    persist_stats([updated_stats_all | updated_stats_individual], upload)
 
     message
     |> Message.update_data(fn _data -> log_json end)

@@ -48,19 +48,30 @@ defmodule Spire.SpireWeb.LogController do
             date: DateTime.from_unix!(log_info["date"])
           }
 
-          if LogHelper.can_upload?(log_data, conn) do
+          if LogHelper.can_upload?(log_json, conn) do
             case Logs.create_log(log_data) do
               {:ok, log} ->
                 case Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id}) do
                   {:ok, upload} ->
-                    LogHelper.handle_upload(conn, log, upload)
+                    res = LogHelper.handle_upload(log, upload)
 
-                    conn
-                    |> put_flash(
-                      :info,
-                      "Log created successfully. Processing will be completed shortly"
-                    )
-                    |> redirect(to: Routes.page_path(conn, :index))
+                    case res do
+                      {:ok, _response} ->
+                        conn
+                        |> put_flash(
+                          :info,
+                          "Log created successfully. Processing will be completed shortly"
+                        )
+                        |> redirect(to: Routes.page_path(conn, :index))
+
+                      {:error, _error} ->
+                        conn
+                        |> put_flash(
+                          :error,
+                          "Error attempting to process log, contact admin for more"
+                        )
+                        |> redirect(to: Routes.page_path(conn, :index))
+                    end
 
                   err ->
                     Logger.error("#{__MODULE__}.create: #{inspect(err)}")

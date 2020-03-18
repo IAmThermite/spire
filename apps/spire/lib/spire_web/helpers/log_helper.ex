@@ -1,39 +1,41 @@
 defmodule Spire.SpireWeb.LogHelper do
   require Logger
 
-  alias Spire.SpireDB.Players
   alias Spire.SpireDB.Leagues.Matches
 
   alias Spire.SpireDB.Players.Permissions
 
-  def extract_players_from_log(log_json) do
-    []
-  end
-
-  def can_upload?(log_data, conn) do
+  def can_upload?(log_json, conn) do
     permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
-    # check if they have permissions
-    # is_player_part_of_log(log, conn.assigns[:user])
-    true
+    case permissions do
+      %{can_upload_logs: val} ->
+        val
+      %{can_manage_logs: true} ->
+        true
+      %{is_super_admin: true} ->
+        true
+      _ ->
+        is_player_part_of_log?(log_json["players"], conn.assigns[:user])
+    end
   end
 
-  def handle_upload(conn, log, upload) do
+  def handle_upload(log, upload) do
+    Logger.debug("#{__MODULE__}.handle_upload", log: log, upload: upload)
     match = get_match_from_log(log[:match_id])
-    Spire.Utils.SQSUtils.send_message(upload)
-    # TODO: more error handling
+    response = Spire.Utils.SQSUtils.send_message(Jason.encode!(%{upload: upload, log: log, match: match}))
+    {:ok, response}
   end
 
-  def is_player_part_of_log(log, player) do
-    false
-  end
+  def is_player_part_of_log?(log_players, %{steamid: steamid, steamid3: steamid3} = _player) do
+    case log_players do
+      %{^steamid => _name} ->
+        true
 
-  defp get_player_from_log(steamid) do
-    case Spire.Utils.SteamUtils.get_steamid_type(steamid) do
-      :steamid ->
-        Players.get_by_steamid(steamid)
+      %{^steamid3 => _name} ->
+        true
 
-      :steamid3 ->
-        Players.get_by_steamid3(steamid)
+      _ ->
+        false
     end
   end
 

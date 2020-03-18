@@ -25,7 +25,7 @@ defmodule Sprie.Utils.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.6.2", override: true},
+      {:httpoison, "~> 1.6.2"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_sqs, "~> 3.1.0"},
       {:configparser_ex, "~> 4.0"},

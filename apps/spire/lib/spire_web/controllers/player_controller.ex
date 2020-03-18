@@ -76,21 +76,17 @@ defmodule Spire.SpireWeb.PlayerController do
   def update(conn, %{"id" => id, "permission" => permission_params}) do
     if can_manage?(conn, id) do
       player = Players.get_player!(id)
-      permissions = Permissions.get_permissions_for_player(id)
-
       modified_params =
         permission_params
         |> Map.put("player_id", id)
 
       case Permissions.create_or_update_permissions(modified_params) do
-        {:ok, permissions} ->
+        {:ok, _permissions} ->
           conn
           |> put_flash(:info, "Player permissions updated successfully.")
           |> redirect(to: Routes.player_path(conn, :show, player))
 
-        {:error, %Ecto.Changeset{} = changeset} ->
-          IO.inspect(changeset)
-
+        {:error, _changeset} ->
           conn
           |> put_flash(:error, "Something went wrong when updating permissions")
           |> render_form(id)
