@@ -1,6 +1,18 @@
 defmodule Spire.SpireWeb.PlayerView do
   use Spire.SpireWeb, :view
 
+  @stats_order %{
+    "scout" => 1,
+    "soldier" => 2,
+    "pyro" => 3,
+    "demoman" => 4,
+    "heavyweapons" => 5,
+    "engineer" => 6,
+    "medic" => 7,
+    "sniper" => 8,
+    "spy" => 9
+  }
+
   def can_manage?(conn, id) do
     if Spire.SpireWeb.PermissionsHelper.is_logged_in?(conn) do
       cond do
@@ -28,6 +40,10 @@ defmodule Spire.SpireWeb.PlayerView do
       stat.real
     end)
 
+    sorted_individual_real = sort_individual_stats(individual_real)
+
+    sorted_individual_total = sort_individual_stats(individual_total)
+
     all = Enum.reduce(stats_all, %{}, fn %{real: real} = stat, acc ->
       type =
         if real do
@@ -40,7 +56,13 @@ defmodule Spire.SpireWeb.PlayerView do
     end)
 
     all
-    |> Map.put("stats_individual_real", individual_real)
-    |> Map.put("stats_individual_total", individual_total)
+    |> Map.put("stats_individual_real", sorted_individual_real)
+    |> Map.put("stats_individual_total", sorted_individual_total)
+  end
+
+  defp sort_individual_stats(stats) do
+    Enum.sort(stats, fn curr, prev ->
+      @stats_order[curr.class] < @stats_order[prev.class]
+    end)
   end
 end

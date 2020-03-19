@@ -38,7 +38,6 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
     |> Utils.average_stat(:dpm, dpm)
   end
 
-  # TODO: does this function work as expected?
   def calculate_weapon_stats(stats_individual, class_stats) do
     weapon_list = Enum.to_list(class_stats["weapon"])
 
@@ -77,7 +76,7 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
     end
   end
 
-  defp calculate_weapon_accuracy(stats_individual, stat, hits, shots) do
+  defp calculate_weapon_accuracy(stats_individual, stat, hits, shots) when shots > 0 do
     if Map.get(stats_individual, stat) == 0 do
       Utils.put_stat(stats_individual, stat, hits / shots * 100)
     else
@@ -94,6 +93,9 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
       end
     end
   end
+
+  # sometimes shots is 0 as the stats do not have accuracy
+  defp calculate_weapon_accuracy(stats_individual, _stat, _hits, _shots), do: stats_individual
 
   def calculate_medic_stats(%{class: class} = stats_individual, log_json) when class == "medic" do
     %{"medicstats" => medicstats} = log_json

@@ -5,6 +5,7 @@ defmodule Spire.UploadCompiler do
   alias Spire.SpireDB.Repo
   alias Spire.SpireDB.Players
   alias Spire.SpireDB.Players.Stats
+  alias Spire.SpireDB.Logs.Uploads
   alias Spire.Utils.SteamUtils
   alias Broadway.Message
   alias Spire.UploadCompiler.IndividualCalculations
@@ -27,12 +28,15 @@ defmodule Spire.UploadCompiler do
   def handle_message(_, %Message{data: data} = message, _) do
     Logger.info("Recieved Message", message: message)
 
-    real = Map.has_key?(data, "match")
+    %{"log" => log, "upload" => message_upload} = json = Jason.decode!(data)
 
-    upload = Jason.decode!(data["upload"])
+    real = json["match"] != %{}
+
+    struct = %Uploads.Upload{uploaded_by: message_upload["uploaded_by"], id: message_upload["id"], log_id: message_upload["log_id"]}
+    {:ok, upload} = Uploads.update_upload(struct, %{status: "IN_QUEUE"})
 
     %HTTPoison.Response{body: body, status_code: 200} =
-      HTTPoison.get!("https://logs.tf/json/#{upload["logfile"]}")
+      HTTPoison.get!("https://logs.tf/json/#{log["logfile"]}")
 
     log_json = Jason.decode!(body)
 
@@ -50,14 +54,20 @@ defmodule Spire.UploadCompiler do
 
     stats_individual =
       Enum.map(players, fn player ->
-        # TODO: fix for older logs
         player_log_json = get_log_json_for_player(player, log_json)
 
         Enum.map(player_log_json["class_stats"], fn stat ->
-          Stats.get_or_create_stats_individual_for_player!(player, stat["type"], real)
+          if stat["type"] != "undefined" do
+            Stats.get_or_create_stats_individual_for_player!(player, stat["type"], real)
+          else
+            nil
+          end
         end)
       end)
       |> List.flatten()
+      |> Enum.filter(fn stat ->
+        stat != nil
+      end)
 
     updated_stats_all =
       Enum.map(stats_all, fn stat ->
@@ -67,7 +77,7 @@ defmodule Spire.UploadCompiler do
           AllCalculations.calculate_stats(stat, player_log_json)
           |> Map.from_struct()
 
-        Stats.All.changeset(%Stats.All{}, attrs)
+        Stats.All.changeset(stat, attrs)
       end)
 
     updated_stats_individual =
@@ -78,10 +88,13 @@ defmodule Spire.UploadCompiler do
           IndividualCalculations.calculate_stats(stat, player_log_json)
           |> Map.from_struct()
 
-        Stats.Individual.changeset(%Stats.Individual{}, attrs)
+        Stats.Individual.changeset(stat, attrs)
       end)
 
-    persist_stats([updated_stats_all | updated_stats_individual], upload)
+    # link players to log
+
+    changesets = Enum.concat(updated_stats_all, updated_stats_individual)
+    {:ok, _multis} = persist_stats(changesets, upload)
 
     message
     |> Message.update_data(fn _data -> log_json end)
@@ -92,19 +105,18 @@ defmodule Spire.UploadCompiler do
 
     Map.keys(log_players)
     |> Enum.map(fn key ->
-      steamid64 = SteamUtils.steamid_to_steamid64(key)
-      steamid3 = SteamUtils.community_id_to_steam_id3(steamid64)
-      steamid = SteamUtils.community_id_to_steam_id(steamid64)
+      %{steamid64: steamid64, steamid3: steamid3, steamid: steamid} =
+        SteamUtils.get_steamids(key)
 
       {:ok, %{"personaname" => alias, "avatarfull" => avatar}} =
         SteamUtils.get_steam_player(steamid64)
 
       %{
-        alias: alias,
-        avatar: avatar,
-        steamid64: steamid64,
-        steamid3: steamid3,
-        steamid: steamid
+        "alias" => alias,
+        "avatar" => avatar,
+        "steamid64" => steamid64,
+        "steamid3" => steamid3,
+        "steamid" => steamid
       }
     end)
   end
@@ -114,13 +126,21 @@ defmodule Spire.UploadCompiler do
       Enum.reduce(stats, Ecto.Multi.new(), fn stat, multi ->
         Ecto.Multi.update(
           multi,
-          %{player_id: stat.player_id},
+          length(multi.operations), # gross unique name hack
           stat
         )
       end)
 
-    multis_with_upload = [Ecto.Multi.update(multis, %{upload: upload.id}, upload) | multis]
-    Repo.transaction(multis_with_upload)
+    case Repo.transaction(multis) do
+      {:ok, _} ->
+        Logger.info("Successfuly calculated and updated stats")
+        Uploads.update_upload(upload, %{status: "PROCESSED"})
+        {:ok, multis}
+      {:error, error} ->
+        Logger.error("Failed to update stats", error: error)
+        Uploads.update_upload(upload, %{status: "FAILED"})
+        {:error, error}
+    end
   end
 
   defp get_log_json_for_player(player, log_json) do

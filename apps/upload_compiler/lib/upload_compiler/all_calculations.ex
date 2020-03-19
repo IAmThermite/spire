@@ -44,9 +44,14 @@ defmodule Spire.UploadCompiler.AllCalculations do
 
   def calculate_seen_stats(stats_all, class_stats) do
     Enum.reduce(class_stats, stats_all, fn class, acc ->
-      stat = String.to_existing_atom("times_seen_" <> class["type"])
-      acc
-      |> Utils.add_stat(stat, 1)
+      # for some reason a log returned type=undefined http://logs.tf/json/2496503
+      if class["type"] != "undefined" do
+        stat = String.to_existing_atom("times_seen_" <> class["type"])
+        acc
+        |> Utils.add_stat(stat, 1)
+      else
+        acc
+      end
     end)
   end
 

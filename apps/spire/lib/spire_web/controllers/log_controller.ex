@@ -93,7 +93,7 @@ defmodule Spire.SpireWeb.LogController do
               :error,
               "Not allowed to upload that log. If you think this is a mistake contact an admin."
             )
-            |> redirect(to: Routes.page_path(conn, :index))
+            |> redirect(to: Routes.log_path(conn, :new))
           end
         else
           conn

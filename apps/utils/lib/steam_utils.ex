@@ -4,6 +4,8 @@ defmodule Spire.Utils.SteamUtils do
   easier
   """
 
+  @steam_api_key Application.get_env(:utils, :steam_api_key)
+
   # https://developer.valvesoftware.com/wiki/SteamID
   # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L14
   @doc """
@@ -92,18 +94,24 @@ defmodule Spire.Utils.SteamUtils do
         |> String.replace("]", "")
         |> String.split(":")
 
-      [part1, part2] = parts
+      [part1, part2] = Enum.map(parts, fn part ->
+        {num, _} = Integer.parse(part)
+        num
+      end)
 
-      (Integer.parse(part1) + Integer.parse(part2) + 76_561_197_960_265_727)
+      (part1 + part2 + 76_561_197_960_265_727)
       |> Integer.to_string()
     else
       parts =
         String.replace(steamid, "STEAM_0:", "")
         |> String.split(":")
 
-      [part1, part2] = parts
+      [part1, part2] = Enum.map(parts, fn part ->
+        {num, _} = Integer.parse(part)
+        num
+      end)
 
-      (Integer.parse(part1) + Integer.parse(part2) + 76_561_197_960_265_727)
+      (part1 + part2 * 2 + 76_561_197_960_265_728)
       |> Integer.to_string()
     end
   end
@@ -112,11 +120,11 @@ defmodule Spire.Utils.SteamUtils do
     res =
       HTTPoison.get!(
         "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=#{
-          Application.get_env(:utils, :steam_api_key)
+          @steam_api_key
         }&steamids=#{steamid64}"
       )
 
-    %{"response" => %{"players" => players}} = Jason.decode!(res)
+    %{"response" => %{"players" => players}} = Jason.decode!(res.body)
 
     case players do
       [player | _tail] ->
@@ -125,5 +133,23 @@ defmodule Spire.Utils.SteamUtils do
       _ ->
         {:error, nil}
     end
+  end
+
+  def get_steamids("[U:" <> _remainder = steamid) do
+    steamid64 = steamid_to_steamid64(steamid)
+    %{
+      steamid: community_id_to_steam_id(steamid64),
+      steamid3: steamid,
+      steamid64: steamid64,
+    }
+  end
+
+  def get_steamids("STEAM_" <> _remainder = steamid) do
+    steamid64 = steamid_to_steamid64(steamid)
+    %{
+      steamid: steamid,
+      steamid3: community_id_to_steam_id3(steamid64),
+      steamid64: steamid64,
+    }
   end
 end

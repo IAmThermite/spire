@@ -30,7 +30,8 @@ defmodule Sprie.Utils.MixProject do
       {:ex_aws_sqs, "~> 3.1.0"},
       {:configparser_ex, "~> 4.0"},
       {:hackney, "~> 1.9"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:jason, "~> 1.0"}
     ]
   end
 end

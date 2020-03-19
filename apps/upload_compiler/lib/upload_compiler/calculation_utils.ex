@@ -44,6 +44,8 @@ defmodule Spire.UploadCompiler.CalculationUtils do
     "tf_projectile_pipe_remote",
     "quickiebomb_launcher",
     "shotgun_heavy",
+    "the_winger",
+    "maxgun",
     # ?
     "family_buisness",
     "pistol",

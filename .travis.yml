@@ -12,3 +12,4 @@ install:
   - mix ecto.migrate
 script:
   - cd apps/upload_compiler/ && mix test
+  - cd apps/utils/ && mix test

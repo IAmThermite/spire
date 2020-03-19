@@ -21,9 +21,25 @@ defmodule Spire.SpireWeb.LogHelper do
 
   def handle_upload(log, upload) do
     Logger.debug("#{__MODULE__}.handle_upload", log: log, upload: upload)
-    match = get_match_from_log(log[:match_id])
-    response = Spire.Utils.SQSUtils.send_message(Jason.encode!(%{upload: upload, log: log, match: match}))
-    {:ok, response}
+
+    match = case get_match_from_log(log.match_id) do
+      nil ->
+        %{}
+
+      m ->
+        Map.from_struct(m)
+        |> Map.drop([:__meta__, :player, :logs, :leagues])
+    end
+
+    Spire.Utils.SQSUtils.send_message(
+      Jason.encode!(
+        %{
+          upload: Map.from_struct(upload) |> Map.drop([:__meta__, :player, :log]),
+          log: Map.from_struct(log) |> Map.drop([:__meta__, :match]),
+          match: match
+        }
+      )
+    )
   end
 
   def is_player_part_of_log?(log_players, %{steamid: steamid, steamid3: steamid3} = _player) do

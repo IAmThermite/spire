@@ -162,7 +162,7 @@ defmodule Spire.SpireDB.Players do
   def get_or_create_from_stub(stub) do
     case Repo.get_by(Player, steamid64: stub["steamid64"]) do
       nil ->
-        {:ok, player} = Repo.insert(Player, stub)
+        {:ok, player} = create_player(stub)
         player
 
       player ->
