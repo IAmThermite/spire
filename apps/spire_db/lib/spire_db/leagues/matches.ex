@@ -7,6 +7,8 @@ defmodule Spire.SpireDB.Leagues.Matches do
   alias Spire.SpireDB.Repo
 
   alias Spire.SpireDB.Leagues.Matches.Match
+  alias Spire.SpireDB.Players.PlayersLogs
+  alias Spire.SpireDB.Players.PlayersMatches
 
   @doc """
   Returns the list of matches.
@@ -32,6 +34,7 @@ defmodule Spire.SpireDB.Leagues.Matches do
   """
   def list_matches_by_league(league_id) do
     Repo.all(from(m in Match, where: m.league_id == ^league_id))
+    |> Repo.preload([:logs])
   end
 
   @doc """
@@ -44,8 +47,11 @@ defmodule Spire.SpireDB.Leagues.Matches do
 
   """
   def list_matches_by_player(player_id) do
-    Repo.all(from(m in "players_matches", select: {m.match_id}, where: m.player_id == ^player_id))
+    Repo.all(from(m in PlayersMatches, where: m.player_id == ^player_id))
     |> Repo.preload([:match])
+    |> Enum.map(fn m ->
+      m.match
+    end)
   end
 
   @doc """

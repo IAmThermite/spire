@@ -14,7 +14,7 @@
     <%= for player <- @players do %>
       <tr>
         <td><img src="<%= player.avatar %>" style="vertical-align:middle; height: 2em" /> <%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
-        <td><%= player.steamid64 %></td>
+        <td><a href="https://steamcommunity.com/profiles/<%= player.steamid64 %>"><%= player.steamid64 %></a></td>
         <%= if player.league != nil do %>
           <td><%= link player.league.name, to: Routes.league_path(@conn, :show, player.league) %></a></td>
         <% else %>

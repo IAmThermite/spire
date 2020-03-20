@@ -2,12 +2,16 @@ defmodule Spire.UploadCompiler do
   require Logger
   use Broadway
 
+
+  alias Broadway.Message
+
   alias Spire.SpireDB.Repo
   alias Spire.SpireDB.Players
   alias Spire.SpireDB.Players.Stats
   alias Spire.SpireDB.Logs.Uploads
+  alias Spire.SpireDB.Logs
+  alias Spire.SpireDB.Leagues.Matches
   alias Spire.Utils.SteamUtils
-  alias Broadway.Message
   alias Spire.UploadCompiler.IndividualCalculations
   alias Spire.UploadCompiler.AllCalculations
 
@@ -28,15 +32,23 @@ defmodule Spire.UploadCompiler do
   def handle_message(_, %Message{data: data} = message, _) do
     Logger.info("Recieved Message", message: message)
 
-    %{"log" => log, "upload" => message_upload} = json = Jason.decode!(data)
+    %{"log" => message_log, "upload" => message_upload} = json = Jason.decode!(data)
 
     real = json["match"] != %{}
+
+    match = if real do
+      Matches.get_match!(json["match"]["id"])
+    else
+      nil
+    end
+
+    log = Logs.get_log!(message_log["id"])
 
     struct = %Uploads.Upload{uploaded_by: message_upload["uploaded_by"], id: message_upload["id"], log_id: message_upload["log_id"]}
     {:ok, upload} = Uploads.update_upload(struct, %{status: "IN_QUEUE"})
 
     %HTTPoison.Response{body: body, status_code: 200} =
-      HTTPoison.get!("https://logs.tf/json/#{log["logfile"]}")
+      HTTPoison.get!("https://logs.tf/json/#{log.logfile}")
 
     log_json = Jason.decode!(body)
 
@@ -45,6 +57,7 @@ defmodule Spire.UploadCompiler do
       |> get_player_stubs()
       |> Enum.map(fn stub ->
         Players.get_or_create_from_stub(stub)
+        |> Repo.preload([:matches, :logs, :league])
       end)
 
     stats_all =
@@ -92,8 +105,16 @@ defmodule Spire.UploadCompiler do
       end)
 
     # link players to log
+    players_to_log = Enum.map(players, fn player ->
+      Players.Player.changeset_add_log(player, log)
+    end)
 
-    changesets = Enum.concat(updated_stats_all, updated_stats_individual)
+    # link players to matches
+    players_to_match = Enum.map(players, fn player ->
+      Players.Player.changeset_add_match(player, match)
+    end)
+
+    changesets = Enum.concat([updated_stats_all, updated_stats_individual, players_to_log, players_to_match])
     {:ok, _multis} = persist_stats(changesets, upload)
 
     message

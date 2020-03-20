@@ -7,6 +7,9 @@ defmodule Spire.SpireDB.Players.Player do
   alias Spire.SpireDB.Players.Permissions.Permission
   alias Spire.SpireDB.Players.Stats.Individual
   alias Spire.SpireDB.Players.Stats.All
+  alias Spire.SpireDB.Players.PlayersMatches
+  alias Spire.SpireDB.Players.PlayersLogs
+  alias Spire.SpireDB.Logs.Log
 
   schema "players" do
     field :alias, :string
@@ -23,7 +26,8 @@ defmodule Spire.SpireDB.Players.Player do
     has_many :stats_individual, Individual
     has_many :stats_all, All
 
-    many_to_many :matches, Match, join_through: "players_matches", on_replace: :delete
+    many_to_many :matches, Match, join_through: PlayersMatches, on_replace: :delete
+    many_to_many :logs, Log, join_through: PlayersLogs, on_replace: :delete
 
     timestamps()
   end
@@ -31,20 +35,33 @@ defmodule Spire.SpireDB.Players.Player do
   @doc false
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [
-      :steamid64,
-      :steamid3,
-      :steamid,
-      :avatar,
-      :alias,
-      :division,
-      :main_class,
-      :league_id
-    ])
+    |> cast(attrs, __schema__(:fields))
     |> validate_required([:steamid64, :steamid3, :steamid, :alias, :avatar])
     |> unique_constraint(:steamid64)
     |> unique_constraint(:steamid3)
     |> unique_constraint(:steamid)
     |> assoc_constraint(:league)
+  end
+
+  def changeset_add_match(player, match) when not is_nil(match) do
+    player
+    |> cast(%{}, __schema__(:fields))
+    |> put_assoc(:matches, [match | player.matches])
+  end
+
+  def changeset_add_match(player, _match) do
+    player
+    |> cast(%{}, __schema__(:fields))
+  end
+
+  def changeset_add_log(player, log) when not is_nil(log) do
+    player
+    |> cast(%{}, __schema__(:fields))
+    |> put_assoc(:logs, [log | player.logs])
+  end
+
+  def changeset_add_log(player, _log) do
+    player
+    |> cast(%{}, __schema__(:fields))
   end
 end

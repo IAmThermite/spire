@@ -1,9 +1,14 @@
 <h1>Matches</h1>
 
+<%= if(can_manage?(@conn)) do %>
+  <span><%= button "Create Match", method: :get, to: Routes.league_match_path(@conn, :new, @league.id) %></span>
+<% end %>
+
 <table>
   <thead>
     <tr>
       <th>Title</th>
+      <th>Score</th>
       <th>Date</th>
       <th></th>
     </tr>
@@ -12,13 +17,11 @@
     <%= for match <- @matches do %>
       <tr>
         <td><%= link match.title, to: Routes.match_path(@conn, :show, match) %></td>
+        <% {blue_score, red_score} = calculate_match_score(match) %> 
+        <td><%= blue_score %> - <%= red_score %></td>
         <td><%= match.date %></td>
         <td><a href=<%= match.link %>>External Link</a></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<%= if(can_manage?(@conn)) do %>
-  <span><%= link "Create Match", to: Routes.league_match_path(@conn, :new, @league.id) %></span>
-<% end %>

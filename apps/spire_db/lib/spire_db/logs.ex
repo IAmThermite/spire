@@ -7,6 +7,7 @@ defmodule Spire.SpireDB.Logs do
   alias Spire.SpireDB.Repo
 
   alias Spire.SpireDB.Logs.Log
+  alias Spire.SpireDB.Players.PlayersLogs
 
   @doc """
   Returns the list of logs.
@@ -18,8 +19,11 @@ defmodule Spire.SpireDB.Logs do
 
   """
   def list_logs_by_player(player_id) do
-    Repo.all(from(l in "players_logs", select: {l.log_id}, where: l.player_id == ^player_id))
+    Repo.all(from(l in PlayersLogs, where: l.player_id == ^player_id))
     |> Repo.preload([:log])
+    |> Enum.map(fn l ->
+      l.log
+    end)
   end
 
   @doc """

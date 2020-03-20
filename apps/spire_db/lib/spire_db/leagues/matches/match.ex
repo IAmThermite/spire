@@ -4,6 +4,7 @@ defmodule Spire.SpireDB.Leagues.Matches.Match do
 
   alias Spire.SpireDB.Leagues.League
   alias Spire.SpireDB.Players.Player
+  alias Spire.SpireDB.Players.PlayersMatches
   alias Spire.SpireDB.Logs.Log
 
   schema "matches" do
@@ -15,7 +16,7 @@ defmodule Spire.SpireDB.Leagues.Matches.Match do
 
     has_many :logs, Log
 
-    many_to_many :players, Player, join_through: "players_matches", on_replace: :delete
+    many_to_many :players, Player, join_through: PlayersMatches, on_replace: :delete
 
     timestamps()
   end

@@ -7,7 +7,7 @@ defmodule Spire.SpireWeb.LogController do
   alias Spire.SpireWeb.LogHelper
 
   plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
-  plug :require_permissions when action in [:delete, :update, :edit]
+  plug :require_permissions when action in [:delete, :update, :edit, :new]
 
   def index(conn, %{"player_id" => player_id}) do
     player_id = String.to_integer(player_id)
@@ -20,7 +20,7 @@ defmodule Spire.SpireWeb.LogController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"log" => %{"logfile" => logfile} = _log_params} = _params) do
+  def create(conn, %{"log" => %{"logfile" => logfile} = log_params} = _params) do
     response = HTTPoison.get!("https://logs.tf/json/#{logfile}")
 
     case response do
@@ -45,7 +45,8 @@ defmodule Spire.SpireWeb.LogController do
             red_damage: red_team["dmg"],
             blue_damage: blue_team["dmg"],
             length: log_info["total_length"],
-            date: DateTime.from_unix!(log_info["date"])
+            date: DateTime.from_unix!(log_info["date"]),
+            match_id: log_params["match_id"]
           }
 
           if LogHelper.can_upload?(log_json, conn) do

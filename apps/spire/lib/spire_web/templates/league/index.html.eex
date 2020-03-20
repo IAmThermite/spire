@@ -1,5 +1,9 @@
 <h1>Leagues</h1>
 
+<%= if can_manage?(@conn) do %>
+  <span><%= button "Create League", method: :get, to: Routes.league_path(@conn, :new) %></span>
+<% end %>
+
 <table>
   <thead>
     <tr>

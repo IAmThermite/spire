@@ -32,7 +32,8 @@ defmodule Spire.UploadCompiler.MixProject do
       {:spire_db, in_umbrella: true},
       {:jason, "~> 1.0"},
       {:broadway_sqs, "~> 0.6.0"},
-      {:httpoison, "~> 1.6.2"}
+      {:httpoison, "~> 1.6.2"},
+      {:spire_logger, in_umbrella: true}
     ]
   end
 end

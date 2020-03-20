@@ -7,13 +7,13 @@
   </li>
 
   <li>
-    <strong>Team 1 Score:</strong>
-    <%= @log.t1_score %>
+    <strong>Blue Score:</strong>
+    <%= @log.blue_score %>
   </li>
 
   <li>
-    <strong>Team 2 Score:</strong>
-    <%= @log.t2_score %>
+    <strong>Red Score:</strong>
+    <%= @log.red_score %>
   </li>
 
   <li>
@@ -32,5 +32,3 @@
   </li>
 
 </ul>
-
-<span><%= link "Edit", to: Routes.log_path(@conn, :edit, @log) %></span>

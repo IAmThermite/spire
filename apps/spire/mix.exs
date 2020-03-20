@@ -46,7 +46,8 @@ defmodule Spire.MixProject do
       {:ueberauth_steam, "~> 0.1.3", github: "IAmThermite/ueberauth_steam"},
       {:httpoison, "~> 1.6.2"},
       {:spire_db, in_umbrella: true},
-      {:utils, in_umbrella: true}
+      {:utils, in_umbrella: true},
+      {:spire_logger, in_umbrella: true}
     ]
   end
 end

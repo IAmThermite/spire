@@ -1,4 +1,11 @@
 <h2><%= @match.title %></h1>
+<% {blue_score, red_score} = calculate_match_score(@match) %> 
+<h4><%= blue_score %> - <%= red_score %></h4>
+
+
+<%= if(can_manage?(@conn)) do %>
+  <%= button "Edit", method: :get, to: Routes.match_path(@conn, :edit, @match.id) %>
+<% end %>
 
 <ul>
   <li>
@@ -15,10 +22,6 @@
     <%= link "External Link", to: @match.link %>
   </li>
 </ul>
-
-<%= if(can_manage?(@conn)) do %>
-  <%= button "Edit", method: :get, to: Routes.player_path(@conn, :edit, @match.id) %>
-<% end %>
 
 <h4>Players</h4>
 <table>
@@ -56,7 +59,7 @@
   <tbody>
     <%= for log <- @match.logs do %>
       <tr>
-        <td><%= log.t1_score %> - <%= log.t2_score %></td>
+        <td><%= log.blue_score %> - <%= log.red_score %></td>
         <td><%= log.map %></td>
         <td><%= log.date %></td>
         <td><a href="https://logs.tf/<%= log.logfile %>">logs.tf/<%= log.logfile %></a></td>

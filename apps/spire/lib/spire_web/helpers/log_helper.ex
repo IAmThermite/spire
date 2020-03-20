@@ -28,7 +28,7 @@ defmodule Spire.SpireWeb.LogHelper do
 
       m ->
         Map.from_struct(m)
-        |> Map.drop([:__meta__, :player, :logs, :leagues])
+        |> Map.drop([:__meta__, :players, :logs, :league])
     end
 
     Spire.Utils.SQSUtils.send_message(

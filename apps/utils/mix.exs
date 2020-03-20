@@ -31,7 +31,8 @@ defmodule Sprie.Utils.MixProject do
       {:configparser_ex, "~> 4.0"},
       {:hackney, "~> 1.9"},
       {:sweet_xml, "~> 0.6"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:spire_logger, in_umbrella: true}
     ]
   end
 end

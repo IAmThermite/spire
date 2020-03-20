@@ -40,7 +40,8 @@ defmodule Spire.SpireDB.MixProject do
       {:phoenix_ecto, "~> 4.0"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.0"},
-      {:utils, in_umbrella: true}
+      {:utils, in_umbrella: true},
+      {:spire_logger, in_umbrella: true}
     ]
   end
 

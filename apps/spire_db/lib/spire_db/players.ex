@@ -7,6 +7,9 @@ defmodule Spire.SpireDB.Players do
   alias Spire.SpireDB.Repo
 
   alias Spire.SpireDB.Players.Player
+  alias Spire.SpireDB.Leagues.Matches
+  alias Spire.SpireDB.Players.PlayersLogs
+  alias Spire.SpireDB.Players.PlayersMatches
   alias Spire.Utils.SteamUtils
 
   @doc """
@@ -33,8 +36,16 @@ defmodule Spire.SpireDB.Players do
 
   """
   def list_players_by_match(match_id) do
-    Repo.all(from(p in "players_matches", select: {}, where: p.match_id == ^match_id))
+    Repo.all(from(p in PlayersMatches, where: p.match_id == ^match_id))
     |> Repo.preload([:player])
+    |> Enum.map(fn p ->
+      p.player
+    end)
+  end
+
+  def link_player_to_match(player, match) do
+    Player.changeset_add_match(player, match)
+    |> Repo.update!()
   end
 
   @doc """
@@ -47,8 +58,16 @@ defmodule Spire.SpireDB.Players do
 
   """
   def list_players_by_log(log_id) do
-    Repo.all(from(p in "players_logs", where: p.log_id == ^log_id))
+    Repo.all(from(p in PlayersLogs, where: p.log_id == ^log_id))
     |> Repo.preload([:player])
+    |> Enum.map(fn p ->
+      p.player
+    end)
+  end
+
+  def link_player_to_log(player, log) do
+    Player.changeset_add_log(player, log)
+    |> Repo.update!()
   end
 
   @doc """

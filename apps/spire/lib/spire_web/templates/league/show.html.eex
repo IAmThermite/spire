@@ -1,5 +1,8 @@
 <h2><%= @league.name %></h2>
 
+<%= if can_manage?(@conn) do %>
+  <span><%= button "Edit", method: :get, to: Routes.league_path(@conn, :edit, @league.id) %></span>
+<% end %>
 <ul>
   <li>
     <a href="<%= @league.website %>"><strong>Website</strong></a>
@@ -11,11 +14,6 @@
   <li>
     <strong><%= link "Matches", to: Routes.league_match_path(@conn, :index, @league.id) %></strong>
   </li>
-  <%= if can_manage?(@conn) do %>
-    <li>
-      <%= button "Edit", method: :get, to: Routes.league_path(@conn, :edit, @league.id) %>
-    </li>
-  <% end %>
 </ul>
 
 <h4>Players</h4>

@@ -1,13 +1,13 @@
 <h1><img src="<%= @player.avatar %>" style="vertical-align:middle; height: 1em" /> <%= @player.alias %></h1>
 
 <%= if can_manage?(@conn, @player.id) do %>
-  <%= button "Edit", method: :get, to: Routes.player_path(@conn, :edit, @player.id) %>
+  <span><%= button "Edit", method: :get, to: Routes.player_path(@conn, :edit, @player.id) %></span>
 <% end %>
 
 <ul>
   <li>
     <strong>SteamID64:</strong>
-    <%= @player.steamid64 %>
+    <a href="https://steamcommunity.com/profiles/<%= @player.steamid64 %>"><%= @player.steamid64 %></a>
   </li>
 
   <li>
@@ -120,7 +120,7 @@
       <tr>
         <td><a href="https://logs.tf/<%= log.logfile %>">View on Logs.tf</a></td>
         <td><%= log.map %></td>
-        <td><%= log.t1_score %> - <%= log.t2_score %></td>
+        <td><%= log.blue_score %> - <%= log.red_score %></td>
         <td><%= log.date %></td>
 
         <td><%= link "Log", to: Routes.log_path(@conn, :show, log) %></td>
