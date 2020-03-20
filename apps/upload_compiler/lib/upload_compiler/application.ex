@@ -5,7 +5,10 @@ defmodule Spire.UploadCompiler.Application do
 
   use Application
 
+  require Logger
+
   def start(_type, _args) do
+    Logger.info("Starting Upload Compiler")
     children = [
       {Spire.UploadCompiler, []}
     ]

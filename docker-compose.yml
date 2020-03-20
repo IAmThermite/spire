@@ -1,0 +1,45 @@
+version: "3"
+services:
+  web:
+    image: spire/spire_web
+    build:
+      dockerfile: ./docker/spire_web.dockerfile
+      context: ./
+    environment:
+      - SPIRE_SQS_QUEUE_URL
+      - STEAM_API_KEY
+      - DB_HOSTNAME=database
+    ports:
+      - 4000:4000
+    depends_on:
+      - database
+    command: mix phx.server
+
+  upload_compiler:
+    image: spire/upload_compiler
+    build:
+      dockerfile: ./docker/upload_compiler.dockerfile
+      context: ./
+    environment:
+      - MIX_ENV=dev
+      - SPIRE_SQS_QUEUE_URL
+      - STEAM_API_KEY
+      - DB_HOSTNAME=database
+    depends_on:
+      - database
+    command: mix run --no-halt
+
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_PASSWORD=POSTGRES_PASSWORD
+
+  db_migrate:
+    image: spire/db_migrate
+    build:
+      dockerfile: ./docker/db_migrate.dockerfile
+      context: ./
+    environment:
+      - DB_HOSTNAME=database
+    depends_on:
+      - database
