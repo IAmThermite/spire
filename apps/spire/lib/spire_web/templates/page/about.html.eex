@@ -1,1 +1,56 @@
 <h1>About</h1>
+
+<p>
+  Spire is an initiative to collate player data from past and for upcoming matches in order to track stat changes and compare yourself with others.
+  Simply log in and upload your logs, we handle the processing.
+  You can even upload logs for official matches (note that these need admin approval) to track official stats.
+  You can upload any log you want on any map from any time, as long as its 6v6.
+</p>
+
+<hr />
+
+<h3>API</h3>
+
+<p>
+  There is a public API to retrieve data about a player and their stats.
+  Remember when there was a TF2 broadcast and they had overlays of the players stats?
+  I do, this feature is primarily included to allow casting orgs to show cool data about the players before the match starts, but I'm sure someone else will find another use for it.
+</p>
+
+<hr />
+
+<h3>Upcoming features</h3>
+<p>
+  I have big plans for this project, constant updates and cool features.
+  Below are just a few.
+</p>
+
+<h5>Top Players List</h5>
+<p>
+  I intend to do some weekly (or even daily) calculations to see who is currently the best players for each class.
+  I want to be able to track the changes in positions as well.
+  Also working out who the top for each class is.
+</p>
+
+<h5>Stat Changelog</h5>
+<p>
+  Adding the ability to track the changes in your stats would be cool so you can see how much better you are (or if you are like me, aren't) getting.
+</p>
+
+<h5>Aggregated Player Data</h5>
+<p>
+  Find out the most common weapon for the week or something like that idk, I technically have the data.
+</p>
+
+<h5>Map Stat</h5>
+<p>
+  <a href="https://steamcommunity.com/id/mopat/">Sean</a> has some sick stats over at <a href="https://ozfstats.seanecoffey.com/">his website</a> and I want to eventually show some of them.
+  There were some really cool map specific stats he showed off that amazed me.
+</p>
+
+<h5>League vs League</h5>
+<p>
+  Who is the best league? (answer is ozfortress btw)
+  Who would win at lan if the best players were choosen? (still ozfortress)
+  Will there ever be a better League than ozfortress? (no)
+</p>

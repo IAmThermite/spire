@@ -24,12 +24,6 @@ config :spire,
 config :ueberauth, Ueberauth.Strategy.Steam,
   api_key: System.get_env("STEAM_API_KEY") || raise("STEAM_API_KEY not set!")
 
-config :ex_aws,
-  access_key_id: [{:system, "AWS_ACCESS_KEY_ID"}, {:awscli, "spire", 30}, :instance_role],
-  secret_access_key: [{:system, "AWS_SECRET_ACCESS_KEY"}, {:awscli, "spire", 30}, :instance_role],
-  region: "us-east-2",
-  json_codec: Jason
-
 config :ueberauth, Ueberauth,
   providers: [
     steam: {Ueberauth.Strategy.Steam, []}

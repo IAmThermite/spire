@@ -1,2 +1,9 @@
 <h1>Welcome to spire</h1>
 <p>The TF2 player logs database.</p>
+<br />
+<p>
+  Spire is an initiative to collate player data from past and for upcoming matches in order to track stat changes and compare yourself with others.
+  Simply log in and upload your logs, we handle the processing.
+  You can even upload logs for official matches (note that these need admin approval) to track official stats.
+  You can upload any log you want on any map from any time, as long as its 6v6.
+</p>

@@ -1,7 +1,11 @@
 FROM elixir:1.10
 
+ARG MIX_ENV=dev
+
 ENV SPIRE_SQS_QUEUE_URL does_not_matter
 ENV STEAM_API_KEY does_not_matter
+ENV DATABASE_URL=does_not_matter
+ENV MIX_ENV=${MIX_ENV}
 
 RUN \
   mkdir /app/ && \
