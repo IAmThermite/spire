@@ -45,7 +45,7 @@ defmodule Spire.SpireWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  scope "/api/v1", Spire.SpireWeb do
+  scope "/api", Spire.SpireWeb do
     pipe_through :api
 
     resources "/players", Api.PlayerController, only: [:index, :show]

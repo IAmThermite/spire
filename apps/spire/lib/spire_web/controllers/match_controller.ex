@@ -4,7 +4,7 @@ defmodule Spire.SpireWeb.MatchController do
   alias Spire.SpireDB.Leagues
   alias Spire.SpireDB.Leagues.Matches
   alias Spire.SpireDB.Leagues.Matches.Match
-  alias Spire.SpireDB.Players
+  alias Spire.SpireDB.Logs.Log
 
   plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
   plug :require_permissions when action not in [:index, :show]
@@ -38,8 +38,27 @@ defmodule Spire.SpireWeb.MatchController do
 
   def show(conn, %{"id" => id}) do
     match = Matches.get_match!(id)
-    players = Players.list_players_by_match(match.id)
-    render(conn, "show.html", match: match, league: match.league, players: players)
+    players = match.players
+    logdata =
+      case match.logs do
+        [%Log{} | _tail] ->
+          maps = Enum.map(match.logs, fn log ->
+            log.map
+          end)
+
+          %{
+            maps: maps,
+            blue_score: get_logs_totals(match.logs, :blue_score),
+            red_score: get_logs_totals(match.logs, :red_score),
+            blue_kills: get_logs_totals(match.logs, :blue_kills),
+            red_kills: get_logs_totals(match.logs, :red_kills),
+            blue_damage: get_logs_totals(match.logs, :blue_damage),
+            red_damage: get_logs_totals(match.logs, :red_damage),
+          }
+        _ ->
+          nil
+      end
+    render(conn, "show.html", match: match, league: match.league, players: players, logdata: logdata)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -85,5 +104,11 @@ defmodule Spire.SpireWeb.MatchController do
         |> redirect(to: Routes.page_path(conn, :index))
         |> halt
     end
+  end
+
+  defp get_logs_totals(logs, field) do
+    Enum.reduce(logs, 0, fn log, acc ->
+      acc + Map.from_struct(log)[field]
+    end)
   end
 end

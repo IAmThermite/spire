@@ -21,6 +21,18 @@
   <li>
     <%= link "External Link", to: @match.link %>
   </li>
+
+  <%= if (@logdata) do %>
+    <li>
+      <strong>Maps:</strong> <%= Enum.reduce(@logdata.maps, fn map, acc -> "#{acc}, #{map}" end) %></strong>
+    </li>
+    <li>
+      <strong>Blue Kills:</strong> <%= @logdata.blue_kills %> | <strong>Red kills:</strong> <%= @logdata.red_kills %>
+    </li>
+    <li>
+      <strong>Blue Damage:</strong> <%= @logdata.blue_damage %> | <strong>Red Damage:</strong> <%= @logdata.red_damage %>
+    </li>
+  <% end %>
 </ul>
 
 <h4>Players</h4>

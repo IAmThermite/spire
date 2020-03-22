@@ -15,6 +15,8 @@
   There is a public API to retrieve data about a player and their stats.
   Remember when there was a TF2 broadcast and they had overlays of the players stats?
   I do, this feature is primarily included to allow casting orgs to show cool data about the players before the match starts, but I'm sure someone else will find another use for it.
+  The currently available endpoints are at <code>/api/players</code>, with an optional search parameter (<code>?search=bla</code>) or you can provide a steamid <code>/players/&lt;steamid&gt;</code>.
+  <code>/api/matches/&lg;match_id&gt;</code> also exists for showing information about a match
 </p>
 
 <hr />
@@ -42,7 +44,7 @@
   Find out the most common weapon for the week or something like that idk, I technically have the data.
 </p>
 
-<h5>Map Stat</h5>
+<h5>Map Stats</h5>
 <p>
   <a href="https://steamcommunity.com/id/mopat/">Sean</a> has some sick stats over at <a href="https://ozfstats.seanecoffey.com/">his website</a> and I want to eventually show some of them.
   There were some really cool map specific stats he showed off that amazed me.

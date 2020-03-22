@@ -7,7 +7,6 @@ defmodule Spire.SpireDB.Leagues.Matches do
   alias Spire.SpireDB.Repo
 
   alias Spire.SpireDB.Leagues.Matches.Match
-  alias Spire.SpireDB.Players.PlayersLogs
   alias Spire.SpireDB.Players.PlayersMatches
 
   @doc """
@@ -70,7 +69,7 @@ defmodule Spire.SpireDB.Leagues.Matches do
   """
   def get_match!(id) do
     Repo.get!(Match, id)
-    |> Repo.preload([:league, :logs])
+    |> Repo.preload([:league, :logs, :players])
   end
 
   @doc """

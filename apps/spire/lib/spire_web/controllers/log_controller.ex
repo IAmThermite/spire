@@ -41,7 +41,7 @@ defmodule Spire.SpireWeb.LogController do
             red_score: red_team["score"],
             blue_score: blue_team["score"],
             red_kills: red_team["kills"],
-            blue_kills: blue_team["score"],
+            blue_kills: blue_team["kills"],
             red_damage: red_team["dmg"],
             blue_damage: blue_team["dmg"],
             length: log_info["total_length"],
