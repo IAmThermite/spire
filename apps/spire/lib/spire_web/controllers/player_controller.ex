@@ -11,6 +11,11 @@ defmodule Spire.SpireWeb.PlayerController do
   plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
   plug :require_permissions when action not in [:index, :show, :update, :edit]
 
+  def index(conn, %{"search" => search}) do
+    players = Players.list_players("%#{search}%")
+    render(conn, "index.html", players: players)
+  end
+
   def index(conn, _params) do
     players = Players.list_players()
     render(conn, "index.html", players: players)
@@ -107,6 +112,12 @@ defmodule Spire.SpireWeb.PlayerController do
     |> put_flash(:info, "Player deleted successfully.")
     |> redirect(to: Routes.player_path(conn, :index))
   end
+
+  # defp search(conn, _params) do
+  #   players = Players.list_players()
+  #   conn
+  #   |> redirect(to: Routes.player_path(conn, :index))
+  # end
 
   defp require_permissions(conn, _) do
     if Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_players) do

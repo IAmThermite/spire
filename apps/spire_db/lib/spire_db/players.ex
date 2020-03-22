@@ -26,6 +26,12 @@ defmodule Spire.SpireDB.Players do
     |> Repo.preload(:league)
   end
 
+  def list_players(search) do
+    query = from(p in Player, where: ilike(p.alias, ^search))
+    Repo.all(query)
+    |> Repo.preload(:league)
+  end
+
   @doc """
   Returns the list of players.
 
@@ -187,6 +193,10 @@ defmodule Spire.SpireDB.Players do
       player ->
         player
     end
+  end
+
+  def get_by_steamid64(steamid64) do
+    Repo.get_by(Player, steamid64: steamid64)
   end
 
   def get_by_steamid3(steamid3) do
