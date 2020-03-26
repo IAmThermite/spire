@@ -10,7 +10,7 @@ defmodule Spire.SpireDB.Players.Stats do
   alias Spire.SpireDB.Players.Stats.Individual
 
   def get_or_create_stats_all_for_player!(player, real) do
-    case Repo.get_by(All, player_id: player.id) do
+    case Repo.get_by(All, player_id: player.id, real: real) do
       nil ->
         Repo.insert!(%All{player_id: player.id, real: real})
 
@@ -21,7 +21,7 @@ defmodule Spire.SpireDB.Players.Stats do
   end
 
   def get_or_create_stats_individual_for_player!(player, class, real) do
-    case Repo.get_by(Individual, player_id: player.id, class: class) do
+    case Repo.get_by(Individual, player_id: player.id, class: class, real: real) do
       nil ->
         Repo.insert!(%Individual{player_id: player.id, class: class, real: real})
 

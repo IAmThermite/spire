@@ -3,9 +3,6 @@ dev:
 	docker-compose up -d upload_compiler && \
 	docker-compose up web
 
-build_dev:
-	docker-compose build
-
 migrate:
 	docker-compose run db_migrate
 

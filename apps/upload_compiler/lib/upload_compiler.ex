@@ -60,27 +60,9 @@ defmodule Spire.UploadCompiler do
         |> Repo.preload([:matches, :logs, :league])
       end)
 
-    stats_all =
-      Enum.map(players, fn player ->
-        Stats.get_or_create_stats_all_for_player!(player, real)
-      end)
+    stats_all = get_stats_all(players, real)
 
-    stats_individual =
-      Enum.map(players, fn player ->
-        player_log_json = get_log_json_for_player(player, log_json)
-
-        Enum.map(player_log_json["class_stats"], fn stat ->
-          if stat["type"] != "undefined" do
-            Stats.get_or_create_stats_individual_for_player!(player, stat["type"], real)
-          else
-            nil
-          end
-        end)
-      end)
-      |> List.flatten()
-      |> Enum.filter(fn stat ->
-        stat != nil
-      end)
+    stats_individual = get_stats_individual(players, log_json, real)
 
     updated_stats_all =
       Enum.map(stats_all, fn stat ->
@@ -166,5 +148,44 @@ defmodule Spire.UploadCompiler do
 
   defp get_log_json_for_player(player, log_json) do
     log_json["players"][player.steamid3] || log_json["players"][player.steamid]
+  end
+
+  defp get_stats_all(players, real) do
+    Enum.map(players, fn player ->
+      if real do
+        [
+          Stats.get_or_create_stats_all_for_player!(player,  real),
+          Stats.get_or_create_stats_all_for_player!(player, false)
+        ]
+      else
+        Stats.get_or_create_stats_all_for_player!(player,  real)
+      end
+    end)
+    |> List.flatten()
+  end
+
+  defp get_stats_individual(players, log_json, real) do
+    Enum.map(players, fn player ->
+      player_log_json = get_log_json_for_player(player, log_json)
+
+      Enum.map(player_log_json["class_stats"], fn stat ->
+        if stat["type"] != "undefined" do
+          if real do
+            [
+              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], real),
+              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], false)
+            ]
+          else
+            Stats.get_or_create_stats_individual_for_player!(player, stat["type"], false)
+          end
+        else
+          nil
+        end
+      end)
+    end)
+    |> List.flatten()
+    |> Enum.filter(fn stat ->
+      stat != nil
+    end)
   end
 end
