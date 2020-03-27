@@ -27,5 +27,7 @@ defmodule Spire.SpireDB.Leagues.Matches.Match do
     |> cast(attrs, [:title, :date, :league_id, :link])
     |> validate_required([:title, :league_id, :link])
     |> assoc_constraint(:league)
+    |> unique_constraint(:title)
+    |> unique_constraint(:link)
   end
 end

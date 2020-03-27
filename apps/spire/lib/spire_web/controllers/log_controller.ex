@@ -21,7 +21,8 @@ defmodule Spire.SpireWeb.LogController do
   end
 
   def create(conn, %{"log" => %{"logfile" => logfile} = log_params} = _params) do
-    response = HTTPoison.get!("https://logs.tf/json/#{logfile}")
+    log_id = List.last(String.split(logfile, "/"))
+    response = HTTPoison.get!("https://logs.tf/json/#{log_id}")
 
     case response do
       %{body: body} ->
@@ -36,7 +37,7 @@ defmodule Spire.SpireWeb.LogController do
         # 6v6 (could have subs etc pop in and out however), i think spec is actually >= 12 < 18
         if num_of_players >= 12 and num_of_players <= 15 do
           log_data = %{
-            logfile: logfile,
+            logfile: log_id,
             map: log_info["map"],
             red_score: red_team["score"],
             blue_score: blue_team["score"],
