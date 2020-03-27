@@ -1,5 +1,5 @@
 <h2><%= @match.title %></h1>
-<% {blue_score, red_score} = calculate_match_score(@match) %> 
+<% {blue_score, red_score} = calculate_match_score(@match) %>
 <h4><%= blue_score %> - <%= red_score %></h4>
 
 
@@ -49,7 +49,7 @@
     <%= for player <- @players do %>
       <tr>
         <td><img src="<%= player.avatar %>" style="vertical-align:middle; height: 2em" /> <%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
-        <td><%= link player.steamid, to: Routes.player_path(@conn, :show, player) %></td>
+        <td><a href="https://steamcommunity.com/profiles/<%= player.steamid64 %>"><%= player.steamid64 %></a></td>
         <td><%= player.division || ""%></td>
         <td><%= player.main_class || "" %></td>
       </tr>

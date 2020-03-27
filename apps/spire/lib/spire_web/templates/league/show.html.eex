@@ -20,15 +20,19 @@
 <table>
   <thead>
     <tr>
-      <th>Alias</th>
+      <th></th>
       <th>Steamid64</th>
+      <th>Division</th>
+      <th>Main Class</th>
     </tr>
   </thead>
   <tbody>
     <%= for player <- @league.players do %>
     <tr>
-      <td><%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
+      <td><img src="<%= player.avatar %>" style="vertical-align:middle; height: 2em" /> <%= link player.alias, to: Routes.player_path(@conn, :show, player) %></td>
       <td><%= player.steamid64 %></td>
+      <td><%= player.division || ""%></td>
+      <td><%= player.main_class || "" %></td>
     </tr>
     <% end %>
   </tbody>

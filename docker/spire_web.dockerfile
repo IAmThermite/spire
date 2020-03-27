@@ -1,5 +1,7 @@
 FROM node:10.9-alpine as build-node
 
+ENV NODE_ENV=prod
+
 # prepare build dir
 RUN mkdir -p /app/apps/spire/assets
 WORKDIR /app/apps/spire/
@@ -18,7 +20,7 @@ RUN cd assets && npm run deploy
 
 FROM elixir:1.10 as build_elixir
 
-ARG MIX_ENV=dev
+ENV MIX_ENV=prod
 
 ENV SPIRE_SQS_QUEUE_URL does_not_matter
 ENV STEAM_API_KEY does_not_matter
