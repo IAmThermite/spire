@@ -2,7 +2,6 @@ defmodule Spire.UploadCompiler do
   require Logger
   use Broadway
 
-
   alias Broadway.Message
 
   alias Spire.SpireDB.Repo
@@ -154,11 +153,14 @@ defmodule Spire.UploadCompiler do
     Enum.map(players, fn player ->
       if real do
         [
-          Stats.get_or_create_stats_all_for_player!(player,  real),
-          Stats.get_or_create_stats_all_for_player!(player, false)
+          Stats.get_or_create_stats_all_for_player!(player,  "REAL"),
+          Stats.get_or_create_stats_all_for_player!(player, "COMBINED")
         ]
       else
-        Stats.get_or_create_stats_all_for_player!(player,  real)
+        [
+          Stats.get_or_create_stats_all_for_player!(player,  "OTHER"),
+          Stats.get_or_create_stats_all_for_player!(player, "COMBINED")
+        ]
       end
     end)
     |> List.flatten()
@@ -172,11 +174,14 @@ defmodule Spire.UploadCompiler do
         if stat["type"] != "undefined" do
           if real do
             [
-              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], real),
-              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], false)
+              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "REAL"),
+              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "COMBINED")
             ]
           else
-            Stats.get_or_create_stats_individual_for_player!(player, stat["type"], false)
+            [
+              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "OTHER"),
+              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "COMBINED")
+            ]
           end
         else
           nil

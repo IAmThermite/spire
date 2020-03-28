@@ -1,1 +1,37 @@
 <h1>Admin</h1>
+
+<h4>Uploads</h4>
+<table>
+  <tr>
+    <th>Logfile</th>
+    <th>Uploader</th>
+    <th>Match</th>
+    <th>Status</th>
+    <th>Added</th>
+    <th>Updated</th>
+    <th></th>
+  </tr>
+  <%= for upload <- @uploads do %>
+    <tr>
+      <td>
+        <a href="https://logs.tf/<%= upload.log.logfile %>"><%= upload.log.logfile %></a>
+      </td>
+      <td>
+        <span><%= link upload.player.alias, to: Routes.player_path(@conn, :show, upload.player) %></span>
+      </td>
+      <td>
+        <%= if upload.log.match_id do %>
+          <%= link upload.log.match_id, to: Routes.match_path(@conn, :show, upload.log.match) %>
+        <% end %>
+        </td>
+      <td><%= upload.status %></td>
+      <td><%= upload.inserted_at %></td>
+      <td><%= upload.updated_at %></td>
+      <td>
+        <%= if upload.status != "PROCESSED" do %>
+          <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :retry, upload.id) %></span>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

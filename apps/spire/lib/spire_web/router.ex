@@ -31,6 +31,10 @@ defmodule Spire.SpireWeb.Router do
 
     resources "/logs", LogController, except: [:index]
 
+    get "/logs/:id/retry", LogController, :retry
+
+    get "/players/compare", PlayerController, :compare
+
     resources "/players", PlayerController, except: [:new, :create] do
       resources "/logs", LogController, only: [:index]
     end
@@ -48,6 +52,7 @@ defmodule Spire.SpireWeb.Router do
   scope "/api", Spire.SpireWeb do
     pipe_through :api
 
+    get "/players/compare", Api.PlayerController, :compare
     resources "/players", Api.PlayerController, only: [:index, :show]
     resources "/matches", Api.MatchController, only: [:show]
   end

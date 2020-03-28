@@ -1,4 +1,4 @@
-defmodule Sprie.Utils.MixProject do
+defmodule Spire.Utils.MixProject do
   use Mix.Project
 
   def project do

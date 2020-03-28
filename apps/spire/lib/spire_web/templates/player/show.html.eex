@@ -46,17 +46,17 @@
 <div class="row">
   <div class="col s12">
     <ul class="tabs brown">
-      <li class="tab col s3"><a class="white-text" href="#individual_total">Individual Total</a></li>
+      <li class="tab col s3"><a class="white-text" href="#individual_other">Individual Other</a></li>
       <li class="tab col s3"><a class="white-text" href="#individual_real">Individual Real</a></li>
-      <li class="tab col s3"><a class="white-text" href="#all_total">All Total</a></li>
+      <li class="tab col s3"><a class="white-text" href="#all_other">All Other</a></li>
       <li class="tab col s3"><a class="white-text" href="#all_real">All Real</a></li>
     </ul>
   </div>
   <div class="col s12">
     <% stats = get_stats_map(@player.stats_individual, @player.stats_all) %>
-    <div id="individual_total">
-      <%= if stats["stats_individual_total"] != nil do %>
-        <%= render "stats_individual.html", stats: stats["stats_individual_total"], name: "total" %>
+    <div id="individual_other">
+      <%= if stats["stats_individual_other"] != nil do %>
+        <%= render "stats_individual.html", stats: stats["stats_individual_other"], name: "other" %>
       <% end %>
     </div>
   
@@ -66,9 +66,9 @@
       <% end %>
     </div>
   
-    <div id="all_total">
-      <%= if stats["stats_all_total"] != nil do %>
-        <%= render "stats_all.html", stats: stats["stats_all_total"] %>
+    <div id="all_other">
+      <%= if stats["stats_all_other"] != nil do %>
+        <%= render "stats_all.html", stats: stats["stats_all_other"] %>
       <% end %>
     </div>
   
@@ -118,7 +118,7 @@
   <tbody>
     <%= for log <- @logs do %>
       <tr>
-        <td><a href="https://logs.tf/<%= log.logfile %>">View on Logs.tf</a></td>
+        <td><a href="https://logs.tf/<%= log.logfile %>#<%= @player.steamid64 %>">View on Logs.tf</a></td>
         <td><%= log.map %></td>
         <td><%= log.blue_score %> - <%= log.red_score %></td>
         <td><%= log.date %></td>

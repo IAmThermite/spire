@@ -2,8 +2,8 @@ defmodule Spire.SpireWeb.LogHelper do
   require Logger
 
   alias Spire.SpireDB.Leagues.Matches
-
   alias Spire.SpireDB.Players.Permissions
+  alias Spire.Utils
 
   def can_upload?(log_json, conn) do
     permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
@@ -27,15 +27,14 @@ defmodule Spire.SpireWeb.LogHelper do
         %{}
 
       m ->
-        Map.from_struct(m)
-        |> Map.drop([:__meta__, :players, :logs, :league])
+        Utils.struct_to_json_map(m, [:players, :logs, :leagues])
     end
 
     Spire.Utils.SQSUtils.send_message(
       Jason.encode!(
         %{
-          upload: Map.from_struct(upload) |> Map.drop([:__meta__, :player, :log]),
-          log: Map.from_struct(log) |> Map.drop([:__meta__, :match]),
+          upload: Utils.struct_to_json_map(upload, [:player, :log]),
+          log: Utils.struct_to_json_map(log, [:match]),
           match: match
         }
       )

@@ -36,20 +36,29 @@ defmodule Spire.SpireWeb.PlayerView do
   end
 
   def get_stats_map(stats_individual, stats_all) do
-    {individual_real, individual_total} = Enum.split_with(stats_individual, fn stat ->
-      stat.real
+    individual_real = Enum.filter(stats_individual, fn stats ->
+      stats.type == "REAL"
+    end)
+
+    individual_other = Enum.filter(stats_individual, fn stats ->
+      stats.type == "OTHER"
     end)
 
     sorted_individual_real = sort_individual_stats(individual_real)
 
-    sorted_individual_total = sort_individual_stats(individual_total)
+    sorted_individual_other = sort_individual_stats(individual_other)
 
-    all = Enum.reduce(stats_all, %{}, fn %{real: real} = stat, acc ->
+    all = Enum.reduce(stats_all, %{}, fn %{type: type} = stat, acc ->
       type =
-        if real do
-          "stats_all_real"
-        else
-          "stats_all_total"
+        case type do
+          "REAL" ->
+            "stats_all_real"
+
+          "OTHER" ->
+            "stats_all_other"
+
+          _ ->
+            "stats_all_combined"
         end
 
       Map.put(acc, type, stat)
@@ -57,7 +66,7 @@ defmodule Spire.SpireWeb.PlayerView do
 
     all
     |> Map.put("stats_individual_real", sorted_individual_real)
-    |> Map.put("stats_individual_total", sorted_individual_total)
+    |> Map.put("stats_individual_other", sorted_individual_other)
   end
 
   defp sort_individual_stats(stats) do

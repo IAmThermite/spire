@@ -5,7 +5,7 @@ defmodule Spire.SpireDB.Players.Stats.Individual do
   alias Spire.SpireDB.Players.Player
 
   schema "stats_individual" do
-    field :real, :boolean, null: false, default: false
+    field :type, :string, null: false, default: "OTHER"
     field :class, :string
 
     field :kills, :integer, default: 0
@@ -57,6 +57,7 @@ defmodule Spire.SpireDB.Players.Stats.Individual do
   def changeset(stats, attrs \\ %{}) do
     stats
     |> cast(attrs, __schema__(:fields))
-    |> validate_required([:player_id, :class, :real])
+    |> validate_required([:player_id, :class, :type])
+    |> unique_constraint(:player_id, name: :stats_individual_player_id_class_type_index)
   end
 end

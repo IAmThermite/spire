@@ -2,14 +2,15 @@ defmodule Spire.SpireWeb.PlayerController do
   use Spire.SpireWeb, :controller
 
   alias Spire.SpireDB.Players
+  alias Spire.SpireDB.Players.Stats
   alias Spire.SpireDB.Leagues
   alias Spire.SpireDB.Players.Player
   alias Spire.SpireDB.Leagues.Matches
   alias Spire.SpireDB.Logs
   alias Spire.SpireDB.Players.Permissions
 
-  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
-  plug :require_permissions when action not in [:index, :show, :update, :edit]
+  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show, :compare]
+  plug :require_permissions when action not in [:index, :show, :update, :edit, :compare]
 
   def index(conn, %{"search" => search}) do
     players = Players.list_players("%#{search}%")
@@ -44,6 +45,42 @@ defmodule Spire.SpireWeb.PlayerController do
     matches = Matches.list_matches_by_player(player.id)
     logs = Logs.list_logs_by_player(player.id)
     render(conn, "show.html", player: player, matches: matches, logs: logs)
+  end
+
+  def compare(conn, %{"player_1_id" => player_1_id, "player_2_id" => player_2_id, "type" => type} = params) do
+    player_1 = Players.get_by_steamid64(player_1_id)
+    player_2 = Players.get_by_steamid64(player_2_id)
+
+    stats =
+      case params do
+        %{"class" => class} ->
+          player_1_stats = Stats.get_stats_individual(player_1.id, type, class)
+          player_2_stats = Stats.get_stats_individual(player_2.id, type, class)
+          fields = Stats.get_stats_individual_fields()
+          deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
+
+          %{
+            player_1_stats: player_1_stats,
+            player_2_stats: player_2_stats,
+            deltas: deltas,
+            fields: fields
+          }
+
+        _ ->
+          player_1_stats = Stats.get_stats_all(player_1.id, type)
+          player_2_stats = Stats.get_stats_all(player_2.id, type)
+          fields = Stats.get_stats_all_fields()
+          deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
+
+          %{
+            player_1_stats: player_1_stats,
+            player_2_stats: player_2_stats,
+            deltas: deltas,
+            fields: fields
+          }
+      end
+
+    render(conn, "compare.html", player_1: player_1, player_2: player_2, stats: stats)
   end
 
   def edit(conn, %{"id" => id}) do

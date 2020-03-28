@@ -1,15 +1,13 @@
 defmodule Spire.SpireWeb.AdminController do
   use Spire.SpireWeb, :controller
-  alias Spire.SpireDB.Players
-  alias Spire.SpireDB.Players.Permissions
+  alias Spire.SpireDB.Logs.Uploads
 
   plug Spire.SpireWeb.Plugs.RequireAuthentication
   plug :require_permissions
 
   def index(conn, _params) do
-    # get uploads in queue
-    # get leagues
-    render(conn, "index.html")
+    uploads = Uploads.list_uploads()
+    render(conn, "index.html", uploads: uploads)
   end
 
   defp require_permissions(conn, _) do

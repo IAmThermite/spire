@@ -38,6 +38,8 @@ defmodule Spire.UploadCompiler.CalculationUtils do
   ]
 
   @secondary_weapons [
+    "pistol_scout",
+    "the_capper",
     "scout_pistol",
     "max_gun",
     "shotgun_soldier",
@@ -65,6 +67,10 @@ defmodule Spire.UploadCompiler.CalculationUtils do
     %{stats | stat => new_stat}
   end
 
+  def add_stat(stats, stat, _) do
+    %{stats | stat => 0}
+  end
+
   @doc """
   Set an averaged value to the stats, i.e dpm
   """
@@ -77,10 +83,18 @@ defmodule Spire.UploadCompiler.CalculationUtils do
     end
   end
 
+  def average_stat(stats, stat, _) do
+    %{stats | stat => 0}
+  end
+
   @doc """
   Set a value on the stats
   """
   def put_stat(stats, stat, value) when is_number(value) do
     %{stats | stat => value}
+  end
+
+  def put_stat(stats, stat, _) do
+    %{stats | stat => 0}
   end
 end

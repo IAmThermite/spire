@@ -9,11 +9,25 @@ defmodule Spire.SpireDB.Logs.Uploads do
   alias Spire.SpireDB.Logs.Uploads.Upload
 
   @doc """
-  Returns the list of uploads.
+  Returns the list of upload.
 
   ## Examples
 
       iex> list_uploads()
+      [%Upload{}, ...]
+
+  """
+  def list_uploads() do
+    Repo.all(Upload)
+    |> Repo.preload([:player, {:log, :match}])
+  end
+
+  @doc """
+  Returns the list of uploads by uploader.
+
+  ## Examples
+
+      iex> list_uploads_by_player(123)
       [%Upload{}, ...]
 
   """
@@ -35,7 +49,10 @@ defmodule Spire.SpireDB.Logs.Uploads do
       ** (Ecto.NoResultsError)
 
   """
-  def get_upload!(id), do: Repo.get!(Upload, id)
+  def get_upload!(id) do
+    Repo.get!(Upload, id)
+    |> Repo.preload([:player, :log])
+  end
 
   @doc """
   Creates a upload.

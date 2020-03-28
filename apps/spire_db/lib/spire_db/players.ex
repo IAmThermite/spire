@@ -7,7 +7,7 @@ defmodule Spire.SpireDB.Players do
   alias Spire.SpireDB.Repo
 
   alias Spire.SpireDB.Players.Player
-  alias Spire.SpireDB.Leagues.Matches
+  alias Spire.SpireDB.Players.Stats
   alias Spire.SpireDB.Players.PlayersLogs
   alias Spire.SpireDB.Players.PlayersMatches
   alias Spire.Utils.SteamUtils
@@ -197,13 +197,28 @@ defmodule Spire.SpireDB.Players do
 
   def get_by_steamid64(steamid64) do
     Repo.get_by(Player, steamid64: steamid64)
+    |> Repo.preload([
+      :league,
+      :stats_individual,
+      :stats_all
+    ])
   end
 
   def get_by_steamid3(steamid3) do
     Repo.get_by(Player, steamid3: steamid3)
+    |> Repo.preload([
+      :league,
+      :stats_individual,
+      :stats_all
+    ])
   end
 
   def get_by_steamid(steamid) do
     Repo.get_by(Player, steamid: steamid)
+    |> Repo.preload([
+      :league,
+      :stats_individual,
+      :stats_all
+    ])
   end
 end

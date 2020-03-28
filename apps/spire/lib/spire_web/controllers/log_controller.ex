@@ -6,8 +6,8 @@ defmodule Spire.SpireWeb.LogController do
   alias Spire.SpireDB.Logs.Uploads
   alias Spire.SpireWeb.LogHelper
 
-  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:index, :show]
-  plug :require_permissions when action in [:delete, :update, :edit, :new]
+  plug Spire.SpireWeb.Plugs.RequireAuthentication
+  plug :require_permissions when action in [:delete, :update, :edit, :retry]
 
   def index(conn, %{"player_id" => player_id}) do
     player_id = String.to_integer(player_id)
@@ -21,7 +21,13 @@ defmodule Spire.SpireWeb.LogController do
   end
 
   def create(conn, %{"log" => %{"logfile" => logfile} = log_params} = _params) do
-    log_id = List.last(String.split(logfile, "/"))
+    log_id =
+      logfile
+      |> String.split("/")
+      |> List.last()
+      |> String.split("#")
+      |> List.first()
+
     response = HTTPoison.get!("https://logs.tf/json/#{log_id}")
 
     case response do
@@ -55,25 +61,7 @@ defmodule Spire.SpireWeb.LogController do
               {:ok, log} ->
                 case Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id}) do
                   {:ok, upload} ->
-                    res = LogHelper.handle_upload(log, upload)
-
-                    case res do
-                      {:ok, _response} ->
-                        conn
-                        |> put_flash(
-                          :info,
-                          "Log created successfully. Processing will be completed shortly"
-                        )
-                        |> redirect(to: Routes.page_path(conn, :index))
-
-                      {:error, _error} ->
-                        conn
-                        |> put_flash(
-                          :error,
-                          "Error attempting to process log, contact admin for more"
-                        )
-                        |> redirect(to: Routes.page_path(conn, :index))
-                    end
+                    send_to_queue(conn, log, upload)
 
                   err ->
                     Logger.error("#{__MODULE__}.create: #{inspect(err)}")
@@ -142,6 +130,43 @@ defmodule Spire.SpireWeb.LogController do
     conn
     |> put_flash(:info, "Log deleted successfully.")
     |> redirect(to: Routes.page_path(conn, :index))
+  end
+
+  def retry(conn, %{"id" => id}) do
+    upload = Uploads.get_upload!(id)
+    log = upload.log
+
+    case upload do
+      %{status: "PROCESSED"} ->
+        conn
+        |> put_flash(:error, "Cannot retry this upload.")
+        |> redirect(to: Routes.admin_path(conn, :index))
+
+      _ ->
+        send_to_queue(conn, log, upload)
+    end
+  end
+
+  defp send_to_queue(conn, log, upload) do
+    res = LogHelper.handle_upload(log, upload)
+
+    case res do
+      {:ok, _response} ->
+        conn
+        |> put_flash(
+          :info,
+          "Log created successfully. Processing will be completed shortly"
+        )
+        |> redirect(to: Routes.page_path(conn, :index))
+
+      {:error, _error} ->
+        conn
+        |> put_flash(
+          :error,
+          "Error attempting to process log, contact admin for more"
+        )
+        |> redirect(to: Routes.page_path(conn, :index))
+    end
   end
 
   defp require_permissions(conn, _) do

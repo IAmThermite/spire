@@ -1,0 +1,28 @@
+<h1><%= @player_1.alias %> vs <%= @player_2.alias %></h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th><%= link @player_1.alias, to: Routes.player_path(@conn, :show, @player_1) %></th>
+    <th>Difference</th>
+    <th><%= link @player_2.alias, to: Routes.player_path(@conn, :show, @player_2) %></th>
+  </tr>
+  <%= for field <- @stats.fields do %>
+    <tr>
+      <th><%= field %></th>
+      <%= if @stats.player_1_stats do %>
+        <td><%= Map.get(@stats.player_1_stats, field) %></td>
+      <% else %>
+        <td>0</td>
+      <% end %>
+
+      <td><%= Map.get(@stats.deltas, field) %></td>
+
+      <%= if @stats.player_2_stats do %>
+        <td><%= Map.get(@stats.player_2_stats, field) %></td>
+      <% else %>
+        <td>0</td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

@@ -1,4 +1,4 @@
-# Sprie.Utils
+# Spire.Utils
 
 **TODO: Add description**
 
