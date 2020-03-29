@@ -13,10 +13,9 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
     |> calculate_soldier_demoman_stats(log_json)
     |> calculate_sniper_stats(log_json)
     |> calculate_spy_stats(log_json)
+    |> calculate_pyro_stats(class_stats["weapon"])
     |> Utils.add_stat(:total_playtime, class_stats["total_time"])
     |> Utils.add_stat(:number_of_logs, 1)
-
-    # |> calculate_pyro_stats(class_stats["weapon"])
   end
 
   def calculate_general_stats(stats_individual, class_stats) do
@@ -42,24 +41,38 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
     weapon_list = Enum.to_list(class_stats["weapon"])
 
     Enum.reduce(weapon_list, stats_individual, fn {weapon, weapon_stats}, stats ->
-      add_weapon_stats(stats, weapon, weapon_stats)
+      add_weapon_stats(stats, weapon, weapon_stats, stats_individual.class)
     end)
   end
 
-  defp add_weapon_stats(stats_individual, weapon, weapon_stats) do
+  defp add_weapon_stats(stats_individual, weapon, weapon_stats, class) do
     %{"kills" => kills, "dmg" => damage, "avg_dmg" => ave_dmg, "shots" => shots, "hits" => hits} =
       weapon_stats
 
     cond do
       weapon in Utils.primary_weapons() ->
         # TODO: special case for pyro required
-        stats_individual
-        |> Utils.add_stat(:kills_pri, kills)
-        |> Utils.add_stat(:dmg_pri, damage)
-        |> calculate_weapon_accuracy(:accuracy_pri, hits, shots)
-        |> Utils.average_stat(:dmg_per_shot_pri, ave_dmg)
-        |> Utils.add_stat(:shots_hit_pri, hits)
-        |> Utils.add_stat(:shots_fired_pri, shots)
+        if class == "pyro" do
+          if weapon in Utils.pyro_primary_weapons() do
+            stats_individual
+            |> Utils.add_stat(:kills_pri, kills)
+            |> Utils.add_stat(:dmg_pri, damage)
+            |> calculate_weapon_accuracy(:accuracy_pri, hits, shots)
+            |> Utils.average_stat(:dmg_per_shot_pri, ave_dmg)
+            |> Utils.add_stat(:shots_hit_pri, hits)
+            |> Utils.add_stat(:shots_fired_pri, shots)
+          else
+            stats_individual
+          end
+        else
+          stats_individual
+          |> Utils.add_stat(:kills_pri, kills)
+          |> Utils.add_stat(:dmg_pri, damage)
+          |> calculate_weapon_accuracy(:accuracy_pri, hits, shots)
+          |> Utils.average_stat(:dmg_per_shot_pri, ave_dmg)
+          |> Utils.add_stat(:shots_hit_pri, hits)
+          |> Utils.add_stat(:shots_fired_pri, shots)
+        end
 
       weapon in Utils.secondary_weapons() ->
         stats_individual
@@ -158,6 +171,23 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
   end
 
   def calculate_spy_stats(stats_individual, _log_json), do: stats_individual
+
+  def calculate_pyro_stats(%{class: class} = stats_individual, weapons) when class == "pyro" do
+    reflects =
+      Map.keys(weapons)
+      |> Enum.filter(fn weapon ->
+        String.starts_with?(weapon, "deflect")
+      end)
+      |> Enum.map(fn weapon ->
+        weapons[weapon]
+      end)
+      |> Enum.reduce(0, fn %{"kills" => kills}, acc ->
+        acc + kills
+      end)
+    Utils.add_stat(stats_individual, :reflect_kills, reflects)
+  end
+
+  def calculate_pyro_stats(stats_individual, _weapons), do: stats_individual
 
   defp get_class_stats_for_class(class, log_json) do
     [class_stats | _tail] =

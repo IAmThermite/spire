@@ -26,6 +26,13 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
         "avg_dmg" => 60,
         "shots" => 10,
         "hits" => 7
+      },
+      "deflect_rocket" => %{
+        "kills" => 1,
+        "dmg" => 1000,
+        "avg_dmg" => 60,
+        "shots" => 10,
+        "hits" => 7
       }
     }
   }
@@ -253,6 +260,16 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
       new_stats = IndividualCalculations.calculate_spy_stats(stats, @log_json)
 
       assert new_stats.backstabs == 3
+    end
+  end
+
+  describe "calculate_pyro_stats/2" do
+    test "it should add to reflect_kills when weapon is present" do
+      stats = %Individual{class: "pyro"}
+
+      new_stats = IndividualCalculations.calculate_pyro_stats(stats, @class_stat["weapon"])
+
+      assert new_stats.reflect_kills == 1
     end
   end
 
