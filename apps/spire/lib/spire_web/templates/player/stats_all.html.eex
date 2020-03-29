@@ -21,7 +21,7 @@
     <li>Times Played Medic: <%= @stats.times_seen_medic %></li>
     <li>Times Played Sniper: <%= @stats.times_seen_sniper %></li>
     <li>Times Played Spy: <%= @stats.times_seen_spy %></li>
-    <li>Times Appeared: <%= @stats.number_of_logs %></li>
+    <li>Number of Logs: <%= @stats.number_of_logs %></li>
     <li>Total Time Played: <%= @stats.time_played %></li>
   </ul>
 </div>

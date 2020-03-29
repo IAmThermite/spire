@@ -153,7 +153,7 @@ defmodule Spire.UploadCompiler do
     Enum.map(players, fn player ->
       if real do
         [
-          Stats.get_or_create_stats_all_for_player!(player,  "REAL"),
+          Stats.get_or_create_stats_all_for_player!(player,  "MATCH"),
           Stats.get_or_create_stats_all_for_player!(player, "COMBINED")
         ]
       else
@@ -174,7 +174,7 @@ defmodule Spire.UploadCompiler do
         if stat["type"] != "undefined" do
           if real do
             [
-              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "REAL"),
+              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "MATCH"),
               Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "COMBINED")
             ]
           else

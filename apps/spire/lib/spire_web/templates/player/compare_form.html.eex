@@ -13,7 +13,7 @@
       <div class = "input-field col s6">
         <select name="type" required>
           <option value="" selected>Select Stat Type</option>
-          <option value="REAL">Real</option>
+          <option value="MATCH">Match</option>
           <option value="COMBINED">Combined</option>
           <option value="OTHER">Other</option>
         </select>

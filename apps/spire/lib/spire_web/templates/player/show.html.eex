@@ -47,9 +47,9 @@
   <div class="col s12">
     <ul class="tabs brown">
       <li class="tab col s3"><a class="white-text" href="#individual_other">Individual Other</a></li>
-      <li class="tab col s3"><a class="white-text" href="#individual_real">Individual Real</a></li>
+      <li class="tab col s3"><a class="white-text" href="#individual_match">Individual Match</a></li>
       <li class="tab col s3"><a class="white-text" href="#all_other">All Other</a></li>
-      <li class="tab col s3"><a class="white-text" href="#all_real">All Real</a></li>
+      <li class="tab col s3"><a class="white-text" href="#all_match">All Match</a></li>
     </ul>
   </div>
   <div class="col s12">
@@ -60,9 +60,9 @@
       <% end %>
     </div>
   
-    <div id="individual_real">
-      <%= if stats["stats_individual_real"] != nil do %>
-        <%= render "stats_individual.html", stats: stats["stats_individual_real"], name: "real" %>
+    <div id="individual_match">
+      <%= if stats["stats_individual_match"] != nil do %>
+        <%= render "stats_individual.html", stats: stats["stats_individual_match"], name: "match" %>
       <% end %>
     </div>
   
@@ -72,9 +72,9 @@
       <% end %>
     </div>
   
-    <div id="all_real">
-      <%= if stats["stats_all_real"] != nil do %>
-        <%= render "stats_all.html", stats: stats["stats_all_real"] %>
+    <div id="all_match">
+      <%= if stats["stats_all_match"] != nil do %>
+        <%= render "stats_all.html", stats: stats["stats_all_match"] %>
       <% end %>
     </div>
   </div>

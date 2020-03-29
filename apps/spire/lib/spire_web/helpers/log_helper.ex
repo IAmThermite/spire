@@ -23,11 +23,11 @@ defmodule Spire.SpireWeb.LogHelper do
     Logger.debug("#{__MODULE__}.handle_upload", log: log, upload: upload)
 
     match = case get_match_from_log(log.match_id) do
-      nil ->
-        %{}
+      %Matches.Match{} = m ->
+        Utils.struct_to_json_map(m, [:league, :league_id, :logs, :players])
 
-      m ->
-        Utils.struct_to_json_map(m, [:players, :logs, :leagues])
+      _ ->
+        %{}
     end
 
     Spire.Utils.SQSUtils.send_message(
