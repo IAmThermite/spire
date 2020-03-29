@@ -23,6 +23,7 @@
             <a class="brand-logo hide-on-med-and-down" href="/"><img height="64px" src="<%= Routes.static_path(@conn, "/images/banner.png") %>"></a>
             <ul class="right">
               <li><%= link "Players", to: Routes.player_path(@conn, :index) %></li>
+              <li><%= link "Compare", to: Routes.player_path(@conn, :compare) %></li>
               <li><%= link "Leagues", to: Routes.league_path(@conn, :index) %></li>
               <li><%= link "About", to: Routes.page_path(@conn, :about) %></li>
               <li>|</li>

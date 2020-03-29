@@ -36,13 +36,13 @@ defmodule Spire.SpireWeb.Api.PlayerController do
         %{"class" => class} ->
           player_1_stats = Stats.get_stats_individual(player_1.id, type, class)
           player_2_stats = Stats.get_stats_individual(player_2.id, type, class)
-          fields = Stats.get_stats_individual_fields()
+          fields = Stats.Individual.fields_for_class(class)
           deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
 
           %{
-            player_1_stats: clean_stat(player_1_stats),
-            player_2_stats: clean_stat(player_2_stats),
-            deltas: deltas
+            player_1_stats: clean_stat(player_1_stats) |> Map.take(fields),
+            player_2_stats: clean_stat(player_2_stats) |> Map.take(fields),
+            deltas: Map.take(deltas, fields)
           }
 
         _ ->
@@ -80,7 +80,7 @@ defmodule Spire.SpireWeb.Api.PlayerController do
     |> clean_player_stats()
   end
 
-  defp clean_player(_), do: nil
+  defp clean_player(_), do: %{}
 
   defp clean_player_stats(player) do
     stats_all =

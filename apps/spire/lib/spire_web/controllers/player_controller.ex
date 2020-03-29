@@ -51,36 +51,54 @@ defmodule Spire.SpireWeb.PlayerController do
     player_1 = Players.get_by_steamid64(player_1_id)
     player_2 = Players.get_by_steamid64(player_2_id)
 
-    stats =
-      case params do
-        %{"class" => class} ->
-          player_1_stats = Stats.get_stats_individual(player_1.id, type, class)
-          player_2_stats = Stats.get_stats_individual(player_2.id, type, class)
-          fields = Stats.get_stats_individual_fields()
-          deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
+    cond do
+      player_1 == nil ->
+        conn
+        |> put_flash(:error, "Could not find player with id of #{player_1_id}")
+        |> redirect(to: Routes.player_path(conn, :compare))
 
-          %{
-            player_1_stats: player_1_stats,
-            player_2_stats: player_2_stats,
-            deltas: deltas,
-            fields: fields
-          }
+      player_2 == nil ->
+        conn
+        |> put_flash(:error, "Could not find player with id of #{player_2_id}")
+        |> redirect(to: Routes.player_path(conn, :compare))
 
-        _ ->
-          player_1_stats = Stats.get_stats_all(player_1.id, type)
-          player_2_stats = Stats.get_stats_all(player_2.id, type)
-          fields = Stats.get_stats_all_fields()
-          deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
+      true ->
+        stats =
+          case params do
+            %{"class" => class} when class != "" ->
+              player_1_stats = Stats.get_stats_individual(player_1.id, type, class)
+              player_2_stats = Stats.get_stats_individual(player_2.id, type, class)
+              fields = Stats.Individual.fields_for_class(class)
+              deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
 
-          %{
-            player_1_stats: player_1_stats,
-            player_2_stats: player_2_stats,
-            deltas: deltas,
-            fields: fields
-          }
-      end
+              %{
+                player_1_stats: Map.take(player_1_stats || %{}, fields),
+                player_2_stats: Map.take(player_2_stats || %{}, fields),
+                deltas: Map.take(deltas, fields),
+                fields: fields
+              }
 
-    render(conn, "compare.html", player_1: player_1, player_2: player_2, stats: stats)
+            _ ->
+              player_1_stats = Stats.get_stats_all(player_1.id, type)
+              player_2_stats = Stats.get_stats_all(player_2.id, type)
+              fields = Stats.get_stats_all_fields()
+              deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
+
+              %{
+                player_1_stats: player_1_stats,
+                player_2_stats: player_2_stats,
+                deltas: deltas,
+                fields: fields
+              }
+          end
+
+        render(conn, "compare.html", player_1: player_1, player_2: player_2, stats: stats)
+    end
+  end
+
+  def compare(conn, _params) do
+    players = Players.list_players()
+    render(conn, "compare.html", players: players)
   end
 
   def edit(conn, %{"id" => id}) do

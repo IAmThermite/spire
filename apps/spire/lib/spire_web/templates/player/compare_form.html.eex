@@ -1,0 +1,40 @@
+<div class="row">
+  <form class="col s12" method="GET">
+    <div class="row">
+      <div class = "input-field col s6">
+        <input placeholder="Player 1 Steamid64" type="text" class="active validate" name="player_1_id" required />
+      </div>
+
+      <div class = "input-field col s6">
+        <input placeholder="Player 2 Steamid64" type="text" class="active validate" name="player_2_id" required />
+      </div>
+    </div>
+    <div class="row">
+      <div class = "input-field col s6">
+        <select name="type" required>
+          <option value="" selected>Select Stat Type</option>
+          <option value="REAL">Real</option>
+          <option value="COMBINED">Combined</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+
+      <div class = "input-field col s6">
+        <select name="class">
+          <option value="" selected>Select Class</option>
+          <option value="scout">Scout</option>
+          <option value="soldier">Soldier</option>
+          <option value="pyro">Pyro</option>
+          <option value="demoman">Demoman</option>
+          <option value="heavyweapons">Heavy</option>
+          <option value="engineer">Engineer</option>
+          <option value="medic">Medic</option>
+          <option value="sniper">Sniper</option>
+          <option value="spy">Spy</option>
+        </select>
+      </div>
+    </div>
+
+    <button>Compare</button>
+  </form>
+</div>
