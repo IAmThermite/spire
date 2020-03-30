@@ -31,7 +31,7 @@ defmodule Spire.SpireWeb.Router do
 
     resources "/logs", LogController, except: [:index]
 
-    get "/logs/:id/retry", LogController, :retry
+    get "/logs/:id/process", LogController, :process
 
     get "/players/compare", PlayerController, :compare
 

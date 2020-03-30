@@ -1,5 +1,6 @@
 defmodule Spire.SpireWeb.LogController do
   use Spire.SpireWeb, :controller
+  require Logger
 
   alias Spire.SpireDB.Logs
   alias Spire.SpireDB.Logs.Log
@@ -7,7 +8,7 @@ defmodule Spire.SpireWeb.LogController do
   alias Spire.SpireWeb.LogHelper
 
   plug Spire.SpireWeb.Plugs.RequireAuthentication
-  plug :require_permissions when action in [:delete, :update, :edit, :retry]
+  plug :require_permissions when action in [:delete, :update, :edit, :process]
 
   def index(conn, %{"player_id" => player_id}) do
     player_id = String.to_integer(player_id)
@@ -28,14 +29,15 @@ defmodule Spire.SpireWeb.LogController do
       |> String.split("#")
       |> List.first()
 
-    response = HTTPoison.get!("https://logs.tf/json/#{log_id}")
+    response = HTTPoison.get("https://logs.tf/json/#{log_id}")
 
     case response do
-      %{body: body} ->
+      {:ok, %{body: body}} ->
         %{
           "teams" => %{"Red" => red_team, "Blue" => blue_team},
           "players" => players,
-          "info" => log_info
+          "info" => log_info,
+          "length" => length
         } = log_json = Jason.decode!(body)
 
         num_of_players = map_size(players)
@@ -51,32 +53,63 @@ defmodule Spire.SpireWeb.LogController do
             blue_kills: blue_team["kills"],
             red_damage: red_team["dmg"],
             blue_damage: blue_team["dmg"],
-            length: log_info["total_length"],
+            length: length,
             date: DateTime.from_unix!(log_info["date"]),
             match_id: log_params["match_id"]
           }
 
           if LogHelper.can_upload?(log_json, conn) do
-            case Logs.create_log(log_data) do
+            case handle_valid_log(log_data) do
               {:ok, log} ->
-                case Uploads.create_upload(%{uploaded_by: conn.assigns[:user].id, log_id: log.id}) do
-                  {:ok, upload} ->
-                    send_to_queue(conn, log, upload)
-
-                  err ->
-                    Logger.error("#{__MODULE__}.create: #{inspect(err)}")
-
+                status =
+                  case log_params["match_id"] do
+                    nil ->
+                      "PENDING"
+                    _id ->
+                      "WAITING"
+                  end
+                with {:ok, upload} <- Uploads.create_upload(%{uploaded_by: conn.assigns.user.id, status: status, log_id: log.id}),
+                     queue <- send_to_queue(conn, upload, log) do
+                case queue do
+                  {:ok, nil} ->
                     conn
-                    |> put_flash(
-                      :error,
-                      "Log was uploaded but something went wrong, contact an admin for more"
-                    )
-                    |> redirect(to: Routes.log_path(conn, :new))
+                    |> put_flash(:info, "Log sucessfully uploaded. Please wait for an admin to approve.")
+                    |> redirect(to: Routes.page_path(conn, :index))
+
+                  {:ok, %Uploads.Upload{}} ->
+                    conn
+                    |> put_flash(:info, "Log sucessfully uploaded. Processing will be completed shortly.")
+                    |> redirect(to: Routes.page_path(conn, :index))
+
+                  {:error, %Ecto.Changeset{}} ->
+                    conn
+                    |> put_flash(:error, "Something went wrong uploading, contact an admin for more")
+                    |> redirect(to: Routes.page_path(conn, :index))
+
+                  {:error, _error} ->
+                    conn
+                    |> put_flash(:error, "Log was created but could not be processed, contact an admin for more.")
+                    |> redirect(to: Routes.page_path(conn, :index))
+
                 end
+
+              else
+                {:error, %Ecto.Changeset{} = changeset} ->
+                  Logger.error("Failed to update upload, upload potentially in bad state", changeset: changeset)
+                  conn
+                  |> put_flash(:error, "Failed to update upload, upload potentially in bad state.")
+                  |> redirect(to: Routes.admin_path(conn, :index))
+
+                {:error, message} ->
+                  conn
+                  |> put_flash(:error, message)
+                  |> redirect(to: Routes.admin_path(conn, :index))
+              end
 
               {:error, %Ecto.Changeset{} = changeset} ->
                 render(conn, "new.html", changeset: changeset)
             end
+
           else
             conn
             |> put_flash(
@@ -91,10 +124,21 @@ defmodule Spire.SpireWeb.LogController do
           |> redirect(to: Routes.log_path(conn, :new))
         end
 
-      _ ->
+      {:error, error} ->
+        Logger.error("Error occured fetching log info", error: error)
         conn
         |> put_flash(:error, "Failed to get log info")
         |> redirect(to: Routes.log_path(conn, :new))
+    end
+  end
+
+  defp handle_valid_log(log_data) do
+    case Logs.create_log(log_data) do
+      {:ok, log} ->
+        {:ok, log}
+
+      {:error, changeset} ->
+        {:error, changeset}
     end
   end
 
@@ -132,40 +176,52 @@ defmodule Spire.SpireWeb.LogController do
     |> redirect(to: Routes.page_path(conn, :index))
   end
 
-  def retry(conn, %{"id" => id}) do
+  def process(conn, %{"id" => id}) do
     upload = Uploads.get_upload!(id)
     log = upload.log
-
-    case upload do
-      %{status: "PROCESSED"} ->
+    case handle_upload(upload, log) do
+      {:ok, _} ->
         conn
-        |> put_flash(:error, "Cannot retry this upload.")
+        |> put_flash(:info, "Log approved and sent to queue.")
         |> redirect(to: Routes.admin_path(conn, :index))
 
-      _ ->
-        send_to_queue(conn, log, upload)
+      {:error, %Ecto.Changeset{}} ->
+        conn
+        |> put_flash(:error, "Upload could not be updated, check the logs.")
+        |> redirect(to: Routes.admin_path(conn, :index))
+
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.admin_path(conn, :index))
     end
   end
 
-  defp send_to_queue(conn, log, upload) do
-    res = LogHelper.handle_upload(log, upload)
+  defp send_to_queue(conn, upload, log) do
+    cond do
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
+        handle_upload(upload, log)
 
-    case res do
-      {:ok, _response} ->
-        conn
-        |> put_flash(
-          :info,
-          "Log created successfully. Processing will be completed shortly"
-        )
-        |> redirect(to: Routes.page_path(conn, :index))
+      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_logs) ->
+        handle_upload(upload, log)
 
-      {:error, _error} ->
-        conn
-        |> put_flash(
-          :error,
-          "Error attempting to process log, contact admin for more"
-        )
-        |> redirect(to: Routes.page_path(conn, :index))
+      true ->
+        if log.match_id do
+          {:ok, nil}
+        else
+          handle_upload(upload, log)
+        end
+    end
+  end
+
+  defp handle_upload(upload, log) do
+    case LogHelper.handle_upload(upload, log) do
+      {:ok, _} ->
+        Uploads.update_upload(upload, %{status: "PENDING"})
+
+      {:error, error} ->
+        Logger.error("Could not send log to queue", error: error)
+        {:error, "Failed to send upload to queue. Try again later"}
     end
   end
 

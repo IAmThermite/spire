@@ -19,7 +19,7 @@ defmodule Spire.SpireWeb.LogHelper do
     end
   end
 
-  def handle_upload(log, upload) do
+  def handle_upload(upload, log) do
     Logger.debug("#{__MODULE__}.handle_upload", log: log, upload: upload)
 
     match = case get_match_from_log(log.match_id) do

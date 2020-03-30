@@ -11,7 +11,9 @@ defmodule Spire.SpireWeb.AdminController do
   end
 
   defp require_permissions(conn, _) do
-    if Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) do
+    if Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin)
+       or
+       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_logs) do
       conn
     else
       conn

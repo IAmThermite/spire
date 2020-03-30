@@ -28,8 +28,15 @@
       <td><%= upload.inserted_at %></td>
       <td><%= upload.updated_at %></td>
       <td>
-        <%= if upload.status != "PROCESSED" do %>
-          <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :retry, upload.id) %></span>
+        <%= case upload.status do %>
+          <% "WAITING" -> %>
+            <span><%= button "Approve", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
+          <% "IN_QUEUE" -> %>
+            <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
+          <% "ERROR" -> %>
+            <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
+          <% _ -> %>
+            <span></span>
         <% end %>
       </td>
     </tr>
