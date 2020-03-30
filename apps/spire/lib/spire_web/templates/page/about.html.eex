@@ -16,7 +16,7 @@
   Remember when there was a TF2 broadcast and they had overlays of the players stats?
   I do, this feature is primarily included to allow casting orgs to show cool data about the players before the match starts, but I'm sure someone else will find another use for it.
   The currently available endpoints are at <code>/api/players</code>, with an optional search parameter (<code>?search=bla</code>) or you can provide a steamid <code>/players/&lt;steamid&gt;</code>.
-  <code>/api/matches/&lg;match_id&gt;</code> also exists for showing information about a match
+  <code>/api/matches/&lt;match_id&gt;</code> also exists for showing information about a match
 </p>
 
 <hr />

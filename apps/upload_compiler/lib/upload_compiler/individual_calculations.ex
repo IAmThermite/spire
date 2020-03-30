@@ -3,6 +3,25 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
 
   alias Spire.UploadCompiler.CalculationUtils, as: Utils
 
+  @pyro_reflectable [
+    "tf_projectile_rocket",
+    "quake_rl",
+    "rocketlauncher_directhit",
+    # ?
+    "air_strike",
+    # ?
+    "liberty_launcher",
+    "blackbox",
+    "tf_projectile_pipe",
+    "iron_bomber",
+    # ?
+    "loch_n_load",
+    "crusaders_crossbow",
+    "tf_projectile_arrow",
+    "tf_projectile_pipe_remote",
+    "quickiebomb_launcher"
+  ]
+
   def calculate_stats(stats_individual, log_json) do
     class_stats = get_class_stats_for_class(stats_individual.class, log_json)
 
@@ -176,7 +195,7 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
     reflects =
       Map.keys(weapons)
       |> Enum.filter(fn weapon ->
-        String.starts_with?(weapon, "deflect")
+        String.starts_with?(weapon, "deflect") or weapon in @pyro_reflectable
       end)
       |> Enum.map(fn weapon ->
         weapons[weapon]

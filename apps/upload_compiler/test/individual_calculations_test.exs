@@ -269,7 +269,8 @@ defmodule Spire.UploadCompiler.IndividualCalculationsTest do
 
       new_stats = IndividualCalculations.calculate_pyro_stats(stats, @class_stat["weapon"])
 
-      assert new_stats.reflect_kills == 1
+      # note deflect_rocket and tf_projectile_rocket
+      assert new_stats.reflect_kills == 10
     end
   end
 
