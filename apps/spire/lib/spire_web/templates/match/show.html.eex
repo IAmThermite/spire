@@ -2,9 +2,9 @@
 <% {blue_score, red_score} = calculate_match_score(@match) %>
 <h4><%= blue_score %> - <%= red_score %></h4>
 
-
 <%= if(can_manage?(@conn)) do %>
   <%= button "Edit", method: :get, to: Routes.match_path(@conn, :edit, @match.id) %>
+  <%= button "Delete", method: :delete, to: Routes.match_path(@conn, :delete, @match.id) %>
 <% end %>
 
 <ul>

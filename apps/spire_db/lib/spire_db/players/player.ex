@@ -26,7 +26,7 @@ defmodule Spire.SpireDB.Players.Player do
     has_many :stats_individual, Individual
     has_many :stats_all, All
 
-    many_to_many :matches, Match, join_through: PlayersMatches, on_replace: :delete
+    many_to_many :matches, Match, join_through: PlayersMatches
     many_to_many :logs, Log, join_through: PlayersLogs, on_replace: :delete
 
     timestamps()

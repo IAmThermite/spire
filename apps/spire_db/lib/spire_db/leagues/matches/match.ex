@@ -14,9 +14,9 @@ defmodule Spire.SpireDB.Leagues.Matches.Match do
 
     belongs_to :league, League
 
-    has_many :logs, Log
+    has_many :logs, Log, on_delete: :nilify_all
 
-    many_to_many :players, Player, join_through: PlayersMatches, on_replace: :delete
+    many_to_many :players, Player, join_through: PlayersMatches, on_delete: :delete_all
 
     timestamps()
   end

@@ -12,9 +12,33 @@
     <%= if @league.main, do: "yes", else: "no" %>
   </li>
   <li>
-    <strong><%= link "Matches", to: Routes.league_match_path(@conn, :index, @league.id) %></strong>
+    <strong><%= link "All Matches", to: Routes.league_match_path(@conn, :index, @league.id) %></strong>
   </li>
 </ul>
+
+<h4>Most Recent Matches</h4>
+<% recent_matches = Enum.take(@league.matches, 5) %>
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Score</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for match <- recent_matches do %>
+      <tr>
+        <td><%= link match.title, to: Routes.match_path(@conn, :show, match) %></td>
+        <% {blue_score, red_score} = calculate_match_score(match) %>
+        <td><%= blue_score %> - <%= red_score %></td>
+        <td><%= match.date %></td>
+        <td><a href=<%= match.link %>>External Link</a></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <h4>Players</h4>
 <table>

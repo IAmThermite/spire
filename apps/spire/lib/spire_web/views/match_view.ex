@@ -1,6 +1,8 @@
 defmodule Spire.SpireWeb.MatchView do
   use Spire.SpireWeb, :view
 
+  alias Spire.SpireDB.Logs.Log
+
   def can_manage?(conn) do
     if Spire.SpireWeb.PermissionsHelper.is_logged_in?(conn) do
       cond do
@@ -19,8 +21,14 @@ defmodule Spire.SpireWeb.MatchView do
   end
 
   def calculate_match_score(match) do
-    Enum.reduce(match.logs, {0, 0}, fn log, {blue, red} ->
-      {blue + log.blue_score, red + log.red_score}
-    end)
+    case match.logs do
+      [%Log{} | _tail] ->
+        Enum.reduce(match.logs, {0, 0}, fn log, {blue, red} ->
+          {blue + log.blue_score, red + log.red_score}
+        end)
+
+      _ ->
+        {0, 0}
+    end
   end
 end

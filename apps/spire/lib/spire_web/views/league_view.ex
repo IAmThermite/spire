@@ -17,4 +17,8 @@ defmodule Spire.SpireWeb.LeagueView do
       false
     end
   end
+
+  def calculate_match_score(match) do
+    Spire.SpireWeb.MatchView.calculate_match_score(match)
+  end
 end

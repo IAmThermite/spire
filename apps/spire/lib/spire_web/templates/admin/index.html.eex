@@ -2,43 +2,47 @@
 
 <h4>Uploads</h4>
 <table>
-  <tr>
-    <th>Logfile</th>
-    <th>Uploader</th>
-    <th>Match</th>
-    <th>Status</th>
-    <th>Added</th>
-    <th>Updated</th>
-    <th></th>
-  </tr>
-  <%= for upload <- @uploads do %>
+  <thead>
     <tr>
-      <td>
-        <a href="https://logs.tf/<%= upload.log.logfile %>"><%= upload.log.logfile %></a>
-      </td>
-      <td>
-        <span><%= link upload.player.alias, to: Routes.player_path(@conn, :show, upload.player) %></span>
-      </td>
-      <td>
-        <%= if upload.log.match_id do %>
-          <%= link upload.log.match_id, to: Routes.match_path(@conn, :show, upload.log.match) %>
-        <% end %>
-        </td>
-      <td><%= upload.status %></td>
-      <td><%= upload.inserted_at %></td>
-      <td><%= upload.updated_at %></td>
-      <td>
-        <%= case upload.status do %>
-          <% "WAITING" -> %>
-            <span><%= button "Approve", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
-          <% "IN_QUEUE" -> %>
-            <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
-          <% "ERROR" -> %>
-            <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
-          <% _ -> %>
-            <span></span>
-        <% end %>
-      </td>
+      <th>Logfile</th>
+      <th>Uploader</th>
+      <th>Match</th>
+      <th>Status</th>
+      <th>Added</th>
+      <th>Updated</th>
+      <th></th>
     </tr>
-  <% end %>
+  </thead>
+  <tbody>
+    <%= for upload <- @uploads do %>
+      <tr>
+        <td>
+          <a href="https://logs.tf/<%= upload.log.logfile %>"><%= upload.log.logfile %></a>
+        </td>
+        <td>
+          <span><%= link upload.player.alias, to: Routes.player_path(@conn, :show, upload.player) %></span>
+        </td>
+        <td>
+          <%= if upload.log.match_id do %>
+            <%= link upload.log.match_id, to: Routes.match_path(@conn, :show, upload.log.match) %>
+          <% end %>
+          </td>
+        <td><%= upload.status %></td>
+        <td><%= upload.inserted_at %></td>
+        <td><%= upload.updated_at %></td>
+        <td>
+          <%= case upload.status do %>
+            <% "WAITING" -> %>
+              <span><%= button "Approve", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
+            <% "IN_QUEUE" -> %>
+              <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
+            <% "ERROR" -> %>
+              <span><%= button "Reprocess", method: :get, to: Routes.log_path(@conn, :process, upload.id) %></span>
+            <% _ -> %>
+              <span></span>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>

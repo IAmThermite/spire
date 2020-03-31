@@ -19,7 +19,7 @@ defmodule Spire.SpireDB.Leagues.Matches do
 
   """
   def list_matches() do
-    Repo.all(Match)
+    Repo.all(from m in Match, order_by: [desc: m.date])
   end
 
   @doc """
@@ -32,7 +32,7 @@ defmodule Spire.SpireDB.Leagues.Matches do
 
   """
   def list_matches_by_league(league_id) do
-    Repo.all(from(m in Match, where: m.league_id == ^league_id))
+    Repo.all(from(m in Match, where: m.league_id == ^league_id, order_by: [desc: m.date]))
     |> Repo.preload([:logs])
   end
 
@@ -46,7 +46,7 @@ defmodule Spire.SpireDB.Leagues.Matches do
 
   """
   def list_matches_by_player(player_id) do
-    Repo.all(from(m in PlayersMatches, where: m.player_id == ^player_id))
+    Repo.all(from(m in PlayersMatches, where: m.player_id == ^player_id, order_by: [desc: m.date]))
     |> Repo.preload([:match])
     |> Enum.map(fn m ->
       m.match

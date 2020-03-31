@@ -18,7 +18,7 @@ defmodule Spire.SpireDB.Leagues do
 
   """
   def list_leagues do
-    Repo.all(League)
+    Repo.all(from League, order_by: [desc: :main])
   end
 
   @doc """
@@ -37,7 +37,7 @@ defmodule Spire.SpireDB.Leagues do
   """
   def get_league!(id) do
     Repo.get!(League, id)
-    |> Repo.preload([:players, :matches])
+    |> Repo.preload([:players, {:matches, :logs}])
   end
 
   @doc """
