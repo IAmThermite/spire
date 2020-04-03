@@ -7,10 +7,14 @@ defmodule Spire.SpireDB.Leagues.Matches.Match do
   alias Spire.SpireDB.Players.PlayersMatches
   alias Spire.SpireDB.Logs.Log
 
+  @required_fields [:title, :league_id, :link, :team_1_score, :team_2_score]
+
   schema "matches" do
     field :title, :string
     field :date, :date
     field :link, :string
+    field :team_1_score, :integer, default: 0
+    field :team_2_score, :integer, default: 0
 
     belongs_to :league, League
 
@@ -24,8 +28,8 @@ defmodule Spire.SpireDB.Leagues.Matches.Match do
   @doc false
   def changeset(match, attrs) do
     match
-    |> cast(attrs, [:title, :date, :league_id, :link])
-    |> validate_required([:title, :league_id, :link])
+    |> cast(attrs, __schema__(:fields))
+    |> validate_required(@required_fields)
     |> assoc_constraint(:league)
     |> unique_constraint(:title)
     |> unique_constraint(:link)

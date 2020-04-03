@@ -19,16 +19,4 @@ defmodule Spire.SpireWeb.MatchView do
       false
     end
   end
-
-  def calculate_match_score(match) do
-    case match.logs do
-      [%Log{} | _tail] ->
-        Enum.reduce(match.logs, {0, 0}, fn log, {blue, red} ->
-          {blue + log.blue_score, red + log.red_score}
-        end)
-
-      _ ->
-        {0, 0}
-    end
-  end
 end

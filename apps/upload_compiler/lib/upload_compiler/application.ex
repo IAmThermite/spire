@@ -9,6 +9,7 @@ defmodule Spire.UploadCompiler.Application do
 
   def start(_type, _args) do
     Logger.info("Starting Upload Compiler")
+
     children = [
       {Spire.UploadCompiler, []}
     ]

@@ -14,7 +14,6 @@ config :spire, Spire.SpireWeb.Endpoint,
   render_errors: [view: Spire.SpireWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Spire.PubSub, adapter: Phoenix.PubSub.PG2]
 
-
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 

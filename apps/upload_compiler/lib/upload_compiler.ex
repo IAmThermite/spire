@@ -35,15 +35,23 @@ defmodule Spire.UploadCompiler do
 
     real = json["match"] != %{}
 
-    match = if real do
-      Matches.get_match!(json["match"]["id"])
-    else
-      nil
-    end
+    match =
+      if real do
+        Matches.get_match!(json["match"]["id"])
+      else
+        nil
+      end
 
-    log = Logs.get_log!(message_log["id"])
+    log =
+      Logs.get_log!(message_log["id"])
+      |> IO.inspect()
 
-    struct = %Uploads.Upload{uploaded_by: message_upload["uploaded_by"], id: message_upload["id"], log_id: message_upload["log_id"]}
+    struct = %Uploads.Upload{
+      uploaded_by: message_upload["uploaded_by"],
+      id: message_upload["id"],
+      log_id: message_upload["log_id"]
+    }
+
     {:ok, upload} = Uploads.update_upload(struct, %{status: "IN_QUEUE"})
 
     %HTTPoison.Response{body: body, status_code: 200} =
@@ -86,17 +94,21 @@ defmodule Spire.UploadCompiler do
       end)
 
     # link players to log
-    players_to_log = Enum.map(players, fn player ->
-      Players.Player.changeset_add_log(player, log)
-    end)
+    players_to_log =
+      Enum.map(players, fn player ->
+        Players.Player.changeset_add_log(player, log)
+      end)
 
     # link players to matches
-    players_to_match = Enum.map(players, fn player ->
-      Players.Player.changeset_add_match(player, match)
-    end)
+    players_to_match =
+      Enum.map(players, fn player ->
+        Players.Player.changeset_add_match(player, match)
+      end)
 
-    changesets = Enum.concat([updated_stats_all, updated_stats_individual, players_to_log, players_to_match])
-    {:ok, _multis} = persist_stats(changesets, upload)
+    changesets =
+      Enum.concat([updated_stats_all, updated_stats_individual, players_to_log, players_to_match])
+
+    {:ok, _multis} = persist_stats(changesets, upload, match, log)
 
     message
     |> Message.update_data(fn _data -> log_json end)
@@ -107,8 +119,7 @@ defmodule Spire.UploadCompiler do
 
     Map.keys(log_players)
     |> Enum.map(fn key ->
-      %{steamid64: steamid64, steamid3: steamid3, steamid: steamid} =
-        SteamUtils.get_steamids(key)
+      %{steamid64: steamid64, steamid3: steamid3, steamid: steamid} = SteamUtils.get_steamids(key)
 
       {:ok, %{"personaname" => alias, "avatarfull" => avatar}} =
         SteamUtils.get_steam_player(steamid64)
@@ -123,21 +134,44 @@ defmodule Spire.UploadCompiler do
     end)
   end
 
-  def persist_stats(stats, upload) do
+  def update_match(%Matches.Match{} = match, log) do
+    IO.inspect(log)
+    team_1_score = match.team_1_score + log.blue_score
+    team_2_score = match.team_1_score + log.red_score
+    Matches.Match.changeset(match, %{team_1_score: team_1_score, team_2_score: team_2_score})
+  end
+
+  def update_match(_, _), do: nil
+
+  def persist_stats(stats, upload, match, log) do
     multis =
       Enum.reduce(stats, Ecto.Multi.new(), fn stat, multi ->
         Ecto.Multi.update(
           multi,
-          length(multi.operations), # gross unique name hack
+          # gross unique name hack
+          length(multi.operations),
           stat
         )
       end)
 
-    case Repo.transaction(multis) do
+    all_multis =
+      case update_match(match, log) do
+        %Ecto.Changeset{} = changeset ->
+          Ecto.Multi.update(multis, "set_match_score", changeset)
+          |> Ecto.Multi.update(
+            "set_upload_processed",
+            Uploads.Upload.changeset(upload, %{status: "PROCESSED"})
+          )
+
+        _ ->
+          multis
+      end
+
+    case Repo.transaction(all_multis) do
       {:ok, _} ->
         Logger.info("Successfuly calculated and updated stats")
-        Uploads.update_upload(upload, %{status: "PROCESSED"})
-        {:ok, multis}
+        {:ok, all_multis}
+
       {:error, error} ->
         Logger.error("Failed to update stats", error: error)
         Uploads.update_upload(upload, %{status: "FAILED"})
@@ -153,12 +187,12 @@ defmodule Spire.UploadCompiler do
     Enum.map(players, fn player ->
       if real do
         [
-          Stats.get_or_create_stats_all_for_player!(player,  "MATCH"),
+          Stats.get_or_create_stats_all_for_player!(player, "MATCH"),
           Stats.get_or_create_stats_all_for_player!(player, "COMBINED")
         ]
       else
         [
-          Stats.get_or_create_stats_all_for_player!(player,  "OTHER"),
+          Stats.get_or_create_stats_all_for_player!(player, "OTHER"),
           Stats.get_or_create_stats_all_for_player!(player, "COMBINED")
         ]
       end

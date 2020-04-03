@@ -94,10 +94,11 @@ defmodule Spire.Utils.SteamUtils do
         |> String.replace("]", "")
         |> String.split(":")
 
-      [part1, part2] = Enum.map(parts, fn part ->
-        {num, _} = Integer.parse(part)
-        num
-      end)
+      [part1, part2] =
+        Enum.map(parts, fn part ->
+          {num, _} = Integer.parse(part)
+          num
+        end)
 
       (part1 + part2 + 76_561_197_960_265_727)
       |> Integer.to_string()
@@ -106,10 +107,11 @@ defmodule Spire.Utils.SteamUtils do
         String.replace(steamid, "STEAM_0:", "")
         |> String.split(":")
 
-      [part1, part2] = Enum.map(parts, fn part ->
-        {num, _} = Integer.parse(part)
-        num
-      end)
+      [part1, part2] =
+        Enum.map(parts, fn part ->
+          {num, _} = Integer.parse(part)
+          num
+        end)
 
       (part1 + part2 * 2 + 76_561_197_960_265_728)
       |> Integer.to_string()
@@ -119,9 +121,9 @@ defmodule Spire.Utils.SteamUtils do
   def get_steam_player(steamid64) do
     res =
       HTTPoison.get!(
-        "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=#{
-          @steam_api_key
-        }&steamids=#{steamid64}"
+        "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=#{@steam_api_key}&steamids=#{
+          steamid64
+        }"
       )
 
     %{"response" => %{"players" => players}} = Jason.decode!(res.body)
@@ -137,19 +139,21 @@ defmodule Spire.Utils.SteamUtils do
 
   def get_steamids("[U:" <> _remainder = steamid) do
     steamid64 = steamid_to_steamid64(steamid)
+
     %{
       steamid: community_id_to_steam_id(steamid64),
       steamid3: steamid,
-      steamid64: steamid64,
+      steamid64: steamid64
     }
   end
 
   def get_steamids("STEAM_" <> _remainder = steamid) do
     steamid64 = steamid_to_steamid64(steamid)
+
     %{
       steamid: steamid,
       steamid3: community_id_to_steam_id3(steamid64),
-      steamid64: steamid64,
+      steamid64: steamid64
     }
   end
 end

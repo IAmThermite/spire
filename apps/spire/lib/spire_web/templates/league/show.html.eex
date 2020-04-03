@@ -31,8 +31,7 @@
     <%= for match <- recent_matches do %>
       <tr>
         <td><%= link match.title, to: Routes.match_path(@conn, :show, match) %></td>
-        <% {blue_score, red_score} = calculate_match_score(match) %>
-        <td><%= blue_score %> - <%= red_score %></td>
+        <td><%= match.team_1_score %> - <%= match.team_2_score %></td>
         <td><%= match.date %></td>
         <td><a href=<%= match.link %>>External Link</a></td>
       </tr>

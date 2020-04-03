@@ -58,6 +58,7 @@ defmodule Spire.UploadCompiler.CalculationUtils do
 
   def primary_weapons(), do: @primary_weapons
   def secondary_weapons(), do: @secondary_weapons
+
   def pyro_primary_weapons() do
     ["flamethrower", "degreaser", "backburner", "phlogistinator"]
   end

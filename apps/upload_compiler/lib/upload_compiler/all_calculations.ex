@@ -47,6 +47,7 @@ defmodule Spire.UploadCompiler.AllCalculations do
       # for some reason a log returned type=undefined http://logs.tf/json/2496503
       if class["type"] != "undefined" do
         stat = String.to_existing_atom("times_seen_" <> class["type"])
+
         acc
         |> Utils.add_stat(stat, 1)
       else

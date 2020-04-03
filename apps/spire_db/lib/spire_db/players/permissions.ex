@@ -23,7 +23,10 @@ defmodule Spire.SpireDB.Players.Permissions do
   def create_or_update_permissions(attrs) do
     %Permission{}
     |> Permission.changeset(attrs)
-    |> Repo.insert(on_conflict: {:replace_all_except, [:id, :player_id]}, conflict_target: :player_id)
+    |> Repo.insert(
+      on_conflict: {:replace_all_except, [:id, :player_id]},
+      conflict_target: :player_id
+    )
   end
 
   def delete_permission(%Permission{} = permission) do

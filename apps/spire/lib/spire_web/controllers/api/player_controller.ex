@@ -10,6 +10,7 @@ defmodule Spire.SpireWeb.Api.PlayerController do
     players =
       Players.list_players("%#{search}%")
       |> clean_players()
+
     json(conn, players)
   end
 
@@ -17,6 +18,7 @@ defmodule Spire.SpireWeb.Api.PlayerController do
     players =
       Players.list_players()
       |> clean_players()
+
     json(conn, players)
   end
 
@@ -24,10 +26,14 @@ defmodule Spire.SpireWeb.Api.PlayerController do
     player =
       Players.get_by_steamid64(id)
       |> clean_player()
+
     json(conn, player)
   end
 
-  def compare(conn, %{"player_1_id" => player_1_id, "player_2_id" => player_2_id, "type" => type} = params) do
+  def compare(
+        conn,
+        %{"player_1_id" => player_1_id, "player_2_id" => player_2_id, "type" => type} = params
+      ) do
     player_1 = Players.get_by_steamid64(player_1_id)
     player_2 = Players.get_by_steamid64(player_2_id)
 
@@ -58,7 +64,13 @@ defmodule Spire.SpireWeb.Api.PlayerController do
           }
       end
 
-    json(conn, Map.merge(stats, %{player_1_id => clean_player(player_1), player_2_id => clean_player(player_2)}))
+    json(
+      conn,
+      Map.merge(stats, %{
+        player_1_id => clean_player(player_1),
+        player_2_id => clean_player(player_2)
+      })
+    )
   end
 
   defp clean_players(players) do
@@ -72,9 +84,11 @@ defmodule Spire.SpireWeb.Api.PlayerController do
       case player.league do
         %League{} = league ->
           Utils.struct_to_json_map(league, [:matches, :players])
+
         _ ->
           nil
       end
+
     Utils.struct_to_json_map(player, [:logs, :matches, :uploads, :permissions])
     |> Map.put(:league, league)
     |> clean_player_stats()

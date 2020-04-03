@@ -7,13 +7,17 @@ defmodule Spire.SpireWeb.LogHelper do
 
   def can_upload?(log_json, conn) do
     permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
+
     case permissions do
       %{can_upload_logs: val} ->
         val
+
       %{can_manage_logs: true} ->
         true
+
       %{is_super_admin: true} ->
         true
+
       _ ->
         is_player_part_of_log?(log_json["players"], conn.assigns[:user])
     end
@@ -22,22 +26,21 @@ defmodule Spire.SpireWeb.LogHelper do
   def handle_upload(upload, log) do
     Logger.debug("#{__MODULE__}.handle_upload", log: log, upload: upload)
 
-    match = case get_match_from_log(log.match_id) do
-      %Matches.Match{} = m ->
-        Utils.struct_to_json_map(m, [:league, :league_id, :logs, :players])
+    match =
+      case get_match_from_log(log.match_id) do
+        %Matches.Match{} = m ->
+          Utils.struct_to_json_map(m, [:league, :league_id, :logs, :players])
 
-      _ ->
-        %{}
-    end
+        _ ->
+          %{}
+      end
 
     Spire.Utils.SQSUtils.send_message(
-      Jason.encode!(
-        %{
-          upload: Utils.struct_to_json_map(upload, [:player, :log]),
-          log: Utils.struct_to_json_map(log, [:match]),
-          match: match
-        }
-      )
+      Jason.encode!(%{
+        upload: Utils.struct_to_json_map(upload, [:player, :log]),
+        log: Utils.struct_to_json_map(log, [:match]),
+        match: match
+      })
     )
   end
 

@@ -203,6 +203,7 @@ defmodule Spire.UploadCompiler.IndividualCalculations do
       |> Enum.reduce(0, fn %{"kills" => kills}, acc ->
         acc + kills
       end)
+
     Utils.add_stat(stats_individual, :reflect_kills, reflects)
   end
 

@@ -42,10 +42,28 @@ defmodule Spire.SpireDB.Players.Stats do
   def get_deltas(player_1_stats, player_2_stats, fields) do
     cond do
       player_1_stats == nil ->
-        Utils.struct_to_json_map(player_1_stats, [:__meta__, :id, :type, :class, :player, :player_id, :inserted_at, :updated_at])
+        Utils.struct_to_json_map(player_1_stats, [
+          :__meta__,
+          :id,
+          :type,
+          :class,
+          :player,
+          :player_id,
+          :inserted_at,
+          :updated_at
+        ])
 
       player_2_stats == nil ->
-        Utils.struct_to_json_map(player_2_stats, [:__meta__, :id, :type, :class, :player, :player_id, :inserted_at, :updated_at])
+        Utils.struct_to_json_map(player_2_stats, [
+          :__meta__,
+          :id,
+          :type,
+          :class,
+          :player,
+          :player_id,
+          :inserted_at,
+          :updated_at
+        ])
 
       true ->
         Enum.reduce(fields, %{}, fn field, acc ->

@@ -7,7 +7,6 @@ defmodule Spire.SpireDB.Players do
   alias Spire.SpireDB.Repo
 
   alias Spire.SpireDB.Players.Player
-  alias Spire.SpireDB.Players.Stats
   alias Spire.SpireDB.Players.PlayersLogs
   alias Spire.SpireDB.Players.PlayersMatches
   alias Spire.Utils.SteamUtils
@@ -28,6 +27,7 @@ defmodule Spire.SpireDB.Players do
 
   def list_players(search) do
     query = from(p in Player, where: ilike(p.alias, ^search))
+
     Repo.all(query)
     |> Repo.preload(:league)
   end

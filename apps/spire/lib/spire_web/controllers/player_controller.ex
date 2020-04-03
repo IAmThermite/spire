@@ -47,7 +47,10 @@ defmodule Spire.SpireWeb.PlayerController do
     render(conn, "show.html", player: player, matches: matches, logs: logs)
   end
 
-  def compare(conn, %{"player_1_id" => player_1_id, "player_2_id" => player_2_id, "type" => type} = params) do
+  def compare(
+        conn,
+        %{"player_1_id" => player_1_id, "player_2_id" => player_2_id, "type" => type} = params
+      ) do
     player_1 = Players.get_by_steamid64(player_1_id)
     player_2 = Players.get_by_steamid64(player_2_id)
 
@@ -136,6 +139,7 @@ defmodule Spire.SpireWeb.PlayerController do
   def update(conn, %{"id" => id, "permission" => permission_params}) do
     if can_manage?(conn, id) do
       player = Players.get_player!(id)
+
       modified_params =
         permission_params
         |> Map.put("player_id", id)

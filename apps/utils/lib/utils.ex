@@ -1,5 +1,4 @@
 defmodule Spire.Utils do
-
   def struct_to_json_map(struct, fields_to_drop \\ [])
 
   def struct_to_json_map(%_{} = struct, fields_to_drop) do

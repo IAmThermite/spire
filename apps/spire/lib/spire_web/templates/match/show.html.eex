@@ -1,6 +1,6 @@
 <h2><%= @match.title %></h1>
-<% {blue_score, red_score} = calculate_match_score(@match) %>
-<h4><%= blue_score %> - <%= red_score %></h4>
+<h4><%= @match.team_1_score %> - <%= @match.team_2_score %></h4>
+
 
 <%= if(can_manage?(@conn)) do %>
   <%= button "Edit", method: :get, to: Routes.match_path(@conn, :edit, @match.id) %>

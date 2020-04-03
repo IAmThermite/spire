@@ -65,51 +65,73 @@ defmodule Spire.SpireWeb.LogController do
                   case log_params["match_id"] do
                     nil ->
                       "PENDING"
+
                     _id ->
                       "WAITING"
                   end
-                with {:ok, upload} <- Uploads.create_upload(%{uploaded_by: conn.assigns.user.id, status: status, log_id: log.id}),
+
+                with {:ok, upload} <-
+                       Uploads.create_upload(%{
+                         uploaded_by: conn.assigns.user.id,
+                         status: status,
+                         log_id: log.id
+                       }),
                      queue <- send_to_queue(conn, upload, log) do
-                case queue do
-                  {:ok, nil} ->
-                    conn
-                    |> put_flash(:info, "Log sucessfully uploaded. Please wait for an admin to approve.")
-                    |> redirect(to: Routes.page_path(conn, :index))
+                  case queue do
+                    {:ok, nil} ->
+                      conn
+                      |> put_flash(
+                        :info,
+                        "Log sucessfully uploaded. Please wait for an admin to approve."
+                      )
+                      |> redirect(to: Routes.page_path(conn, :index))
 
-                  {:ok, %Uploads.Upload{}} ->
-                    conn
-                    |> put_flash(:info, "Log sucessfully uploaded. Processing will be completed shortly.")
-                    |> redirect(to: Routes.page_path(conn, :index))
+                    {:ok, %Uploads.Upload{}} ->
+                      conn
+                      |> put_flash(
+                        :info,
+                        "Log sucessfully uploaded. Processing will be completed shortly."
+                      )
+                      |> redirect(to: Routes.page_path(conn, :index))
 
-                  {:error, %Ecto.Changeset{}} ->
-                    conn
-                    |> put_flash(:error, "Something went wrong uploading, contact an admin for more")
-                    |> redirect(to: Routes.page_path(conn, :index))
+                    {:error, %Ecto.Changeset{}} ->
+                      conn
+                      |> put_flash(
+                        :error,
+                        "Something went wrong uploading, contact an admin for more"
+                      )
+                      |> redirect(to: Routes.page_path(conn, :index))
 
-                  {:error, _error} ->
-                    conn
-                    |> put_flash(:error, "Log was created but could not be processed, contact an admin for more.")
-                    |> redirect(to: Routes.page_path(conn, :index))
+                    {:error, _error} ->
+                      conn
+                      |> put_flash(
+                        :error,
+                        "Log was created but could not be processed, contact an admin for more."
+                      )
+                      |> redirect(to: Routes.page_path(conn, :index))
+                  end
+                else
+                  {:error, %Ecto.Changeset{} = changeset} ->
+                    Logger.error("Failed to update upload, upload potentially in bad state",
+                      changeset: changeset
+                    )
 
+                    conn
+                    |> put_flash(
+                      :error,
+                      "Failed to update upload, upload potentially in bad state."
+                    )
+                    |> redirect(to: Routes.admin_path(conn, :index))
+
+                  {:error, message} ->
+                    conn
+                    |> put_flash(:error, message)
+                    |> redirect(to: Routes.admin_path(conn, :index))
                 end
-
-              else
-                {:error, %Ecto.Changeset{} = changeset} ->
-                  Logger.error("Failed to update upload, upload potentially in bad state", changeset: changeset)
-                  conn
-                  |> put_flash(:error, "Failed to update upload, upload potentially in bad state.")
-                  |> redirect(to: Routes.admin_path(conn, :index))
-
-                {:error, message} ->
-                  conn
-                  |> put_flash(:error, message)
-                  |> redirect(to: Routes.admin_path(conn, :index))
-              end
 
               {:error, %Ecto.Changeset{} = changeset} ->
                 render(conn, "new.html", changeset: changeset)
             end
-
           else
             conn
             |> put_flash(
@@ -126,6 +148,7 @@ defmodule Spire.SpireWeb.LogController do
 
       {:error, error} ->
         Logger.error("Error occured fetching log info", error: error)
+
         conn
         |> put_flash(:error, "Failed to get log info")
         |> redirect(to: Routes.log_path(conn, :new))
@@ -179,6 +202,7 @@ defmodule Spire.SpireWeb.LogController do
   def process(conn, %{"id" => id}) do
     upload = Uploads.get_upload!(id)
     log = upload.log
+
     case handle_upload(upload, log) do
       {:ok, _} ->
         conn

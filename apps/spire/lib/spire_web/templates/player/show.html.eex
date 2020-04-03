@@ -94,10 +94,10 @@
   <tbody>
     <%= for match <- @matches do %>
       <tr>
-        <td><%= match.title %></td>
+        <td><%= link match.title, to: Routes.match_path(@conn, :show, match) %></td>
+        <td><%= match.team_1_score %> - <%= match.team_2_score %></td>
         <td><%= match.date %></td>
-        <td><a href="<%= match.link %>">Link</a></td>
-        <td><%= link "Match", to: Routes.match_path(@conn, :show, match) %></td>
+        <td><a href=<%= match.link %>>External Link</a></td>
       </tr>
     <% end %>
   </tbody>

@@ -17,6 +17,14 @@
   <%= text_input f, :link %>
   <%= error_tag f, :link %>
 
+  <%= label f, :team_1_score %>
+  <%= number_input f, :team_1_score %>
+  <%= error_tag f, :team_1_score %>
+
+  <%= label f, :team_2_score %>
+  <%= number_input f, :team_2_score %>
+  <%= error_tag f, :team_2_score %>
+
   <div>
     <%= submit "Save" %>
   </div>

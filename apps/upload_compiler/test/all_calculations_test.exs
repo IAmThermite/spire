@@ -152,6 +152,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
         |> Map.put("type", "scout")
         |> Map.put("total_time", 1500)
       ]
+
       stats = %All{}
 
       new_stats = AllCalculations.calculate_additional_stats(stats, class_stats)
@@ -167,6 +168,7 @@ defmodule Spire.UploadCompiler.AllCalculationsTest do
         |> Map.put("type", "scout")
         |> Map.put("total_time", 1500)
       ]
+
       stats = %All{time_played: 4000, number_of_logs: 3}
 
       new_stats = AllCalculations.calculate_additional_stats(stats, class_stats)

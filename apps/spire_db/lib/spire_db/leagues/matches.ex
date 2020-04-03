@@ -46,11 +46,12 @@ defmodule Spire.SpireDB.Leagues.Matches do
 
   """
   def list_matches_by_player(player_id) do
-    Repo.all(from(m in PlayersMatches, where: m.player_id == ^player_id, order_by: [desc: m.date]))
+    Repo.all(from(m in PlayersMatches, where: m.player_id == ^player_id))
     |> Repo.preload([:match])
     |> Enum.map(fn m ->
       m.match
     end)
+    |> Enum.sort_by(fn match -> {match.date.year, match.date.month, match.date.day} end)
   end
 
   @doc """

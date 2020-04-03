@@ -39,12 +39,14 @@ defmodule Spire.SpireWeb.MatchController do
   def show(conn, %{"id" => id}) do
     match = Matches.get_match!(id)
     players = match.players
+
     logdata =
       case match.logs do
         [%Log{} | _tail] ->
-          maps = Enum.map(match.logs, fn log ->
-            log.map
-          end)
+          maps =
+            Enum.map(match.logs, fn log ->
+              log.map
+            end)
 
           %{
             maps: maps,
@@ -53,12 +55,19 @@ defmodule Spire.SpireWeb.MatchController do
             blue_kills: get_logs_totals(match.logs, :blue_kills),
             red_kills: get_logs_totals(match.logs, :red_kills),
             blue_damage: get_logs_totals(match.logs, :blue_damage),
-            red_damage: get_logs_totals(match.logs, :red_damage),
+            red_damage: get_logs_totals(match.logs, :red_damage)
           }
+
         _ ->
           nil
       end
-    render(conn, "show.html", match: match, league: match.league, players: players, logdata: logdata)
+
+    render(conn, "show.html",
+      match: match,
+      league: match.league,
+      players: players,
+      logdata: logdata
+    )
   end
 
   def edit(conn, %{"id" => id}) do

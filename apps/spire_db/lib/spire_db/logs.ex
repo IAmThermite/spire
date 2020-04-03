@@ -19,7 +19,9 @@ defmodule Spire.SpireDB.Logs do
 
   """
   def list_logs_by_player(player_id) do
-    Repo.all(from(l in PlayersLogs, where: l.player_id == ^player_id, order_by: [desc: l.inserted_at]))
+    Repo.all(
+      from(l in PlayersLogs, where: l.player_id == ^player_id, order_by: [desc: l.inserted_at])
+    )
     |> Repo.preload([:log])
     |> Enum.map(fn l ->
       l.log

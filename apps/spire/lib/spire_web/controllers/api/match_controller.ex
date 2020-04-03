@@ -21,10 +21,18 @@ defmodule Spire.SpireWeb.Api.MatchController do
   end
 
   defp clean_players(%{players: [%Player{} | _tail]} = match) do
-    players = Enum.map(match.players, fn player ->
-      player
-      |> Utils.struct_to_json_map([:league, :stats_all, :stats_individual, :permissions, :logs, :matches])
-    end)
+    players =
+      Enum.map(match.players, fn player ->
+        player
+        |> Utils.struct_to_json_map([
+          :league,
+          :stats_all,
+          :stats_individual,
+          :permissions,
+          :logs,
+          :matches
+        ])
+      end)
 
     Map.put(match, :players, players)
   end
@@ -34,9 +42,10 @@ defmodule Spire.SpireWeb.Api.MatchController do
   end
 
   defp clean_logs(%{logs: [%Log{} | _tail]} = match) do
-    logs = Enum.map(match.logs, fn log ->
-      Utils.struct_to_json_map(log, [:match])
-    end)
+    logs =
+      Enum.map(match.logs, fn log ->
+        Utils.struct_to_json_map(log, [:match])
+      end)
 
     Map.put(match, :logs, logs)
   end

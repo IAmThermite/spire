@@ -6,7 +6,15 @@ defmodule Spire.SpireDB.Players.Stats.Individual do
 
   @soldier_demo_fields [:airshots]
   @pyro_fields [:reflect_kills]
-  @medic_fields [:heal_total, :ubers, :krits, :ave_time_to_build, :ave_uber_length, :ave_time_before_healing, :ave_time_before_using]
+  @medic_fields [
+    :heal_total,
+    :ubers,
+    :krits,
+    :ave_time_to_build,
+    :ave_uber_length,
+    :ave_time_before_healing,
+    :ave_time_before_using
+  ]
   @sniper_fields [:headshots]
   @spy_fields [:backstabs]
 
@@ -74,7 +82,9 @@ defmodule Spire.SpireDB.Players.Stats.Individual do
     |> Enum.filter(fn field -> field not in @medic_fields end)
     |> Enum.filter(fn field -> field not in @sniper_fields end)
     |> Enum.filter(fn field -> field not in @spy_fields end)
-    |> Enum.filter(fn field -> field not in [:__meta__, :id, :inserted_at, :player_id, :player, :updated_at, :type, :class] end)
+    |> Enum.filter(fn field ->
+      field not in [:__meta__, :id, :inserted_at, :player_id, :player, :updated_at, :type, :class]
+    end)
   end
 
   def soldier_demo_fields() do
@@ -86,9 +96,16 @@ defmodule Spire.SpireDB.Players.Stats.Individual do
   end
 
   def medic_fields() do
-    @medic_fields ++ generic_fields()
+    (@medic_fields ++ generic_fields())
     |> Enum.filter(fn field ->
-      field not in [:kills_sec, :shots_hit_sec, :shots_fired_sec, :accuracy_sec, :dmg_per_shot_sec, :dmg_sec]
+      field not in [
+        :kills_sec,
+        :shots_hit_sec,
+        :shots_fired_sec,
+        :accuracy_sec,
+        :dmg_per_shot_sec,
+        :dmg_sec
+      ]
     end)
   end
 
@@ -104,16 +121,22 @@ defmodule Spire.SpireDB.Players.Stats.Individual do
     case class do
       "soldier" ->
         soldier_demo_fields()
+
       "pyro" ->
         pyro_fields()
+
       "demoman" ->
         soldier_demo_fields()
+
       "medic" ->
         medic_fields()
+
       "sniper" ->
         sniper_fields()
+
       "spy" ->
         spy_fields()
+
       _ ->
         generic_fields()
     end
