@@ -17,7 +17,6 @@
 </ul>
 
 <h4>Most Recent Matches</h4>
-<% recent_matches = Enum.take(@league.matches, 5) %>
 <table>
   <thead>
     <tr>
@@ -28,7 +27,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= for match <- recent_matches do %>
+    <%= for match <- @recent_matches do %>
       <tr>
         <td><%= link match.title, to: Routes.match_path(@conn, :show, match) %></td>
         <td><%= match.team_1_score %> - <%= match.team_2_score %></td>

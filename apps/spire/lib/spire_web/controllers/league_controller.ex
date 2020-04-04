@@ -31,7 +31,8 @@ defmodule Spire.SpireWeb.LeagueController do
 
   def show(conn, %{"id" => id}) do
     league = Leagues.get_league!(id)
-    render(conn, "show.html", league: league)
+    matches = Leagues.Matches.list_matches_by_league(id)
+    render(conn, "show.html", league: league, recent_matches: Enum.take(matches, 5))
   end
 
   def edit(conn, %{"id" => id}) do

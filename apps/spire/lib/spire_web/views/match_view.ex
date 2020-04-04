@@ -1,8 +1,6 @@
 defmodule Spire.SpireWeb.MatchView do
   use Spire.SpireWeb, :view
 
-  alias Spire.SpireDB.Logs.Log
-
   def can_manage?(conn) do
     if Spire.SpireWeb.PermissionsHelper.is_logged_in?(conn) do
       cond do

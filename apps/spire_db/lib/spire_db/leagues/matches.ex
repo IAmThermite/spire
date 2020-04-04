@@ -19,7 +19,8 @@ defmodule Spire.SpireDB.Leagues.Matches do
 
   """
   def list_matches() do
-    Repo.all(from m in Match, order_by: [desc: m.date])
+    Repo.all(from m in Match)
+    |> sort_matches_by_date()
   end
 
   @doc """
@@ -32,8 +33,9 @@ defmodule Spire.SpireDB.Leagues.Matches do
 
   """
   def list_matches_by_league(league_id) do
-    Repo.all(from(m in Match, where: m.league_id == ^league_id, order_by: [desc: m.date]))
+    Repo.all(from(m in Match, where: m.league_id == ^league_id))
     |> Repo.preload([:logs])
+    |> sort_matches_by_date()
   end
 
   @doc """
@@ -51,7 +53,7 @@ defmodule Spire.SpireDB.Leagues.Matches do
     |> Enum.map(fn m ->
       m.match
     end)
-    |> Enum.sort_by(fn match -> {match.date.year, match.date.month, match.date.day} end)
+    |> sort_matches_by_date()
   end
 
   @doc """
@@ -136,5 +138,10 @@ defmodule Spire.SpireDB.Leagues.Matches do
   """
   def change_match(%Match{} = match) do
     Match.changeset(match, %{})
+  end
+
+  defp sort_matches_by_date(matches) do
+    Enum.sort_by(matches, fn match -> {match.date.year, match.date.month, match.date.day} end)
+    |> Enum.reverse()
   end
 end
