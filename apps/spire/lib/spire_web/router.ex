@@ -1,5 +1,6 @@
 defmodule Spire.SpireWeb.Router do
   use Spire.SpireWeb, :router
+  use Airbrake.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]

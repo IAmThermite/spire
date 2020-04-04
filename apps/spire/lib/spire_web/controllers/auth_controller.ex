@@ -1,6 +1,8 @@
 defmodule Spire.SpireWeb.AuthController do
   use Spire.SpireWeb, :controller
 
+  require Logger
+
   plug(Ueberauth)
 
   alias Ueberauth.Strategy.Helpers
@@ -16,7 +18,8 @@ defmodule Spire.SpireWeb.AuthController do
     |> redirect(to: "/")
   end
 
-  def callback(%{assigns: %{ueberauth_failure: _fails}} = conn, _params) do
+  def callback(%{assigns: %{ueberauth_failure: faliure}} = conn, _params) do
+    Logger.error("Authentication failed", failure: faliure)
     conn
     |> put_flash(:error, "Failed to authenticate.")
     |> redirect(to: "/")

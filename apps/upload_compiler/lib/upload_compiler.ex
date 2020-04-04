@@ -30,102 +30,108 @@ defmodule Spire.UploadCompiler do
 
   @impl true
   def handle_message(_, %Message{data: data} = message, _) do
-    Logger.info("Recieved Message", message: message)
+    try do
+      Logger.info("Recieved Message", message: message)
 
-    %{"log" => message_log, "upload" => message_upload} = json = Jason.decode!(data)
+      %{"log" => message_log, "upload" => message_upload} = json = Jason.decode!(data)
 
-    real = json["match"] != %{}
+      real = json["match"] != %{}
 
-    match =
-      if real do
-        Matches.get_match!(json["match"]["id"])
-      else
-        nil
-      end
+      match =
+        if real do
+          Matches.get_match!(json["match"]["id"])
+        else
+          nil
+        end
 
-    log =
-      Logs.get_log!(message_log["id"])
+      log =
+        Logs.get_log!(message_log["id"])
 
-    struct = %Uploads.Upload{
-      uploaded_by: message_upload["uploaded_by"],
-      id: message_upload["id"],
-      log_id: message_upload["log_id"]
-    }
+      struct = %Uploads.Upload{
+        uploaded_by: message_upload["uploaded_by"],
+        id: message_upload["id"],
+        log_id: message_upload["log_id"]
+      }
 
-    {:ok, upload} = Uploads.update_upload(struct, %{status: "IN_QUEUE"})
+      {:ok, upload} = Uploads.update_upload(struct, %{status: "IN_QUEUE"})
 
-    %HTTPoison.Response{body: body, status_code: 200} =
-      HTTPoison.get!("https://logs.tf/json/#{log.logfile}")
+      %HTTPoison.Response{body: body, status_code: 200} =
+        HTTPoison.get!("https://logs.tf/json/#{log.logfile}")
 
-    log_json = Jason.decode!(body)
+      log_json = Jason.decode!(body)
 
-    players =
-      log_json
-      |> get_player_stubs()
-      |> Enum.map(fn stub ->
-        Players.get_or_create_from_stub(stub)
-        |> Repo.preload([:matches, :logs, :league])
-      end)
+      players =
+        log_json
+        |> get_player_stubs()
+        |> Enum.map(fn stub ->
+          Players.get_or_create_from_stub(stub)
+          |> Repo.preload([:matches, :logs, :league])
+        end)
 
-    stats_all = get_stats_all(players, real)
+      stats_all = get_stats_all(players, real)
 
-    stats_individual = get_stats_individual(players, log_json, real)
+      stats_individual = get_stats_individual(players, log_json, real)
 
-    updated_stats_all =
-      Enum.map(stats_all, fn stat ->
-        player_log_json = get_log_json_for_player(stat.player, log_json)
+      updated_stats_all =
+        Enum.map(stats_all, fn stat ->
+          player_log_json = get_log_json_for_player(stat.player, log_json)
 
-        attrs =
-          AllCalculations.calculate_stats(stat, player_log_json)
-          |> Map.from_struct()
+          attrs =
+            AllCalculations.calculate_stats(stat, player_log_json)
+            |> Map.from_struct()
 
-          %Ecto.Changeset{valid?: true} = Stats.All.changeset(stat, attrs)
-      end)
+            %Ecto.Changeset{valid?: true} = Stats.All.changeset(stat, attrs)
+        end)
 
-    updated_stats_individual =
-      Enum.map(stats_individual, fn stat ->
-        player_log_json = get_log_json_for_player(stat.player, log_json)
+      updated_stats_individual =
+        Enum.map(stats_individual, fn stat ->
+          player_log_json = get_log_json_for_player(stat.player, log_json)
 
-        attrs =
-          IndividualCalculations.calculate_stats(stat, player_log_json)
-          |> Map.from_struct()
+          attrs =
+            IndividualCalculations.calculate_stats(stat, player_log_json)
+            |> Map.from_struct()
 
-          %Ecto.Changeset{valid?: true} = Stats.Individual.changeset(stat, attrs)
-      end)
+            %Ecto.Changeset{valid?: true} = Stats.Individual.changeset(stat, attrs)
+        end)
 
-    deltas_all =
-      Enum.map(stats_all, fn current_stats ->
-        updated_stats = get_updated_stats_all(current_stats, updated_stats_all)
-        DeltaCalculations.calculate_deltas(current_stats, updated_stats, upload)
-      end)
+      deltas_all =
+        Enum.map(stats_all, fn current_stats ->
+          updated_stats = get_updated_stats_all(current_stats, updated_stats_all)
+          DeltaCalculations.calculate_deltas(current_stats, updated_stats, upload)
+        end)
 
-    deltas_individual =
-      Enum.map(stats_individual, fn current_stats ->
-        updated_stats = get_updated_stats_individual(current_stats, updated_stats_individual)
-        DeltaCalculations.calculate_deltas(current_stats, updated_stats, upload)
-      end)
+      deltas_individual =
+        Enum.map(stats_individual, fn current_stats ->
+          updated_stats = get_updated_stats_individual(current_stats, updated_stats_individual)
+          DeltaCalculations.calculate_deltas(current_stats, updated_stats, upload)
+        end)
 
-    # link players to log
-    players_to_log =
-      Enum.map(players, fn player ->
-        %Ecto.Changeset{valid?: true} = Players.Player.changeset_add_log(player, log)
-      end)
+      # link players to log
+      players_to_log =
+        Enum.map(players, fn player ->
+          %Ecto.Changeset{valid?: true} = Players.Player.changeset_add_log(player, log)
+        end)
 
-    # link players to matches
-    players_to_match =
-      Enum.map(players, fn player ->
-        %Ecto.Changeset{valid?: true} = Players.Player.changeset_add_match(player, match)
-      end)
+      # link players to matches
+      players_to_match =
+        Enum.map(players, fn player ->
+          %Ecto.Changeset{valid?: true} = Players.Player.changeset_add_match(player, match)
+        end)
 
-    stats_changesets =
-      Enum.concat([updated_stats_all, updated_stats_individual, players_to_log, players_to_match])
+      stats_changesets =
+        Enum.concat([updated_stats_all, updated_stats_individual, players_to_log, players_to_match])
 
-    insert_changesets = Enum.concat([deltas_all, deltas_individual]) |> List.flatten()
+      insert_changesets = Enum.concat([deltas_all, deltas_individual]) |> List.flatten()
 
-    {:ok, _multis} = persist_stats(stats_changesets, insert_changesets, upload, match, log)
+      {:ok, _multis} = persist_stats(stats_changesets, insert_changesets, upload, match, log)
 
-    message
-    |> Message.update_data(fn _data -> log_json end)
+      Message.update_data(message, fn _data -> message end)
+    rescue
+      exception ->
+        Logger.error("Error occured processing log", exception: exception)
+        Airbrake.report(exception)
+        Message.update_data(message, fn _data -> message end)
+    end
   end
 
   def get_player_stubs(log_json) do

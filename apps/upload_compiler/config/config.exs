@@ -12,3 +12,12 @@ config :upload_compiler,
 
 config :upload_compiler,
   sqs_queue_url: System.get_env("SPIRE_SQS_QUEUE_URL") || raise("SPIRE_SQS_QUEUE_URL not set!")
+
+config :logger,
+  backends: [:console, {Airbrake.LoggerBackend, :error}]
+
+config :airbrake,
+  api_key: System.get_env("AIRBRAKE_API_KEY"),
+  project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
+  environment: Mix.env,
+  host: System.get_env("AIRBRAKE_HOST")

@@ -18,7 +18,7 @@ defmodule Spire.UploadCompiler.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :airbrake],
       mod: {Spire.UploadCompiler.Application, []}
     ]
   end
@@ -33,6 +33,7 @@ defmodule Spire.UploadCompiler.MixProject do
       {:jason, "~> 1.0"},
       {:broadway_sqs, "~> 0.6.0"},
       {:httpoison, "~> 1.6.2"},
+      {:airbrake, "~> 0.6"},
       {:spire_logger, in_umbrella: true}
     ]
   end

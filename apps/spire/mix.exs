@@ -23,7 +23,7 @@ defmodule Spire.MixProject do
   def application do
     [
       mod: {Spire.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :airbrake]
     ]
   end
 
@@ -46,6 +46,7 @@ defmodule Spire.MixProject do
       {:ueberauth, "~> 0.6"},
       {:ueberauth_steam, "~> 0.1.3", github: "IAmThermite/ueberauth_steam"},
       {:httpoison, "~> 1.6.2"},
+      {:airbrake, "~> 0.6"},
       {:spire_db, in_umbrella: true},
       {:utils, in_umbrella: true},
       {:spire_logger, in_umbrella: true}

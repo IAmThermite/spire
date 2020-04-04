@@ -8,3 +8,6 @@ config :spire, Spire.SpireWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :airbrake,
+  ignore: :all
