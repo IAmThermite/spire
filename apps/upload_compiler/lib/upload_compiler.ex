@@ -13,6 +13,7 @@ defmodule Spire.UploadCompiler do
   alias Spire.Utils.SteamUtils
   alias Spire.UploadCompiler.IndividualCalculations
   alias Spire.UploadCompiler.AllCalculations
+  alias Spire.UploadCompiler.DeltaCalculations
 
   def start_link(_opts) do
     Broadway.start_link(__MODULE__,
@@ -44,7 +45,6 @@ defmodule Spire.UploadCompiler do
 
     log =
       Logs.get_log!(message_log["id"])
-      |> IO.inspect()
 
     struct = %Uploads.Upload{
       uploaded_by: message_upload["uploaded_by"],
@@ -79,7 +79,7 @@ defmodule Spire.UploadCompiler do
           AllCalculations.calculate_stats(stat, player_log_json)
           |> Map.from_struct()
 
-        Stats.All.changeset(stat, attrs)
+          %Ecto.Changeset{valid?: true} = Stats.All.changeset(stat, attrs)
       end)
 
     updated_stats_individual =
@@ -90,25 +90,39 @@ defmodule Spire.UploadCompiler do
           IndividualCalculations.calculate_stats(stat, player_log_json)
           |> Map.from_struct()
 
-        Stats.Individual.changeset(stat, attrs)
+          %Ecto.Changeset{valid?: true} = Stats.Individual.changeset(stat, attrs)
+      end)
+
+    deltas_all =
+      Enum.map(stats_all, fn current_stats ->
+        updated_stats = get_updated_stats_all(current_stats, updated_stats_all)
+        DeltaCalculations.calculate_deltas(current_stats, updated_stats, upload)
+      end)
+
+    deltas_individual =
+      Enum.map(stats_individual, fn current_stats ->
+        updated_stats = get_updated_stats_individual(current_stats, updated_stats_individual)
+        DeltaCalculations.calculate_deltas(current_stats, updated_stats, upload)
       end)
 
     # link players to log
     players_to_log =
       Enum.map(players, fn player ->
-        Players.Player.changeset_add_log(player, log)
+        %Ecto.Changeset{valid?: true} = Players.Player.changeset_add_log(player, log)
       end)
 
     # link players to matches
     players_to_match =
       Enum.map(players, fn player ->
-        Players.Player.changeset_add_match(player, match)
+        %Ecto.Changeset{valid?: true} = Players.Player.changeset_add_match(player, match)
       end)
 
-    changesets =
+    stats_changesets =
       Enum.concat([updated_stats_all, updated_stats_individual, players_to_log, players_to_match])
 
-    {:ok, _multis} = persist_stats(changesets, upload, match, log)
+    insert_changesets = Enum.concat([deltas_all, deltas_individual]) |> List.flatten()
+
+    {:ok, _multis} = persist_stats(stats_changesets, insert_changesets, upload, match, log)
 
     message
     |> Message.update_data(fn _data -> log_json end)
@@ -134,18 +148,17 @@ defmodule Spire.UploadCompiler do
     end)
   end
 
-  def update_match(%Matches.Match{} = match, log) do
-    IO.inspect(log)
+  def update_match_score(%Matches.Match{} = match, log) do
     team_1_score = match.team_1_score + log.blue_score
     team_2_score = match.team_1_score + log.red_score
     Matches.Match.changeset(match, %{team_1_score: team_1_score, team_2_score: team_2_score})
   end
 
-  def update_match(_, _), do: nil
+  def update_match_score(_, _), do: nil
 
-  def persist_stats(stats, upload, match, log) do
-    multis =
-      Enum.reduce(stats, Ecto.Multi.new(), fn stat, multi ->
+  def persist_stats(stat_changesets, insert_changesets, upload, match, log) do
+    stat_multis =
+      Enum.reduce(stat_changesets, Ecto.Multi.new(), fn stat, multi ->
         Ecto.Multi.update(
           multi,
           # gross unique name hack
@@ -154,27 +167,28 @@ defmodule Spire.UploadCompiler do
         )
       end)
 
+    insert_multis = Enum.reduce(insert_changesets, stat_multis, fn change, multi ->
+      Ecto.Multi.insert(multi, length(multi.operations), change)
+    end)
+
     all_multis =
-      case update_match(match, log) do
+      case update_match_score(match, log) do
         %Ecto.Changeset{} = changeset ->
-          Ecto.Multi.update(multis, "set_match_score", changeset)
-          |> Ecto.Multi.update(
-            "set_upload_processed",
-            Uploads.Upload.changeset(upload, %{status: "PROCESSED"})
-          )
+          Ecto.Multi.update(insert_multis, "set_match_score", changeset)
 
         _ ->
-          multis
+          insert_multis
       end
 
     case Repo.transaction(all_multis) do
       {:ok, _} ->
         Logger.info("Successfuly calculated and updated stats")
+        {:ok, _upload} = Uploads.update_upload(upload, %{status: "PROCESSED"})
         {:ok, all_multis}
 
       {:error, error} ->
         Logger.error("Failed to update stats", error: error)
-        Uploads.update_upload(upload, %{status: "FAILED"})
+        {:ok, _upload} = Uploads.update_upload(upload, %{status: "FAILED"})
         {:error, error}
     end
   end
@@ -225,6 +239,18 @@ defmodule Spire.UploadCompiler do
     |> List.flatten()
     |> Enum.filter(fn stat ->
       stat != nil
+    end)
+  end
+
+  defp get_updated_stats_all(stat, stats) do
+    Enum.find(stats, fn each_stat ->
+      each_stat.data.player_id == stat.player_id && each_stat.data.type == stat.type
+    end)
+  end
+
+  defp get_updated_stats_individual(stat, stats) do
+    Enum.find(stats, fn each_stat ->
+      each_stat.data.player_id == stat.player_id && each_stat.data.type == stat.type && each_stat.data.class == stat.class
     end)
   end
 end
