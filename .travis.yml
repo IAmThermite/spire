@@ -11,5 +11,5 @@ install:
   - mix ecto.create
   - mix ecto.migrate
 script:
-  - mix cmd --app utils mix test
+  # - mix cmd --app utils mix test
   - mix cmd --app upload_compiler mix test
