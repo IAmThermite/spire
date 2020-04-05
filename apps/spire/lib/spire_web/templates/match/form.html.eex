@@ -25,6 +25,22 @@
   <%= number_input f, :team_2_score %>
   <%= error_tag f, :team_2_score %>
 
+  <%= label f, :team_1_kills %>
+  <%= number_input f, :team_1_kills %>
+  <%= error_tag f, :team_1_kills %>
+
+  <%= label f, :team_2_kills %>
+  <%= number_input f, :team_2_kills %>
+  <%= error_tag f, :team_2_kills %>
+
+  <%= label f, :team_1_damage %>
+  <%= number_input f, :team_1_damage %>
+  <%= error_tag f, :team_1_damage %>
+
+  <%= label f, :team_2_damage %>
+  <%= number_input f, :team_2_damage %>
+  <%= error_tag f, :team_2_damage %>
+
   <div>
     <%= submit "Save" %>
   </div>

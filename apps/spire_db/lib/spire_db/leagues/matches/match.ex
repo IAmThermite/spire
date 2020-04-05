@@ -15,6 +15,10 @@ defmodule Spire.SpireDB.Leagues.Matches.Match do
     field :link, :string
     field :team_1_score, :integer, default: 0
     field :team_2_score, :integer, default: 0
+    field :team_1_damage, :integer, default: 0
+    field :team_2_damage, :integer, default: 0
+    field :team_1_kills, :integer, default: 0
+    field :team_2_kills, :integer, default: 0
 
     belongs_to :league, League
 

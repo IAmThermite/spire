@@ -40,23 +40,12 @@ defmodule Spire.SpireWeb.MatchController do
     match = Matches.get_match!(id)
     players = match.players
 
-    logdata =
+    maps =
       case match.logs do
         [%Log{} | _tail] ->
-          maps =
-            Enum.map(match.logs, fn log ->
-              log.map
-            end)
-
-          %{
-            maps: maps,
-            blue_score: get_logs_totals(match.logs, :blue_score),
-            red_score: get_logs_totals(match.logs, :red_score),
-            blue_kills: get_logs_totals(match.logs, :blue_kills),
-            red_kills: get_logs_totals(match.logs, :red_kills),
-            blue_damage: get_logs_totals(match.logs, :blue_damage),
-            red_damage: get_logs_totals(match.logs, :red_damage)
-          }
+          Enum.map(match.logs, fn log ->
+            log.map
+          end)
 
         _ ->
           nil
@@ -66,7 +55,7 @@ defmodule Spire.SpireWeb.MatchController do
       match: match,
       league: match.league,
       players: players,
-      logdata: logdata
+      maps: maps
     )
   end
 

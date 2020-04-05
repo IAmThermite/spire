@@ -17,6 +17,26 @@
   </li>
 
   <li>
+    <strong>Blue Kills:</strong>
+    <%= @log.blue_kills %>
+  </li>
+
+  <li>
+    <strong>Red Kills:</strong>
+    <%= @log.red_kills %>
+  </li>
+
+  <li>
+    <strong>Blue Damage:</strong>
+    <%= @log.blue_damage %>
+  </li>
+
+  <li>
+    <strong>Red Damage:</strong>
+    <%= @log.red_damage %>
+  </li>
+
+  <li>
     <strong>Date Played:</strong>
     <%= @log.date %>
   </li>
