@@ -9,14 +9,14 @@ defmodule Spire.SpireWeb.LogHelper do
     permissions = Permissions.get_permissions_for_player(conn.assigns[:user].id)
 
     case permissions do
-      %{can_upload_logs: val} ->
-        val
+      %{is_super_admin: true} ->
+        true
 
       %{can_manage_logs: true} ->
         true
 
-      %{is_super_admin: true} ->
-        true
+      %{can_upload_logs: val} ->
+        val
 
       _ ->
         is_player_part_of_log?(log_json["players"], conn.assigns[:user])

@@ -102,7 +102,8 @@ defmodule Spire.SpireWeb.LogController do
                       )
                       |> redirect(to: Routes.page_path(conn, :index))
 
-                    {:error, _error} ->
+                    {:error, error} ->
+                      Logger.error("Log was created but could not be processed", error: error)
                       conn
                       |> put_flash(
                         :error,
@@ -124,8 +125,9 @@ defmodule Spire.SpireWeb.LogController do
                     |> redirect(to: Routes.admin_path(conn, :index))
 
                   {:error, message} ->
+                    Logger.error("#{__MODULE__}.create", error: message)
                     conn
-                    |> put_flash(:error, message)
+                    |> put_flash(:error, "Something really went wrong")
                     |> redirect(to: Routes.admin_path(conn, :index))
                 end
 
@@ -215,8 +217,9 @@ defmodule Spire.SpireWeb.LogController do
         |> redirect(to: Routes.admin_path(conn, :index))
 
       {:error, error} ->
+        Logger.error("#{__MODULE__}.process", error: error)
         conn
-        |> put_flash(:error, error)
+        |> put_flash(:error, "Something went wrong trying to process the log")
         |> redirect(to: Routes.admin_path(conn, :index))
     end
   end

@@ -45,5 +45,6 @@ COPY --from=build-node /app/apps/spire/priv/static ./apps/spire/priv/static
 
 RUN mix do local.hex --force, local.rebar --force
 RUN mix do deps.get, compile
+RUN mix phx.digest
 
 EXPOSE 4000
