@@ -156,7 +156,7 @@ defmodule Spire.UploadCompiler do
 
   def update_match_score(%Matches.Match{} = match, log) do
     team_1_score = match.team_1_score + log.blue_score
-    team_2_score = match.team_1_score + log.red_score
+    team_2_score = match.team_2_score + log.red_score
     Matches.Match.changeset(match, %{team_1_score: team_1_score, team_2_score: team_2_score})
   end
 

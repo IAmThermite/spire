@@ -5,8 +5,9 @@ defmodule Spire.SpireDB.Players.Stats.AllChanges do
   schema "stats_all_changes" do
     field :stat_name, :string
     field :change, :float
-    field :upload_id, :integer
-    field :stat_id, :integer
+
+    belongs_to :stat, Spire.SpireDB.Players.Stats.All
+    belongs_to :upload, Spire.SpireDB.Logs.Uploads.Upload
   end
 
   def changeset(changes, attrs) do

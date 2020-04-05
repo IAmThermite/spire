@@ -5,7 +5,7 @@ defmodule Spire.SpireDB.Logs.Uploads.Upload do
   alias Spire.SpireDB.Logs.Log
   alias Spire.SpireDB.Players.Player
 
-  schema "log_upload" do
+  schema "uploads" do
     field :status, :string, default: "PENDING"
 
     belongs_to :log, Log
