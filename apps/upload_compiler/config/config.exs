@@ -20,7 +20,8 @@ config :airbrake,
   api_key: System.get_env("AIRBRAKE_API_KEY"),
   project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
   environment: Mix.env,
-  host: System.get_env("AIRBRAKE_HOST")
+  host: System.get_env("AIRBRAKE_HOST"),
+  json_encoder: Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

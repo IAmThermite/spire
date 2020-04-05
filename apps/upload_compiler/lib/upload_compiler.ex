@@ -44,16 +44,10 @@ defmodule Spire.UploadCompiler do
           nil
         end
 
-      log =
-        Logs.get_log!(message_log["id"])
+      log = Logs.get_log!(message_log["id"])
 
-      struct = %Uploads.Upload{
-        uploaded_by: message_upload["uploaded_by"],
-        id: message_upload["id"],
-        log_id: message_upload["log_id"]
-      }
-
-      {:ok, upload} = Uploads.update_upload(struct, %{status: "IN_QUEUE"})
+      {:ok, upload} = Uploads.get_upload!(message_upload["id"])
+        |> Uploads.update_upload(%{status: "IN_QUEUE"})
 
       %HTTPoison.Response{body: body, status_code: 200} =
         HTTPoison.get!("https://logs.tf/json/#{log.logfile}")

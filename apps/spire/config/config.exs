@@ -40,7 +40,8 @@ config :airbrake,
   api_key: System.get_env("AIRBRAKE_API_KEY"),
   project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
   environment: Mix.env,
-  host: System.get_env("AIRBRAKE_HOST")
+  host: System.get_env("AIRBRAKE_HOST"),
+  json_encoder: Jason
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

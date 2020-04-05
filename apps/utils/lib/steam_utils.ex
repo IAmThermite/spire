@@ -4,8 +4,6 @@ defmodule Spire.Utils.SteamUtils do
   easier
   """
 
-  @steam_api_key Application.get_env(:utils, :steam_api_key)
-
   # https://developer.valvesoftware.com/wiki/SteamID
   # https://github.com/ericentin/steamex/blob/master/lib/steamex/steam_id.ex#L14
   @doc """
@@ -121,7 +119,7 @@ defmodule Spire.Utils.SteamUtils do
   def get_steam_player(steamid64) do
     res =
       HTTPoison.get!(
-        "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=#{@steam_api_key}&steamids=#{
+        "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=#{Application.get_env(:utils, :steam_api_key)}&steamids=#{
           steamid64
         }"
       )
