@@ -8,7 +8,7 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateStatChanges do
       add :upload_id, :integer, null: false
       add :stat_id, :integer, null: false
     end
-    create unique_index(:stats_all_changes, [:stat_name, :change, :upload_id, :stat_id])
+    create unique_index(:stats_all_changes, [:stat_name, :upload_id, :stat_id])
 
     create table(:stats_individual_changes) do
       add :stat_name, :string, null: false
@@ -16,6 +16,6 @@ defmodule Spire.SpireDB.Repo.Migrations.CreateStatChanges do
       add :upload_id, :integer, null: false
       add :stat_id, :integer, null: false
     end
-    create unique_index(:stats_individual_changes, [:stat_name, :change, :upload_id, :stat_id])
+    create unique_index(:stats_individual_changes, [:stat_name, :upload_id, :stat_id])
   end
 end
