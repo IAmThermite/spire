@@ -21,6 +21,12 @@
     <%= error_tag f, :main_class %>
   </div>
 
+  <%= if can_manage?(@conn, @player.id) do %>
+    <%= label f, :division %>
+    <%= text_input f, :division %>
+    <%= error_tag f, :division %>
+  <% end %>
+
   <%= submit "Save" %>
 <% end %>
 

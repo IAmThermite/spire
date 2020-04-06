@@ -7,7 +7,7 @@ defmodule Spire.SpireWeb.LogController do
   alias Spire.SpireDB.Logs.Uploads
   alias Spire.SpireWeb.LogHelper
 
-  plug Spire.SpireWeb.Plugs.RequireAuthentication
+  plug Spire.SpireWeb.Plugs.RequireAuthentication when action not in [:show, :index]
   plug :require_permissions when action in [:delete, :update, :edit, :process]
 
   def index(conn, %{"player_id" => player_id}) do

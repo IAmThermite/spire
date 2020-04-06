@@ -19,7 +19,7 @@ defmodule Spire.SpireWeb.PlayerView do
         id == conn.assigns[:user].id ->
           true
 
-        is_admin?(conn) ->
+        Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :can_manage_users) ->
           true
 
         true ->
@@ -31,8 +31,7 @@ defmodule Spire.SpireWeb.PlayerView do
   end
 
   def is_admin?(conn) do
-    Spire.SpireWeb.PermissionsHelper.is_logged_in?(conn) and
-      Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin)
+    Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin)
   end
 
   def get_stats_map(stats_individual, stats_all) do

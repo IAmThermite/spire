@@ -103,10 +103,4 @@ defmodule Spire.SpireWeb.MatchController do
         |> halt
     end
   end
-
-  defp get_logs_totals(logs, field) do
-    Enum.reduce(logs, 0, fn log, acc ->
-      acc + Map.from_struct(log)[field]
-    end)
-  end
 end

@@ -105,7 +105,7 @@ defmodule Spire.SpireWeb.PlayerController do
   end
 
   def edit(conn, %{"id" => id}) do
-    if can_manage?(conn, id) do
+    if can_edit?(conn, id) do
       render_form(conn, id)
     else
       conn
@@ -116,10 +116,18 @@ defmodule Spire.SpireWeb.PlayerController do
   end
 
   def update(conn, %{"id" => id, "player" => player_params}) do
-    if can_manage?(conn, id) do
+    if can_edit?(conn, id) do
       player = Players.get_player!(id)
 
-      case Players.update_player(player, player_params) do
+      # only admins can change division
+      modified_params =
+        if can_manage?(conn) do
+          Map.drop(player_params, [:division])
+        else
+          player_params
+        end
+
+      case Players.update_player(player, modified_params) do
         {:ok, player} ->
           conn
           |> put_flash(:info, "Player updated successfully.")
@@ -137,7 +145,7 @@ defmodule Spire.SpireWeb.PlayerController do
   end
 
   def update(conn, %{"id" => id, "permission" => permission_params}) do
-    if can_manage?(conn, id) do
+    if can_manage?(conn) do
       player = Players.get_player!(id)
 
       modified_params =
@@ -163,15 +171,6 @@ defmodule Spire.SpireWeb.PlayerController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    player = Players.get_player!(id)
-    {:ok, _player} = Players.delete_player(player)
-
-    conn
-    |> put_flash(:info, "Player deleted successfully.")
-    |> redirect(to: Routes.player_path(conn, :index))
-  end
-
   # defp search(conn, _params) do
   #   players = Players.list_players()
   #   conn
@@ -189,13 +188,20 @@ defmodule Spire.SpireWeb.PlayerController do
     end
   end
 
-  defp can_manage?(conn, player_id) do
+  defp can_edit?(conn, player_id) do
     {id, _} = Integer.parse(player_id)
 
     cond do
       id == conn.assigns[:user].id ->
         true
 
+      true ->
+        can_manage?(conn)
+    end
+  end
+
+  defp can_manage?(conn) do
+    cond do
       Spire.SpireWeb.PermissionsHelper.has_permissions_for?(conn, :is_super_admin) ->
         true
 
