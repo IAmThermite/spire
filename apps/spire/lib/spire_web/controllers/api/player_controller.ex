@@ -75,8 +75,8 @@ defmodule Spire.SpireWeb.Api.PlayerController do
     json(
       conn,
       Map.merge(stats, %{
-        player_1_id => clean_player(player_1),
-        player_2_id => clean_player(player_2)
+        player_1_id => clean_player(player_1) |> Map.drop([:stats_all, :stats_individual]),
+        player_2_id => clean_player(player_2) |> Map.drop([:stats_all, :stats_individual])
       })
     )
   end
@@ -99,7 +99,7 @@ defmodule Spire.SpireWeb.Api.PlayerController do
 
     Utils.struct_to_json_map(player, [:logs, :matches, :uploads, :permissions])
     |> Map.put(:league, league)
-    |> Map.drop([:stats_all, :stats_individual])
+    |> Map.drop([:league_id])
   end
 
   defp clean_player(_), do: %{}
