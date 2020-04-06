@@ -34,14 +34,22 @@ defmodule Spire.SpireWeb.Api.PlayerController do
         conn,
         %{"player_1_id" => player_1_id, "player_2_id" => player_2_id, "type" => type} = params
       ) do
-    player_1 = Players.get_by_steamid64(player_1_id)
-    player_2 = Players.get_by_steamid64(player_2_id)
+    player_1 = Players.get_by_steamid64(String.trim(player_1_id))
+    player_2 = Players.get_by_steamid64(String.trim(player_2_id))
+
+    modified_type =
+      String.trim(type)
+      |> String.upcase()
 
     stats =
       case params do
         %{"class" => class} ->
-          player_1_stats = Stats.get_stats_individual(player_1.id, type, class)
-          player_2_stats = Stats.get_stats_individual(player_2.id, type, class)
+          modified_class =
+            String.trim(class)
+            |> String.downcase()
+
+          player_1_stats = Stats.get_stats_individual(player_1.id, modified_type, modified_class)
+          player_2_stats = Stats.get_stats_individual(player_2.id, modified_type, modified_class)
           fields = Stats.Individual.fields_for_class(class)
           deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
 
@@ -52,8 +60,8 @@ defmodule Spire.SpireWeb.Api.PlayerController do
           }
 
         _ ->
-          player_1_stats = Stats.get_stats_all(player_1.id, type)
-          player_2_stats = Stats.get_stats_all(player_2.id, type)
+          player_1_stats = Stats.get_stats_all(player_1.id, modified_type)
+          player_2_stats = Stats.get_stats_all(player_2.id, modified_type)
           fields = Stats.get_stats_all_fields()
           deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
 
@@ -91,38 +99,10 @@ defmodule Spire.SpireWeb.Api.PlayerController do
 
     Utils.struct_to_json_map(player, [:logs, :matches, :uploads, :permissions])
     |> Map.put(:league, league)
-    |> clean_player_stats()
+    |> Map.drop([:stats_all, :stats_individual])
   end
 
   defp clean_player(_), do: %{}
-
-  defp clean_player_stats(player) do
-    stats_all =
-      case player.stats_all do
-        [%Stats.All{} | _tail] ->
-          Enum.map(player.stats_all, fn stats ->
-            clean_stat(stats)
-          end)
-
-        _ ->
-          []
-      end
-
-    stats_individual =
-      case player.stats_individual do
-        [%Stats.Individual{} | _tail] ->
-          Enum.map(player.stats_individual, fn stats ->
-            clean_stat(stats)
-          end)
-
-        _ ->
-          []
-      end
-
-    player
-    |> Map.put(:stats_all, stats_all)
-    |> Map.put(:stats_individual, stats_individual)
-  end
 
   defp clean_stat(stat) do
     Utils.struct_to_json_map(stat, [:player, :inserted_at, :updated_at])
