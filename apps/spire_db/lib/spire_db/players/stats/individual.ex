@@ -9,7 +9,7 @@ defmodule Spire.SpireDB.Players.Stats.Individual do
   @medic_fields [
     :heal_total,
     :ubers,
-    :krits,
+    :kritz,
     :ave_time_to_build,
     :ave_uber_length,
     :ave_time_before_healing,

@@ -69,8 +69,8 @@ defmodule Spire.SpireWeb.PlayerController do
         stats =
           case params do
             %{"class" => class} when class != "" ->
-              player_1_stats = Stats.get_stats_individual(player_1.id, type, class)
-              player_2_stats = Stats.get_stats_individual(player_2.id, type, class)
+              player_1_stats = Stats.get_stats_individual(player_1, type, class)
+              player_2_stats = Stats.get_stats_individual(player_2, type, class)
               fields = Stats.Individual.fields_for_class(class)
               deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
 
@@ -82,8 +82,8 @@ defmodule Spire.SpireWeb.PlayerController do
               }
 
             _ ->
-              player_1_stats = Stats.get_stats_all(player_1.id, type)
-              player_2_stats = Stats.get_stats_all(player_2.id, type)
+              player_1_stats = Stats.get_stats_all(player_1, type)
+              player_2_stats = Stats.get_stats_all(player_2, type)
               fields = Stats.get_stats_all_fields()
               deltas = Stats.get_deltas(player_1_stats, player_2_stats, fields)
 

@@ -5,12 +5,13 @@ defmodule Spire.SpireDB.Players.Stats do
 
   import Ecto.Query, warn: false
   alias Spire.SpireDB.Repo
+  alias Spire.SpireDB.Players.Player
   alias Spire.SpireDB.Players.Stats.All
   alias Spire.SpireDB.Players.Stats.Individual
   alias Spire.Utils
 
   def get_or_create_stats_all_for_player!(player, type) do
-    case get_stats_all(player.id, type) do
+    case get_stats_all(player, type) do
       nil ->
         Repo.insert!(%All{player_id: player.id, type: type})
 
@@ -21,7 +22,7 @@ defmodule Spire.SpireDB.Players.Stats do
   end
 
   def get_or_create_stats_individual_for_player!(player, class, type) do
-    case get_stats_individual(player.id, type, class) do
+    case get_stats_individual(player, type, class) do
       nil ->
         Repo.insert!(%Individual{player_id: player.id, class: class, type: type})
 
@@ -31,13 +32,17 @@ defmodule Spire.SpireDB.Players.Stats do
     |> Repo.preload([:player])
   end
 
-  def get_stats_all(player_id, type) do
-    Repo.get_by(All, player_id: player_id, type: type)
+  def get_stats_all(%Player{} = player, type) do
+    Repo.get_by(All, player_id: player.id, type: type)
   end
 
-  def get_stats_individual(player_id, type, class) do
-    Repo.get_by(Individual, player_id: player_id, class: class, type: type)
+  def get_stats_all(_player, _type), do: nil
+
+  def get_stats_individual(%Player{} = player, type, class) do
+    Repo.get_by(Individual, player_id: player.id, class: class, type: type)
   end
+
+  def get_stats_individual(_player, _type, _class), do: nil
 
   def get_deltas(player_1_stats, player_2_stats, fields) do
     cond do
