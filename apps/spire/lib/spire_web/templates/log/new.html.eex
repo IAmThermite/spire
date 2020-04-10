@@ -1,3 +1,7 @@
 <h1>New Log</h1>
 
+<h3>Note</h3>
+<p>If you want to upload a log for a match it needs to be approved by an admin. If there is no match then you can contact an admin to create one. Class stats will only be calculated when you have played that class for at least 2 minutes.</p>
+<p>Logs can take up to 30 seconds to process so your stats won't be updated instantly.</p>
+
 <%= render "form.html", Map.put(assigns, :action, Routes.log_path(@conn, :create)) %>

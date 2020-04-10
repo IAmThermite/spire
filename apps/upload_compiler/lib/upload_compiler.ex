@@ -224,20 +224,25 @@ defmodule Spire.UploadCompiler do
       player_log_json = get_log_json_for_player(player, log_json)
 
       Enum.map(player_log_json["class_stats"], fn stat ->
-        if stat["type"] != "undefined" do
-          if real do
-            [
-              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "MATCH"),
-              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "COMBINED")
-            ]
-          else
-            [
-              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "OTHER"),
-              Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "COMBINED")
-            ]
-          end
-        else
-          nil
+        cond do
+          stat["type"] == "undefined" ->
+            nil
+
+          stat["total_time"] < 120 ->
+            nil
+
+          true ->
+            if real do
+              [
+                Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "MATCH"),
+                Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "COMBINED")
+              ]
+            else
+              [
+                Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "OTHER"),
+                Stats.get_or_create_stats_individual_for_player!(player, stat["type"], "COMBINED")
+              ]
+            end
         end
       end)
     end)
