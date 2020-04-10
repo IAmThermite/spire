@@ -14,14 +14,13 @@ config :upload_compiler,
   sqs_queue_url: System.get_env("SPIRE_SQS_QUEUE_URL") || raise("SPIRE_SQS_QUEUE_URL not set!")
 
 config :logger,
-  backends: [:console, {Airbrake.LoggerBackend, :error}]
+  backends: [{Airbrake.LoggerBackend, :error}, :console]
 
 config :airbrake,
   api_key: System.get_env("AIRBRAKE_API_KEY"),
   project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
   environment: Mix.env,
-  host: System.get_env("AIRBRAKE_HOST"),
-  json_encoder: Jason
+  host: System.get_env("AIRBRAKE_HOST")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

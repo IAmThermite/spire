@@ -34,14 +34,13 @@ config :logger, :console,
   metadata: [:request_id]
 
 config :logger,
-  backends: [:console, {Airbrake.LoggerBackend, :error}]
+  backends: [{Airbrake.LoggerBackend, :error}, :console]
 
 config :airbrake,
   api_key: System.get_env("AIRBRAKE_API_KEY"),
   project_id: System.get_env("AIRBRAKE_PROJECT_ID"),
   environment: Mix.env,
-  host: System.get_env("AIRBRAKE_HOST"),
-  json_encoder: Jason
+  host: System.get_env("AIRBRAKE_HOST")
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason

@@ -122,8 +122,8 @@ defmodule Spire.UploadCompiler do
       Message.update_data(message, fn _data -> message end)
     rescue
       exception ->
-        Logger.error("Error occured processing log", exception: exception)
-        Airbrake.report(exception)
+        Logger.error("Error occured processing log", exception: exception, message: message)
+        Airbrake.report(exception, context: %{message: message})
         Message.update_data(message, fn _data -> message end)
     end
   end
